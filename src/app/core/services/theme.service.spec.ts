@@ -1,0 +1,360 @@
+import { fakeAsync, TestBed } from '@angular/core/testing';
+import { ThemeService, Theme, ThemeConfig } from './theme.service';
+import { LOCAL_STORAGE } from '../tokens/local.storage.token';
+import { DOCUMENT } from '@angular/common';
+
+describe('ThemeService', () => {
+  let service: ThemeService;
+  let mockStorage: jest.Mocked<Storage>;
+  let mockDocument: any;
+  let mockMediaQuery: jest.Mocked<MediaQueryList>;
+  let mockHtmlElement: any;
+
+  beforeEach(() => {
+    // Create mock objects
+    mockStorage = {
+      getItem: jest.fn(),
+      setItem: jest.fn(),
+      removeItem: jest.fn(),
+      clear: jest.fn(),
+      key: jest.fn(),
+      length: 0
+    };
+
+    mockHtmlElement = {
+      classList: {
+        add: jest.fn(),
+        remove: jest.fn(),
+        toggle: jest.fn(),
+        contains: jest.fn()
+      }
+    };
+
+    mockMediaQuery = {
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+      media: '(prefers-color-scheme: dark)',
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      onchange: null,
+      get matches() { return false; }
+    } as any;
+
+    mockDocument = {
+      defaultView: {
+        matchMedia: jest.fn().mockReturnValue(mockMediaQuery)
+      },
+      documentElement: mockHtmlElement
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        ThemeService,
+        { provide: LOCAL_STORAGE, useValue: mockStorage },
+        { provide: DOCUMENT, useValue: mockDocument }
+      ]
+    });
+
+    // Reset mocks
+    mockStorage.getItem.mockReturnValue(null);
+    mockStorage.setItem.mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Initialization', () => {
+    it('should be created', () => {
+      service = TestBed.inject(ThemeService);
+      expect(service).toBeTruthy();
+    });
+
+    it('should initialize with system theme by default', () => {
+      service = TestBed.inject(ThemeService);
+      expect(service.currentTheme()).toBe('system');
+    });
+
+    it('should read saved theme from localStorage', () => {
+      mockStorage.getItem.mockReturnValue('dark');
+      service = TestBed.inject(ThemeService);
+      
+      expect(mockStorage.getItem).toHaveBeenCalledWith('theme');
+      expect(service.currentTheme()).toBe('dark');
+    });
+
+    it('should handle invalid theme values from localStorage gracefully', () => {
+      mockStorage.getItem.mockReturnValue('invalid-theme');
+      service = TestBed.inject(ThemeService);
+      
+      expect(service.currentTheme()).toBe('system');
+    });
+
+    it('should handle localStorage errors gracefully', () => {
+      mockStorage.getItem.mockImplementation(() => {
+        throw new Error('Storage unavailable');
+      });
+      
+      // Mock console.warn to suppress expected warning
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      expect(() => {
+        service = TestBed.inject(ThemeService);
+      }).not.toThrow();
+      
+      expect(service.currentTheme()).toBe('system');
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to initialize theme from localStorage:', expect.any(Error));
+      
+      // Restore console.warn
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('Theme Setting', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should set light theme', () => {
+      service.setTheme('light');
+      expect(service.currentTheme()).toBe('light');
+    });
+
+    it('should set dark theme', () => {
+      service.setTheme('dark');
+      expect(service.currentTheme()).toBe('dark');
+    });
+
+    it('should set system theme', () => {
+      service.setTheme('system');
+      expect(service.currentTheme()).toBe('system');
+    });
+
+    it('should update isDarkMode when setting light theme', () => {
+      service.setTheme('light');
+      expect(service.isDarkMode()).toBe(false);
+    });
+
+    it('should update isDarkMode when setting dark theme', () => {
+      service.setTheme('dark');
+      expect(service.isDarkMode()).toBe(true);
+    });
+  });
+
+  describe('Theme Toggling', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should toggle from light to dark', () => {
+      service.setTheme('light');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('dark');
+    });
+
+    it('should toggle from dark to light', () => {
+      service.setTheme('dark');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('light');
+    });
+
+    it('should toggle from system to opposite of system preference', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: false, configurable: true });
+      service.setTheme('system');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('dark'); // Toggle to dark
+    });
+
+    it('should toggle from system to light when system prefers dark', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: true, configurable: true });
+      service.setTheme('system');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('light'); // Toggle to light
+    });
+  });
+
+  describe('System Preference', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should respect system preference when enabled', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: true, configurable: true });
+      service.setTheme('system');
+      service.setUseSystemPreference(true);
+      expect(service.isDarkMode()).toBe(true);
+    });
+
+    it('should ignore system preference when disabled', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: true, configurable: true });
+      service.setTheme('light');
+      service.setUseSystemPreference(false);
+      expect(service.isDarkMode()).toBe(false);
+    });
+
+    it('should update when system preference changes', () => {
+      const changeHandler = mockMediaQuery.addEventListener.mock.calls[0]?.[1];
+      service.setTheme('system');
+      
+      // Simulate system preference change
+      Object.defineProperty(mockMediaQuery, 'matches', { value: true, configurable: true });
+      if (changeHandler && typeof changeHandler === 'function') {
+        changeHandler({} as MediaQueryListEvent);
+      }
+      
+      expect(service.isDarkMode()).toBe(true);
+    });
+  });
+
+  describe('DOM Manipulation', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should toggle dark-theme class when dark mode is enabled', async () => {
+      service.setTheme('dark');
+      // Wait for effects to run
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('dark-theme', true);
+      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('light-theme', false);
+    });
+
+    it('should toggle light-theme class when light mode is enabled', async () => {
+      service.setTheme('light');
+      // Wait for effects to run
+      await new Promise(resolve => setTimeout(resolve, 0));
+      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('light-theme', true);
+      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('dark-theme', false);
+    });
+  });
+
+  describe('LocalStorage Persistence', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should save theme to localStorage', async () => {
+      service.setTheme('dark');
+      // Wait for effects and debounce timeout to run
+      await new Promise(resolve => setTimeout(resolve, 350));
+      expect(mockStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
+    });
+
+    it('should save auto-switch setting to localStorage', async () => {
+      service.setAutoSwitch(true);
+      // Wait for effects and debounce timeout to run
+      await new Promise(resolve => setTimeout(resolve, 350));
+      expect(mockStorage.setItem).toHaveBeenCalledWith('theme-auto-switch', 'true');
+    });
+
+    it('should save use-system-preference setting to localStorage', async () => {
+      service.setUseSystemPreference(false);
+      // Wait for effects and debounce timeout to run
+      await new Promise(resolve => setTimeout(resolve, 350));
+      expect(mockStorage.setItem).toHaveBeenCalledWith('theme-use-system', 'false');
+    });
+
+    it('should handle localStorage errors gracefully', () => {
+      mockStorage.setItem.mockImplementation(() => {
+        throw new Error('Storage full');
+      });
+      
+      expect(() => {
+        service.setTheme('dark');
+      }).not.toThrow();
+    });
+  });
+
+  describe('Theme Configuration', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should return current theme configuration', () => {
+      service.setTheme('dark');
+      service.setAutoSwitch(true);
+      service.setUseSystemPreference(false);
+
+      const config = service.getThemeConfig();
+      expect(config).toEqual({
+        theme: 'dark',
+        autoSwitch: true,
+        useSystemPreference: false,
+        customThemes: [],
+        highContrast: false
+      });
+    });
+
+    it('should apply theme configuration', () => {
+      const config: Partial<ThemeConfig> = {
+        theme: 'light',
+        autoSwitch: false,
+        useSystemPreference: true
+      };
+
+      service.applyThemeConfig(config);
+
+      expect(service.currentTheme()).toBe('light');
+      expect(service.autoSwitch()).toBe(false);
+      expect(service.useSystemPreference()).toBe(true);
+    });
+
+    it('should reset to defaults', () => {
+      service.setTheme('dark');
+      service.setAutoSwitch(true);
+      service.setUseSystemPreference(false);
+
+      service.resetToDefaults();
+
+      expect(service.currentTheme()).toBe('system');
+      expect(service.autoSwitch()).toBe(false);
+      expect(service.useSystemPreference()).toBe(true);
+    });
+  });
+
+  describe('Auto Switch', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+      service = TestBed.inject(ThemeService);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should enable auto-switch', () => {
+      service.setAutoSwitch(true);
+      expect(service.autoSwitch()).toBe(true);
+    });
+
+    it('should disable auto-switch', () => {
+      service.setAutoSwitch(false);
+      expect(service.autoSwitch()).toBe(false);
+    });
+  });
+
+  describe('Utility Methods', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should return correct display names', () => {
+      expect(service.getThemeDisplayName('light')).toBe('Light');
+      expect(service.getThemeDisplayName('dark')).toBe('Dark');
+      expect(service.getThemeDisplayName('system')).toBe('System');
+    });
+
+    it('should return correct theme icons', () => {
+      expect(service.getThemeIcon('light')).toBe('☀️');
+      expect(service.getThemeIcon('dark')).toBe('🌙');
+      expect(service.getThemeIcon('system')).toBe('🖥️');
+    });
+
+    it('should use current theme when no parameter provided', () => {
+      service.setTheme('dark');
+      expect(service.getThemeDisplayName()).toBe('Dark');
+      expect(service.getThemeIcon()).toBe('🌙');
+    });
+  });
+});

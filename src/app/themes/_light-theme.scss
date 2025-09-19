@@ -1,0 +1,88 @@
+// Light Theme Variables
+// Define all color values for the light theme
+
+@use 'variables' as *;
+
+$light-theme: (
+  // Primary colors (Blue scale)
+  primary-50: #eff6ff,
+  primary-100: #dbeafe,
+  primary-200: #bfdbfe,
+  primary-300: #93c5fd,
+  primary-400: #60a5fa,
+  primary-500: #3b82f6,
+  primary-600: #2563eb,
+  primary-700: #1d4ed8,
+  primary-800: #1e40af,
+  primary-900: #1e3a8a,
+  primary-950: #172554,
+
+  // Secondary colors (Gray scale)
+  secondary-50: #f9fafb,
+  secondary-100: #f3f4f6,
+  secondary-200: #e5e7eb,
+  secondary-300: #d1d5db,
+  secondary-400: #9ca3af,
+  secondary-500: #6b7280,
+  secondary-600: #4b5563,
+  secondary-700: #374151,
+  secondary-800: #1f2937,
+  secondary-900: #111827,
+  secondary-950: #030712,
+
+  // Background colors
+  bg-primary: #ffffff,
+  bg-secondary: #f9fafb,
+  bg-tertiary: #f3f4f6,
+  bg-accent: #eff6ff,
+  bg-muted: #e5e7eb,
+
+  // Text colors
+  text-primary: #111827,
+  text-secondary: #374151,
+  text-tertiary: #6b7280,
+  text-accent: #2563eb,
+  text-muted: #9ca3af,
+  text-inverse: #ffffff,
+
+  // Border colors
+  border-primary: #d1d5db,
+  border-secondary: #e5e7eb,
+  border-accent: #93c5fd,
+  border-muted: #f3f4f6,
+
+  // Status colors
+  success: #059669,
+  success-bg: #d1fae5,
+  warning: #d97706,
+  warning-bg: #fef3c7,
+  error: #dc2626,
+  error-bg: #fee2e2,
+  info: #0284c7,
+  info-bg: #e0f2fe,
+
+  // Shadow colors
+  shadow-sm: rgba(0, 0, 0, 0.05),
+  shadow-md: rgba(0, 0, 0, 0.1),
+  shadow-lg: rgba(0, 0, 0, 0.15),
+  shadow-xl: rgba(0, 0, 0, 0.25),
+
+  // Interactive states
+  hover-bg: #f3f4f6,
+  active-bg: #e5e7eb,
+  focus-ring: rgba(59, 130, 246, 0.5),
+  disabled-bg: #f9fafb,
+  disabled-text: #d1d5db,
+
+  // Additional semantic colors
+  surface: #ffffff,
+  surface-variant: #f8fafc,
+  outline: #e2e8f0,
+  outline-variant: #f1f5f9,
+);
+
+// Light theme class (default)
+html.light-theme,
+html:not(.dark-theme) {
+  @include theme-variables($light-theme);
+}

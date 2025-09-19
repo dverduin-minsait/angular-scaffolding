@@ -1,0 +1,81 @@
+// Import theme system
+@use '../../themes/index' as *;
+
+.dashboard {
+  padding: 2rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+
+  h1 {
+    color: var(--text-primary);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.stat-card {
+  @include card-style;
+  padding: 1.5rem;
+  text-align: center;
+  background-color: var(--bg-secondary);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--shadow-lg);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-500);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 0.875rem;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+
+    h1 {
+      font-size: 2rem;
+    }
+  }
+
+  .dashboard-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+}

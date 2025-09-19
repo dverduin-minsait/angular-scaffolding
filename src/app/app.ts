@@ -1,9 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { localStorageProvider } from './core/tokens/local.storage.token';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, HeaderComponent],
+  providers: [
+    localStorageProvider
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
