@@ -1,38 +1,152 @@
-// Theme utilities and helper classes
+// Theme utilities and helper classes - mixins only
+// Utility classes have been moved to styles.scss to reduce component bundle sizes
 
-// Utility classes for common theme patterns
-.text-primary { color: var(--text-primary) !important; }
-.text-secondary { color: var(--text-secondary) !important; }
-.text-tertiary { color: var(--text-tertiary) !important; }
-.text-accent { color: var(--text-accent) !important; }
-.text-muted { color: var(--text-muted) !important; }
-.text-inverse { color: var(--text-inverse) !important; }
+// Flex utility mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.bg-primary { background-color: var(--bg-primary) !important; }
-.bg-secondary { background-color: var(--bg-secondary) !important; }
-.bg-tertiary { background-color: var(--bg-tertiary) !important; }
-.bg-accent { background-color: var(--bg-accent) !important; }
-.bg-muted { background-color: var(--bg-muted) !important; }
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-.border-primary { border-color: var(--border-primary) !important; }
-.border-secondary { border-color: var(--border-secondary) !important; }
-.border-accent { border-color: var(--border-accent) !important; }
-.border-muted { border-color: var(--border-muted) !important; }
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
 
-// Status color utilities
-.text-success { color: var(--success) !important; }
-.text-warning { color: var(--warning) !important; }
-.text-error { color: var(--error) !important; }
-.text-info { color: var(--info) !important; }
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
 
-.bg-success { background-color: var(--success-bg) !important; }
-.bg-warning { background-color: var(--warning-bg) !important; }
-.bg-error { background-color: var(--error-bg) !important; }
-.bg-info { background-color: var(--info-bg) !important; }
+// Transition utility mixins
+@mixin smooth-transition($properties: all, $duration: 0.2s, $timing: ease) {
+  transition: #{$properties} #{$duration} #{$timing};
+}
 
-// Theme switching utilities
-.theme-transition {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+@mixin header-transition {
+  @include smooth-transition(all, 0.3s);
+}
+
+// Icon button mixin
+@mixin icon-button($size: 2.5rem) {
+  @include button-style('ghost');
+  @include flex-center;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  padding: 0;
+}
+
+// Gradient text mixin
+@mixin gradient-text($from, $to, $direction: 135deg) {
+  background: linear-gradient(#{$direction}, #{$from}, #{$to});
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin button-style($variant: 'primary') {
+  @if $variant == 'primary' {
+    background-color: var(--primary-500);
+    color: var(--text-inverse);
+    border: 1px solid var(--primary-500);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-600);
+      border-color: var(--primary-600);
+    }
+  } @else if $variant == 'secondary' {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+
+    &:hover:not(:disabled) {
+      background-color: var(--hover-bg);
+    }
+  } @else if $variant == 'ghost' {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: none;
+
+    &:hover:not(:disabled) {
+      background-color: var(--hover-bg);
+    }
+  }
+
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    border-color: var(--disabled-bg);
+    cursor: not-allowed;
+  }
+}
+
+@mixin input-style {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+// Dark mode media query helper
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    html:not(.light-theme) & {
+      @content;
+    }
+  }
+  
+  .dark-theme & {
+    @content;
+  }
+}
+
+// Light mode media query helper
+@mixin light-mode {
+  @media (prefers-color-scheme: light) {
+    html:not(.dark-theme) & {
+      @content;
+    }
+  }
+  
+  .light-theme & {
+    @content;
+  }
 }
 
 // Mixins for component styling
@@ -46,6 +160,56 @@
   &:hover {
     box-shadow: 0 4px 12px var(--shadow-md);
   }
+}
+
+// Flex utility mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+// Transition utility mixins
+@mixin smooth-transition($properties: all, $duration: 0.2s, $timing: ease) {
+  transition: #{$properties} #{$duration} #{$timing};
+}
+
+@mixin header-transition {
+  @include smooth-transition(all, 0.3s);
+}
+
+// Icon button mixin
+@mixin icon-button($size: 2.5rem) {
+  @include button-style('ghost');
+  @include flex-center;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  padding: 0;
+}
+
+// Gradient text mixin
+@mixin gradient-text($from, $to, $direction: 135deg) {
+  background: linear-gradient(#{$direction}, #{$from}, #{$to});
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 @mixin button-style($variant: 'primary') {

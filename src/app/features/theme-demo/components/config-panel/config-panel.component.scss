@@ -1,0 +1,26 @@
+// Import only the mixins we need
+@use '../../../../themes/mixins' as *;
+
+.config-panel {
+  @include card-style;
+  padding: 2rem;
+  
+  h4 {
+    margin-top: 0;
+    color: var(--text-accent);
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+  
+  pre {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-primary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    overflow-x: auto;
+    margin: 0;
+  }
+}

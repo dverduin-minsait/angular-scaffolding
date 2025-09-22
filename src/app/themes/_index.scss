@@ -1,7 +1,7 @@
 // Theme system exports
-// Import this file to get the complete theme system
+// Forward this file to get the complete theme system
 
-@import 'variables';
-@import 'light-theme';
-@import 'dark-theme';
-@import 'utilities';
+@forward 'variables';
+@forward 'light-theme';
+@forward 'dark-theme';
+@forward 'utilities';

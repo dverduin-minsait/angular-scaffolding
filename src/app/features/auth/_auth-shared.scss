@@ -1,0 +1,300 @@
+// Shared authentication component styles
+// This file contains common mixins and patterns used across auth components (login, register, etc.)
+// Note: Does not import themes - components must import themes themselves
+
+// Auth page layout mixin
+@mixin auth-page-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+// Auth container mixin with customizable max-width
+@mixin auth-container($max-width: 400px) {
+  width: 100%;
+  max-width: $max-width;
+  padding: 2rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px var(--shadow-md);
+  }
+}
+
+// Auth header styles
+@mixin auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+// Base button styles (simplified to avoid theme system dependency)
+@mixin auth-button($variant: 'primary') {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  border: 1px solid;
+
+  @if $variant == 'primary' {
+    background-color: var(--primary-500);
+    color: var(--text-inverse);
+    border-color: var(--primary-500);
+
+    &:hover:not(:disabled) {
+      background-color: var(--primary-600);
+      border-color: var(--primary-600);
+    }
+  } @else {
+    background-color: transparent;
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+
+    &:hover:not(:disabled) {
+      background-color: var(--hover-bg);
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    border-color: var(--disabled-bg);
+    cursor: not-allowed;
+  }
+}
+
+// Simplified input styles
+@mixin auth-input {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+
+  &:disabled {
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+// Auth form base styles
+@mixin auth-form-base {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    input {
+      @include auth-input;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .btn-primary {
+      @include auth-button('primary');
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-secondary {
+      @include auth-button('secondary');
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+// Auth footer styles
+@mixin auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-primary);
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  a {
+    color: var(--text-accent);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Register-specific mixins
+@mixin form-group-inline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+@mixin terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+
+  input[type="checkbox"] {
+    margin-top: 0.25rem;
+    accent-color: var(--primary-500);
+  }
+
+  label {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+
+    a {
+      color: var(--text-accent);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+@mixin password-strength-indicator {
+  margin-top: 0.5rem;
+  
+  .strength-bar {
+    height: 4px;
+    background-color: var(--bg-muted);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+
+    .strength-fill {
+      height: 100%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      
+      &[data-strength="weak"] { 
+        background-color: var(--error); 
+        width: 25%;
+      }
+      &[data-strength="fair"] { 
+        background-color: var(--warning); 
+        width: 50%;
+      }
+      &[data-strength="good"] { 
+        background-color: var(--info); 
+        width: 75%;
+      }
+      &[data-strength="strong"] { 
+        background-color: var(--success); 
+        width: 100%;
+      }
+    }
+  }
+
+  .strength-text {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+}
+
+// Message mixins for auth feedback
+@mixin auth-message($type: 'error') {
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+
+  @if $type == 'error' {
+    background-color: var(--error-bg);
+    color: var(--error);
+    border-color: var(--error);
+  } @else if $type == 'success' {
+    background-color: var(--success-bg);
+    color: var(--success);
+    border-color: var(--success);
+  } @else if $type == 'warning' {
+    background-color: var(--warning-bg);
+    color: var(--warning);
+    border-color: var(--warning);
+  } @else if $type == 'info' {
+    background-color: var(--info-bg);
+    color: var(--info);
+    border-color: var(--info);
+  }
+}
+
+// Responsive auth layout mixin
+@mixin auth-responsive-small {
+  padding: 1rem;
+
+  .auth-container {
+    padding: 1.5rem;
+  }
+
+  .auth-header h1 {
+    font-size: 1.75rem;
+  }
+}

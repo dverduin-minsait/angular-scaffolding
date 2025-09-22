@@ -7,17 +7,20 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="dashboard">
-      <h1>{{ title() }}</h1>
-      <p>{{ description() }}</p>
+      <header class="dashboard-header">
+        <h1>{{ title() }}</h1>
+        <p>{{ description() }}</p>
+      </header>
       
-      <div class="dashboard-stats">
+      <section class="dashboard-stats" aria-label="Statistics overview">
+        <h2 class="visually-hidden">Dashboard Statistics</h2>
         @for (stat of stats(); track stat.label) {
-          <div class="stat-card">
+          <article class="stat-card" [attr.aria-label]="stat.label + ': ' + stat.value">
             <h3>{{ stat.value }}</h3>
             <p>{{ stat.label }}</p>
-          </div>
+          </article>
         }
-      </div>
+      </section>
     </div>
   `,
   styleUrl: './dashboard.component.scss'

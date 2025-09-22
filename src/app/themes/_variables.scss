@@ -86,3 +86,34 @@
     --#{$variable}: #{$value};
   }
 }
+
+// Component size variables
+$header-height: 4rem;
+$header-height-mobile: 3.5rem;
+$sidebar-width: 320px;
+$sidebar-width-tablet: 280px;
+$container-max-width: 1200px;
+$icon-button-size: 2.5rem;
+$icon-button-size-mobile: 2rem;
+$burger-line-width: 20px;
+$burger-line-width-mobile: 16px;
+
+// Common spacing values
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 0.75rem;
+$spacing-lg: 1rem;
+$spacing-xl: 1.5rem;
+$spacing-2xl: 2rem;
+
+// Border radius values
+$radius-sm: 0.375rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1rem;
+$radius-full: 50%;
+
+// Animation timing
+$transition-fast: 0.15s;
+$transition-normal: 0.2s;
+$transition-slow: 0.3s;

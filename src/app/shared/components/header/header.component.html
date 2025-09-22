@@ -1,0 +1,124 @@
+<header class="header" role="banner">
+  <div class="header-content">
+    <div class="logo">
+      <h1>{{ title() }}</h1>
+    </div>
+    
+    <!-- Desktop Navigation -->
+    <nav id="navigation" class="navigation desktop-nav" role="navigation" aria-label="Main navigation">
+      <ul class="nav-list">
+        @for (link of navigationLinks(); track trackByPath($index, link)) {
+          <li class="nav-item">
+            <a 
+              [routerLink]="link.path" 
+              routerLinkActive="active"
+              class="nav-link"
+              [attr.aria-label]="link.label"
+              [attr.aria-current]="isLinkActive(link.path) ? 'page' : null"
+            >
+              @if (link.icon) {
+                <span class="nav-icon" [attr.aria-hidden]="true">{{ link.icon }}</span>
+              }
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+    
+    <div class="header-actions">
+      <button 
+        class="theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-label]="themeAriaLabel()"
+        [attr.aria-pressed]="isDarkMode()"
+        type="button"
+      >
+        {{ themeIcon() }}
+      </button>
+      
+      <!-- Burger Menu Button -->
+      <button 
+        class="burger-menu"
+        (click)="toggleSidebar()"
+        [attr.aria-label]="burgerAriaLabel()"
+        [attr.aria-expanded]="isSidebarOpen()"
+        [attr.aria-controls]="'mobile-sidebar'"
+        type="button"
+      >
+        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
+        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
+        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Sidebar -->
+<div class="sidebar-overlay" 
+     [class.open]="isSidebarOpen()" 
+     (click)="closeSidebar()"
+     [attr.aria-hidden]="!isSidebarOpen()"
+     [attr.inert]="!isSidebarOpen() || null">
+</div>
+
+<aside id="mobile-sidebar"
+       class="sidebar" 
+       [class.open]="isSidebarOpen()"
+       [attr.aria-hidden]="!isSidebarOpen()"
+       [attr.inert]="!isSidebarOpen() || null"
+       role="navigation"
+       aria-label="Mobile navigation"
+       [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <h2 id="sidebar-title">{{ title() }}</h2>
+      <button 
+        class="close-button"
+        (click)="closeSidebar()"
+        aria-label="Close menu"
+        type="button"
+        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+      >
+        ✕
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav" aria-labelledby="sidebar-title">
+      <ul class="sidebar-nav-list">
+        @for (link of navigationLinks(); track trackByPath($index, link)) {
+          <li class="sidebar-nav-item">
+            <a 
+              [routerLink]="link.path" 
+              routerLinkActive="active"
+              class="sidebar-nav-link"
+              [attr.aria-label]="link.label"
+              [attr.aria-current]="isLinkActive(link.path) ? 'page' : null"
+              [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+              (click)="closeSidebar()"
+            >
+              @if (link.icon) {
+                <span class="sidebar-nav-icon" [attr.aria-hidden]="true">{{ link.icon }}</span>
+              }
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <button 
+        class="sidebar-theme-toggle"
+        (click)="toggleTheme()"
+        [attr.aria-label]="themeAriaLabel()"
+        [attr.aria-pressed]="isDarkMode()"
+        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+        type="button"
+      >
+        {{ themeIcon() }}
+        <span>{{ sidebarThemeText() }}</span>
+      </button>
+    </div>
+  </div>
+</aside>

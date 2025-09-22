@@ -3,6 +3,9 @@
 // Import theme system
 @use 'app/themes/index' as *;
 
+// Import accessibility styles
+@use 'app/accessibility.scss' as *;
+
 // Global styles using theme variables
 * {
   box-sizing: border-box;
@@ -21,6 +24,41 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Global utility classes - moved from _utilities.scss to reduce component bundle sizes
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-tertiary { color: var(--text-tertiary) !important; }
+.text-accent { color: var(--text-accent) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-inverse { color: var(--text-inverse) !important; }
+
+.bg-primary { background-color: var(--bg-primary) !important; }
+.bg-secondary { background-color: var(--bg-secondary) !important; }
+.bg-tertiary { background-color: var(--bg-tertiary) !important; }
+.bg-accent { background-color: var(--bg-accent) !important; }
+.bg-muted { background-color: var(--bg-muted) !important; }
+
+.border-primary { border-color: var(--border-primary) !important; }
+.border-secondary { border-color: var(--border-secondary) !important; }
+.border-accent { border-color: var(--border-accent) !important; }
+.border-muted { border-color: var(--border-muted) !important; }
+
+// Status color utilities
+.text-success { color: var(--success) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-error { color: var(--error) !important; }
+.text-info { color: var(--info) !important; }
+
+.bg-success { background-color: var(--success-bg) !important; }
+.bg-warning { background-color: var(--warning-bg) !important; }
+.bg-error { background-color: var(--error-bg) !important; }
+.bg-info { background-color: var(--info-bg) !important; }
+
+// Theme switching utilities
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 // Example usage of theme variables and mixins
