@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { LoginComponent } from './login.component';
 import { AccessibilityTestUtils } from '../../../testing/accessibility-test-utils';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +10,7 @@ describe('LoginComponent Accessibility', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, FormsModule]
+      imports: [LoginComponent, FormsModule, RouterTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -144,7 +145,8 @@ describe('LoginComponent Accessibility', () => {
     });
 
     it('should provide context for external links', () => {
-      const registerLink = fixture.nativeElement.querySelector('a[href="/register"]');
+      const registerLink = fixture.nativeElement.querySelector('.auth-footer a');
+      expect(registerLink).toBeTruthy();
       expect(registerLink.getAttribute('aria-label')).toContain('registration');
     });
   });

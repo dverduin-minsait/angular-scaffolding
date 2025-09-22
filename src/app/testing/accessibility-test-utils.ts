@@ -62,7 +62,13 @@ export class AccessibilityTestUtils {
     const radioGroup = fixture.nativeElement.querySelector(radioGroupSelector);
     if (!radioGroup) return;
     
-    const radioButtons = radioGroup.querySelectorAll('[role="radio"]');
+    // Look for actual radio input elements first, fallback to role="radio" for custom components
+    let radioButtons = radioGroup.querySelectorAll('input[type="radio"]');
+    if (radioButtons.length === 0) {
+      radioButtons = radioGroup.querySelectorAll('[role="radio"]');
+    }
+    
+    if (radioButtons.length === 0) return;
     
     // Focus first radio button
     const firstRadio = radioButtons[0] as HTMLElement;

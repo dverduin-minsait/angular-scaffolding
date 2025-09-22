@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="auth-page">
       <div class="auth-container">
@@ -94,7 +95,7 @@ import { FormsModule } from '@angular/forms';
         
         <footer class="auth-footer">
           <p>Don't have an account?</p>
-          <a href="/register" aria-label="Go to registration page">Create an account</a>
+          <a routerLink="/auth/register" aria-label="Go to registration page">Create an account</a>
         </footer>
       </div>
     </div>

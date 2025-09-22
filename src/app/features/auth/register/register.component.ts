@@ -1,251 +1,108 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  template: `
-    <div class="auth-page">
-      <div class="auth-container">
-        <header class="auth-header">
-          <h1 id="register-title">Create Account</h1>
-          <p>Join us and start your journey</p>
-        </header>
-        
-        <form class="auth-form" 
-              (ngSubmit)="onSubmit()" 
-              #registerForm="ngForm"
-              aria-labelledby="register-title"
-              novalidate>
-              
-          <fieldset class="form-group form-group-inline">
-            <legend class="visually-hidden">Personal Information</legend>
-            <div>
-              <label for="firstName">First Name <span aria-label="required">*</span></label>
-              <input 
-                id="firstName" 
-                name="firstName"
-                type="text" 
-                placeholder="First name"
-                class="form-input"
-                [(ngModel)]="formData().firstName"
-                required
-                autocomplete="given-name"
-                [attr.aria-invalid]="firstNameError() ? 'true' : 'false'"
-                [attr.aria-describedby]="firstNameError() ? 'firstName-error' : null"
-                #firstNameField="ngModel"
-              />
-              @if (firstNameError()) {
-                <div id="firstName-error" class="error-message" role="alert" aria-live="polite">
-                  {{ firstNameError() }}
-                </div>
-              }
-            </div>
-            <div>
-              <label for="lastName">Last Name <span aria-label="required">*</span></label>
-              <input 
-                id="lastName" 
-                name="lastName"
-                type="text" 
-                placeholder="Last name"
-                class="form-input"
-                [(ngModel)]="formData().lastName"
-                required
-                autocomplete="family-name"
-                [attr.aria-invalid]="lastNameError() ? 'true' : 'false'"
-                [attr.aria-describedby]="lastNameError() ? 'lastName-error' : null"
-                #lastNameField="ngModel"
-              />
-              @if (lastNameError()) {
-                <div id="lastName-error" class="error-message" role="alert" aria-live="polite">
-                  {{ lastNameError() }}
-                </div>
-              }
-            </div>
-          </fieldset>
-          
-          <div class="form-group">
-            <label for="email">Email <span aria-label="required">*</span></label>
-            <input 
-              id="email" 
-              name="email"
-              type="email" 
-              placeholder="Enter your email"
-              class="form-input"
-              [(ngModel)]="formData().email"
-              required
-              email
-              autocomplete="email"
-              [attr.aria-invalid]="emailError() ? 'true' : 'false'"
-              [attr.aria-describedby]="emailError() ? 'email-error' : null"
-              #emailField="ngModel"
-            />
-            @if (emailError()) {
-              <div id="email-error" class="error-message" role="alert" aria-live="polite">
-                {{ emailError() }}
-              </div>
-            }
-          </div>
-          
-          <div class="form-group">
-            <label for="password">Password <span aria-label="required">*</span></label>
-            <input 
-              id="password" 
-              name="password"
-              type="password" 
-              placeholder="Create a password"
-              class="form-input"
-              [(ngModel)]="formData().password"
-              required
-              minlength="8"
-              autocomplete="new-password"
-              [attr.aria-invalid]="passwordError() ? 'true' : 'false'"
-              [attr.aria-describedby]="'password-requirements ' + (passwordError() ? 'password-error' : '')"
-              (input)="checkPasswordStrength()"
-              #passwordField="ngModel"
-            />
-            <div id="password-requirements" class="password-requirements">
-              <p>Password requirements:</p>
-              <ul>
-                <li [attr.aria-label]="hasMinLength() ? 'Requirement met' : 'Requirement not met'">
-                  <span [attr.aria-hidden]="true">{{ hasMinLength() ? '✓' : '✗' }}</span>
-                  At least 8 characters
-                </li>
-                <li [attr.aria-label]="hasUpperCase() ? 'Requirement met' : 'Requirement not met'">
-                  <span [attr.aria-hidden]="true">{{ hasUpperCase() ? '✓' : '✗' }}</span>
-                  One uppercase letter
-                </li>
-                <li [attr.aria-label]="hasLowerCase() ? 'Requirement met' : 'Requirement not met'">
-                  <span [attr.aria-hidden]="true">{{ hasLowerCase() ? '✓' : '✗' }}</span>
-                  One lowercase letter
-                </li>
-                <li [attr.aria-label]="hasNumber() ? 'Requirement met' : 'Requirement not met'">
-                  <span [attr.aria-hidden]="true">{{ hasNumber() ? '✓' : '✗' }}</span>
-                  One number
-                </li>
-              </ul>
-            </div>
-            <div class="password-strength">
-              <div class="strength-bar" role="progressbar" 
-                   [attr.aria-valuenow]="passwordStrengthScore()" 
-                   aria-valuemin="0" 
-                   aria-valuemax="4"
-                   [attr.aria-label]="'Password strength: ' + passwordStrengthText()">
-                <div class="strength-fill" [class]="passwordStrengthClass()"></div>
-              </div>
-              <span class="strength-text">{{ passwordStrengthText() }}</span>
-            </div>
-            @if (passwordError()) {
-              <div id="password-error" class="error-message" role="alert" aria-live="polite">
-                {{ passwordError() }}
-              </div>
-            }
-          </div>
-          
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Password <span aria-label="required">*</span></label>
-            <input 
-              id="confirmPassword" 
-              name="confirmPassword"
-              type="password" 
-              placeholder="Confirm your password"
-              class="form-input"
-              [(ngModel)]="formData().confirmPassword"
-              required
-              autocomplete="new-password"
-              [attr.aria-invalid]="confirmPasswordError() ? 'true' : 'false'"
-              [attr.aria-describedby]="confirmPasswordError() ? 'confirmPassword-error' : null"
-              #confirmPasswordField="ngModel"
-            />
-            @if (confirmPasswordError()) {
-              <div id="confirmPassword-error" class="error-message" role="alert" aria-live="polite">
-                {{ confirmPasswordError() }}
-              </div>
-            }
-          </div>
-          
-          <div class="terms-group">
-            <input 
-              type="checkbox" 
-              id="terms" 
-              name="terms"
-              [(ngModel)]="formData().agreedToTerms"
-              required
-              [attr.aria-invalid]="termsError() ? 'true' : 'false'"
-              [attr.aria-describedby]="termsError() ? 'terms-error' : null"
-              #termsField="ngModel"
-            />
-            <label for="terms">
-              I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service <span class="visually-hidden">(opens in new tab)</span></a> and <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy <span class="visually-hidden">(opens in new tab)</span></a>
-            </label>
-            @if (termsError()) {
-              <div id="terms-error" class="error-message" role="alert" aria-live="polite">
-                {{ termsError() }}
-              </div>
-            }
-          </div>
-          
-          <div class="form-actions">
-            <button 
-              type="submit" 
-              class="btn-primary"
-              [disabled]="registerForm.invalid || isSubmitting()"
-              [attr.aria-describedby]="submitError() ? 'submit-error' : null"
-            >
-              {{ isSubmitting() ? 'Creating Account...' : 'Create Account' }}
-            </button>
-            <button 
-              type="button" 
-              class="btn-secondary"
-              (click)="signUpWithGoogle()"
-              [disabled]="isSubmitting()"
-            >
-              Sign up with Google
-            </button>
-          </div>
-          
-          @if (submitError()) {
-            <div id="submit-error" class="error-message" role="alert" aria-live="assertive">
-              {{ submitError() }}
-            </div>
-          }
-        </form>
-        
-        <footer class="auth-footer">
-          <p>Already have an account?</p>
-          <a href="/login" aria-label="Go to login page">Sign in</a>
-        </footer>
-      </div>
-    </div>
-  `,
-  styleUrl: './register.component.scss'
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  protected readonly formData = signal({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    agreedToTerms: false
+  private readonly fb = inject(FormBuilder);
+  
+  // Custom validators
+  private passwordStrengthValidator = (control: AbstractControl): ValidationErrors | null => {
+    const password = control.value || '';
+    const hasMinLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    
+    const score = [hasMinLength, hasUpperCase, hasLowerCase, hasNumber].filter(Boolean).length;
+    
+    if (password && score < 3) {
+      return { weakPassword: { score, required: 3 } };
+    }
+    
+    return null;
+  };
+  
+  private passwordMatchValidator = (form: AbstractControl): ValidationErrors | null => {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    
+    if (password && confirmPassword && password !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    
+    return null;
+  };
+  
+  // Available gender options for selection
+  protected readonly genderOptions = [
+    { value: 'male', label: 'Male' },
+    { value: 'female', label: 'Female' },
+    { value: 'other', label: 'Other' },
+    { value: 'prefer-not-to-say', label: 'Prefer not to say' }
+  ];
+
+  // Available languages for selection
+  protected readonly availableLanguages = [
+    { code: '', label: 'Select your preferred language' },
+    { code: 'en', label: 'English' },
+    { code: 'es', label: 'Español' },
+    { code: 'fr', label: 'Français' },
+    { code: 'de', label: 'Deutsch' },
+    { code: 'it', label: 'Italiano' },
+    { code: 'pt', label: 'Português' },
+    { code: 'ru', label: 'Русский' },
+    { code: 'zh', label: '中文' },
+    { code: 'ja', label: '日本語' },
+    { code: 'ko', label: '한국어' }
+  ];
+
+  // Reactive form with built-in validators
+  protected readonly registerForm: FormGroup = this.fb.group({
+    firstName: ['', [Validators.required, Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    gender: ['', Validators.required],
+    language: ['', Validators.required],
+    observations: [''], // Optional field - no validators
+    password: ['', [Validators.required, this.passwordStrengthValidator]],
+    confirmPassword: ['', Validators.required],
+    agreedToTerms: [false, Validators.requiredTrue]
+  }, { 
+    validators: this.passwordMatchValidator 
   });
   
+  // UI state signals
   protected readonly isSubmitting = signal(false);
   protected readonly submitError = signal('');
-  protected readonly firstNameError = signal('');
-  protected readonly lastNameError = signal('');
-  protected readonly emailError = signal('');
-  protected readonly passwordError = signal('');
-  protected readonly confirmPasswordError = signal('');
-  protected readonly termsError = signal('');
   
-  // Password strength indicators
-  protected readonly hasMinLength = computed(() => this.formData().password.length >= 8);
-  protected readonly hasUpperCase = computed(() => /[A-Z]/.test(this.formData().password));
-  protected readonly hasLowerCase = computed(() => /[a-z]/.test(this.formData().password));
-  protected readonly hasNumber = computed(() => /\d/.test(this.formData().password));
+  // Convert form valueChanges to signal for reactivity
+  protected readonly formValues = toSignal(this.registerForm.valueChanges, { 
+    initialValue: this.registerForm.value 
+  });
+  
+  // Convert form statusChanges to signal for validation reactivity  
+  protected readonly formStatus = toSignal(this.registerForm.statusChanges, {
+    initialValue: this.registerForm.status
+  });
+  
+  // Computed signals based on reactive form values
+  protected readonly currentPassword = computed(() => 
+    this.formValues()?.password || ''
+  );
+  
+  protected readonly hasMinLength = computed(() => this.currentPassword().length >= 8);
+  protected readonly hasUpperCase = computed(() => /[A-Z]/.test(this.currentPassword()));
+  protected readonly hasLowerCase = computed(() => /[a-z]/.test(this.currentPassword()));
+  protected readonly hasNumber = computed(() => /\d/.test(this.currentPassword()));
   
   protected readonly passwordStrengthScore = computed(() => {
     let score = 0;
@@ -273,11 +130,99 @@ export class RegisterComponent {
     if (score === 3) return 'Good';
     return 'Strong';
   });
+  
+  // Form validation state computed signals (reactive)
+  protected readonly isFormValid = computed(() => {
+    // Trigger reactivity by reading formStatus
+    this.formStatus();
+    return this.registerForm.valid;
+  });
+  
+  protected readonly isFormTouched = computed(() => {
+    // Trigger reactivity by reading formStatus
+    this.formStatus();
+    return this.registerForm.touched;
+  });
+  
+  // Individual field error methods (for testing compatibility)
+  protected firstNameError(): string {
+    const control = this.registerForm.get('firstName');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'First name is required';
+      if (control.errors?.['minlength']) return 'First name must be at least 2 characters';
+    }
+    return '';
+  }
+  
+  protected lastNameError(): string {
+    const control = this.registerForm.get('lastName');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Last name is required';
+      if (control.errors?.['minlength']) return 'Last name must be at least 2 characters';
+    }
+    return '';
+  }
+  
+  protected emailError(): string {
+    const control = this.registerForm.get('email');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Email is required';
+      if (control.errors?.['email']) return 'Please enter a valid email address';
+    }
+    return '';
+  }
+  
+  protected genderError(): string {
+    const control = this.registerForm.get('gender');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Please select your gender';
+    }
+    return '';
+  }
+  
+  protected languageError(): string {
+    const control = this.registerForm.get('language');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Please select your preferred language';
+    }
+    return '';
+  }
+  
+  protected passwordError(): string {
+    const control = this.registerForm.get('password');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Password is required';
+      if (control.errors?.['weakPassword']) return 'Password must meet at least 3 requirements';
+    }
+    return '';
+  }
+  
+  protected confirmPasswordError(): string {
+    const control = this.registerForm.get('confirmPassword');
+    const formErrors = this.registerForm.errors;
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'Please confirm your password';
+    }
+    if (formErrors?.['passwordMismatch'] && control?.dirty) {
+      return 'Passwords do not match';
+    }
+    return '';
+  }
+  
+  protected termsError(): string {
+    const control = this.registerForm.get('agreedToTerms');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.errors?.['required']) return 'You must agree to the Terms of Service and Privacy Policy';
+    }
+    return '';
+  }
 
   protected onSubmit(): void {
-    this.clearErrors();
+    this.submitError.set('');
     
-    if (!this.validateForm()) {
+    if (this.registerForm.invalid) {
+      // Mark all fields as touched to show validation errors
+      this.registerForm.markAllAsTouched();
       return;
     }
     
@@ -286,7 +231,7 @@ export class RegisterComponent {
     // Simulate API call
     setTimeout(() => {
       this.isSubmitting.set(false);
-      console.log('Registration attempt with:', this.formData());
+      console.log('Registration attempt with:', this.registerForm.value);
     }, 1000);
   }
   
@@ -297,66 +242,40 @@ export class RegisterComponent {
   protected checkPasswordStrength(): void {
     // This method is called on password input to trigger strength updates
     // The actual strength calculation is handled by computed signals
+    // With reactive forms, this happens automatically when the form value changes
   }
-  
-  private validateForm(): boolean {
-    let isValid = true;
-    const data = this.formData();
+
+  protected onRadioKeydown(event: KeyboardEvent): void {
+    const target = event.target as HTMLInputElement;
+    if (!target || target.type !== 'radio') return;
+
+    const radioGroup = target.closest('.radio-options');
+    if (!radioGroup) return;
+
+    const radioButtons = Array.from(radioGroup.querySelectorAll('input[type="radio"]')) as HTMLInputElement[];
+    const currentIndex = radioButtons.indexOf(target);
     
-    if (!data.firstName.trim()) {
-      this.firstNameError.set('First name is required');
-      isValid = false;
+    let nextIndex: number;
+    
+    switch (event.key) {
+      case 'ArrowDown':
+      case 'ArrowRight':
+        event.preventDefault();
+        nextIndex = (currentIndex + 1) % radioButtons.length;
+        break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        event.preventDefault();
+        nextIndex = currentIndex === 0 ? radioButtons.length - 1 : currentIndex - 1;
+        break;
+      default:
+        return;
     }
     
-    if (!data.lastName.trim()) {
-      this.lastNameError.set('Last name is required');
-      isValid = false;
-    }
+    radioButtons[nextIndex].focus();
+    radioButtons[nextIndex].checked = true;
     
-    if (!data.email) {
-      this.emailError.set('Email is required');
-      isValid = false;
-    } else if (!this.isValidEmail(data.email)) {
-      this.emailError.set('Please enter a valid email address');
-      isValid = false;
-    }
-    
-    if (!data.password) {
-      this.passwordError.set('Password is required');
-      isValid = false;
-    } else if (this.passwordStrengthScore() < 3) {
-      this.passwordError.set('Password must meet at least 3 requirements');
-      isValid = false;
-    }
-    
-    if (!data.confirmPassword) {
-      this.confirmPasswordError.set('Please confirm your password');
-      isValid = false;
-    } else if (data.password !== data.confirmPassword) {
-      this.confirmPasswordError.set('Passwords do not match');
-      isValid = false;
-    }
-    
-    if (!data.agreedToTerms) {
-      this.termsError.set('You must agree to the Terms of Service and Privacy Policy');
-      isValid = false;
-    }
-    
-    return isValid;
-  }
-  
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-  
-  private clearErrors(): void {
-    this.firstNameError.set('');
-    this.lastNameError.set('');
-    this.emailError.set('');
-    this.passwordError.set('');
-    this.confirmPasswordError.set('');
-    this.termsError.set('');
-    this.submitError.set('');
+    // Update form control value
+    this.registerForm.patchValue({ gender: radioButtons[nextIndex].value });
   }
 }

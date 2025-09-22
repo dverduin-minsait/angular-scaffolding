@@ -57,7 +57,11 @@ describe('ThemeService', () => {
     });
 
     // Reset mocks
-    mockStorage.getItem.mockReturnValue(null);
+    mockStorage.getItem.mockImplementation((key: string) => {
+      // Return appropriate defaults for each storage key
+      if (key === 'custom-themes') return '[]';
+      return null;
+    });
     mockStorage.setItem.mockImplementation(() => {});
   });
 
@@ -77,7 +81,11 @@ describe('ThemeService', () => {
     });
 
     it('should read saved theme from localStorage', () => {
-      mockStorage.getItem.mockReturnValue('dark');
+      mockStorage.getItem.mockImplementation((key: string) => {
+        if (key === 'theme') return 'dark';
+        if (key === 'custom-themes') return '[]';
+        return null;
+      });
       service = TestBed.inject(ThemeService);
       
       expect(mockStorage.getItem).toHaveBeenCalledWith('theme');
@@ -85,7 +93,11 @@ describe('ThemeService', () => {
     });
 
     it('should handle invalid theme values from localStorage gracefully', () => {
-      mockStorage.getItem.mockReturnValue('invalid-theme');
+      mockStorage.getItem.mockImplementation((key: string) => {
+        if (key === 'theme') return 'invalid-theme';
+        if (key === 'custom-themes') return '[]';
+        return null;
+      });
       service = TestBed.inject(ThemeService);
       
       expect(service.currentTheme()).toBe('system');
