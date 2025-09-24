@@ -38,6 +38,9 @@ package-lock.json
 testem.log
 /typings
 
+# Jest
+.jest-cache/
+
 # System files
 .DS_Store
 Thumbs.db

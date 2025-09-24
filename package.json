@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "coverage": "jest --coverage",
     "serve:ssr:angular-architecture": "node dist/angular-architecture/server/server.mjs"
   },
   "prettier": {
