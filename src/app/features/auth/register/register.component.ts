@@ -231,12 +231,10 @@ export class RegisterComponent {
     // Simulate API call
     setTimeout(() => {
       this.isSubmitting.set(false);
-      console.log('Registration attempt with:', this.registerForm.value);
     }, 1000);
   }
   
   protected signUpWithGoogle(): void {
-    console.log('Google sign up clicked');
   }
   
   protected checkPasswordStrength(): void {

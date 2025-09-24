@@ -1,0 +1,71 @@
+import { Component, OnInit, inject, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { DeviceService, GridDataConfig } from '../../core/services';
+import { ResponsiveGridComponent } from '../../shared/components';
+import { ClothesService, ClothingItem } from './clothes.service';
+
+// Import the config interface directly
+interface ResponsiveGridConfig {
+  gridOptions?: any;
+  columnDefs?: any[];
+  mobileView?: 'table' | 'list' | 'cards';
+  showLoadingSpinner?: boolean;
+  loadingMessage?: string;
+  showErrorMessage?: boolean;
+  retryOnError?: boolean;
+}
+
+// Type definitions for grid configuration
+interface GridReadyEvent {
+  api: any;
+}
+
+@Component({
+  selector: 'app-clothes-catalog',
+  standalone: true,
+  imports: [CommonModule, ResponsiveGridComponent],
+  providers: [ClothesService],
+  templateUrl: './clothes-catalog.component.html',
+  styleUrls: ['./clothes-catalog.component.scss']
+})
+export class ClothesCatalogComponent implements OnInit {
+  private platformId = inject(PLATFORM_ID);
+  protected deviceService = inject(DeviceService);
+  private clothesService = inject(ClothesService);
+
+  // Signals for state management  
+  clothingData = signal<ClothingItem[]>([]);
+
+  // Grid Data Configuration - reactive to data changes
+  get dataConfig(): GridDataConfig<ClothingItem> {
+    return {
+      dataSource: this.clothingData(),
+      preloadGrid: true
+    };
+  }
+
+  // Responsive Grid Configuration
+  gridConfig: ResponsiveGridConfig = {
+    columnDefs: this.clothesService.getColDefs(),
+    mobileView: 'cards',
+    showLoadingSpinner: true,
+    loadingMessage: 'Loading clothes catalog...',
+    showErrorMessage: true,
+    retryOnError: true
+  };
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadClothingData();
+    }
+  }
+
+  private loadClothingData() {
+    // Simulate async data loading (as it would come from an API)
+    setTimeout(() => {
+      const data = this.clothesService.getData();
+      this.clothingData.set(data);
+      // dataConfig automatically updates due to computed()
+    }, 300);
+  }
+}

@@ -126,12 +126,10 @@ export class LoginComponent {
     setTimeout(() => {
       this.isSubmitting.set(false);
       // Simulate success or error
-      console.log('Login attempt with:', this.formData());
     }, 1000);
   }
   
   protected signInWithGoogle(): void {
-    console.log('Google sign in clicked');
   }
   
   private validateForm(): boolean {

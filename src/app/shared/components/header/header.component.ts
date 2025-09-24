@@ -29,6 +29,7 @@ export class HeaderComponent implements OnDestroy {
   // Navigation links as a signal
   protected readonly navigationLinks = signal<NavigationLink[]>([
     { label: 'Dashboard', path: '/dashboard', icon: '📊' },
+    { label: 'Clothes', path: '/clothes', icon: '👗' },
     { label: 'Authentication', path: '/auth/login', icon: '🔐' },
     { label: 'Theme Demo', path: '/theme-demo', icon: '🎨' },
     { label: 'Settings', path: '/settings', icon: '⚙️' }

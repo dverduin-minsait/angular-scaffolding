@@ -1,9 +1,9 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideClientHydration, withEventReplay, withNoHttpTransferCache } from '@angular/platform-browser';
 import { localStorageProvider } from './core/tokens/local.storage.token';
 
 export const appConfig: ApplicationConfig = {
@@ -11,8 +11,12 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(),
-    provideClientHydration(withEventReplay()),
+    provideHttpClient(withFetch()),
+    provideClientHydration(
+      withEventReplay(),
+      // Disable HTTP transfer cache for dynamic imports to ensure fresh loading
+      withNoHttpTransferCache()
+    ),
     // Core tokens
     localStorageProvider
   ]

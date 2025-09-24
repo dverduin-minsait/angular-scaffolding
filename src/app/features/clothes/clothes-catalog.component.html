@@ -1,0 +1,40 @@
+<div class="clothes-catalog">
+  <h1>Clothes Catalog</h1>
+  
+  <app-responsive-grid 
+    [dataConfig]="dataConfig"
+    [config]="gridConfig">
+    
+    <!-- Mobile Cards View -->
+    <div slot="mobile-cards" class="mobile-cards">
+      @for (item of clothingData(); track item.id) {
+        <div class="mobile-card">
+          <div class="card-header">
+            <h3>{{ item.name }}</h3>
+            <span class="brand-badge">{{ item.brand }}</span>
+          </div>
+          <div class="card-content">
+            <div class="price-section">
+              <span class="price">\${{ item.price }}</span>
+              <span class="size-tag">{{ item.size }}</span>
+            </div>
+            <div class="color-section">
+              <span class="color-label">Color:</span>
+              <div class="color-dot" [style.background-color]="item.color"></div>
+              <span>{{ item.color }}</span>
+            </div>
+            <div class="stock-section">
+              <span class="stock-label">Stock:</span>
+              <span class="stock-value" [class.low-stock]="item.stock < 10">{{ item.stock }}</span>
+            </div>
+            <div class="category-section">
+              <span class="category">{{ item.category }}</span>
+              <span class="season" [class]="'season-' + item.season.toLowerCase()">{{ item.season }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    
+  </app-responsive-grid>
+</div>

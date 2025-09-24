@@ -1,0 +1,38 @@
+<div class="responsive-grid-container">
+  <!-- Loading State -->
+  @if(isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>{{ config().loadingMessage || 'Loading data...' }}</p>
+    </div>
+  }
+  
+  <!-- Error State -->
+  @if(hasError()) {
+    <div class="error-state">
+      <h4>Error Loading Data</h4>
+      <p>{{ errorMessage() }}</p>
+      @if(config().retryOnError) {
+        <button (click)="retry()" class="retry-btn">
+          Retry
+        </button>
+      }
+    </div>
+  }
+  
+  <!-- Mobile View -->
+  @if(showMobileView() && !isLoading() && !hasError()) {
+    <div class="mobile-view">
+      <ng-content select="[slot='mobile-table']"></ng-content>
+      <ng-content select="[slot='mobile-cards']"></ng-content>
+      <ng-content select="[slot='mobile-list']"></ng-content>
+    </div>
+  }
+  
+  <!-- Desktop Grid View -->
+  @if(showDesktopGrid() && !isLoading() && !hasError()) {
+    <div class="desktop-view">
+      <div #gridContainer class="ag-theme-alpine"></div>
+    </div>
+  }
+</div>
