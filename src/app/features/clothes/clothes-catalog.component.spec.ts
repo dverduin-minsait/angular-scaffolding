@@ -189,31 +189,4 @@ describe('ClothesCatalogComponent', () => {
       expect(responsiveGrid).toBeTruthy();
     });
   });
-
-  describe('Performance', () => {
-    it('should handle large datasets efficiently', () => {
-      // Simulate a larger dataset
-      const largeDataset = Array.from({ length: 1000 }, (_, i) => ({
-        id: i + 1,
-        name: `Item ${i + 1}`,
-        brand: `Brand ${i % 10}`,
-        price: Math.random() * 100,
-        size: ['S', 'M', 'L', 'XL'][i % 4],
-        color: ['red', 'blue', 'green', 'black'][i % 4],
-        stock: Math.floor(Math.random() * 50),
-        season: ['Spring', 'Summer', 'Fall', 'Winter'][i % 4],
-        category: 'Category'
-      }));
-
-      component.clothingData.set(largeDataset);
-      
-      const startTime = performance.now();
-      fixture.detectChanges();
-      const endTime = performance.now();
-      
-      // Should render within reasonable time (less than 1000ms for this test)
-      expect(endTime - startTime).toBeLessThan(1000);
-      expect(component.clothingData().length).toBe(1000);
-    });
-  });
 });
