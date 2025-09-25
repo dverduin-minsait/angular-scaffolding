@@ -74,7 +74,8 @@ describe('ResponsiveGridComponent', () => {
     mockGridLoader = {
       loadGridModule: jest.fn().mockResolvedValue(mockGridModule),
       loadState$: loadStateSubject.asObservable(),
-      preloadForRoute: jest.fn()
+      preloadForRoute: jest.fn(),
+      getThemeClass: jest.fn().mockReturnValue('ag-theme-alpine')
     } as any;
 
     mockGridDataService = {

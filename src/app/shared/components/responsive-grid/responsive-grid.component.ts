@@ -90,6 +90,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#region Computed Properties
   public showMobileView = computed(() => !this.deviceService.supportsGrids());
   public showDesktopGrid = computed(() => this.deviceService.supportsGrids());
+  public gridThemeClass = computed(() => this.gridLoader.getThemeClass());
   //#endregion
 
   //#region Constructor
@@ -113,6 +114,15 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       const currentConfig = this.dataConfig();
       if (currentConfig) {
         this.loadData(currentConfig);
+      }
+    });
+
+    // Effect to handle theme changes - update grid theme class
+    effect(() => {
+      const themeClass = this.gridThemeClass();
+      if (this.gridContainer?.nativeElement && this.agGridComponent) {
+        // Update the theme class on the grid container
+        this.updateGridThemeClass(themeClass);
       }
     });
   }
@@ -190,6 +200,25 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   }
   //#endregion
 
+  //#region Private Methods - Theme Updates
+  private updateGridThemeClass(themeClass: string) {
+    if (this.gridContainer?.nativeElement) {
+      const container = this.gridContainer.nativeElement;
+      // Remove existing ag-theme classes from container
+      container.classList.remove('ag-theme-alpine', 'ag-theme-alpine-dark');
+      // Add new theme class to container
+      container.classList.add(themeClass);
+      
+      // Also update the theme class on the actual grid div (child element)
+      const gridDiv = container.querySelector('div');
+      if (gridDiv) {
+        gridDiv.classList.remove('ag-theme-alpine', 'ag-theme-alpine-dark');
+        gridDiv.className = themeClass;
+      }
+    }
+  }
+  //#endregion
+
   //#region Private Methods - Cleanup
   private cleanupGrid() {
     if (this.agGridComponent) {
@@ -260,10 +289,12 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
         throw new Error('AgGridAngular component not found in loaded module');
       }
 
-      // Create a div element for the ag-grid
+      // Create a div element for the ag-grid with theme class
       const gridDiv = document.createElement('div');
       gridDiv.style.height = '100%';
       gridDiv.style.width = '100%';
+      const themeClass = this.gridThemeClass();
+      gridDiv.className = themeClass;
       containerElement.appendChild(gridDiv);
 
       // Initialize ag-Grid directly on the div
@@ -296,7 +327,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       } as any;
       
     } catch (error) {
-      console.error('Failed to setup desktop grid:', error);
+      console.error('ResponsiveGridComponent: Failed to setup desktop grid:', error);
       this.hasError.set(true);
       this.errorMessage.set('Failed to load grid component');
     }

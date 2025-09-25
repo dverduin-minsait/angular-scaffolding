@@ -209,7 +209,7 @@
   }
 }
 
-/* Dark theme support */
+/* Dark theme support - now handled by dynamic ag-Grid theme integration */
 :root[data-theme="dark"] {
   .clothes-catalog {
     color: var(--text-color);
@@ -233,17 +233,7 @@
     color: var(--error-color);
   }
 
-  /* ag-Grid dark theme styles */
-  .ag-grid-container {
-    --ag-background-color: var(--secondary-800);
-    --ag-header-background-color: var(--secondary-900);
-    --ag-odd-row-background-color: var(--secondary-750);
-    --ag-row-hover-color: var(--secondary-700);
-    --ag-header-foreground-color: var(--text-color);
-    --ag-foreground-color: var(--text-color);
-    --ag-border-color: var(--secondary-600);
-    --ag-row-border-color: var(--secondary-600);
-  }
+  /* Note: ag-Grid theme is now handled dynamically by the grid-loader service */
 }
 
 /* SSR-safe styles for hydration */

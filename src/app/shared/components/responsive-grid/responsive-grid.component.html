@@ -32,7 +32,7 @@
   <!-- Desktop Grid View -->
   @if(showDesktopGrid() && !isLoading() && !hasError()) {
     <div class="desktop-view">
-      <div #gridContainer class="ag-theme-alpine"></div>
+      <div #gridContainer [class]="gridThemeClass()"></div>
     </div>
   }
 </div>

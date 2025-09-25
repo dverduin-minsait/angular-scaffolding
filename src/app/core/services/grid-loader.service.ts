@@ -1,8 +1,9 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs';
 import { DeviceService } from './device.service';
+import { ThemeService } from './theme.service';
 
 export interface GridLoadState {
   isLoading: boolean;
@@ -17,6 +18,7 @@ export interface GridLoadState {
 })
 export class GridLoaderService {
   private platformId = inject(PLATFORM_ID);
+  private themeService = inject(ThemeService);
   private gridModule: any = null;
   private loadPromise: Promise<any> | null = null;
   
@@ -28,7 +30,16 @@ export class GridLoaderService {
   
   public loadState$ = this.loadStateSubject.asObservable();
 
-  constructor(private deviceService: DeviceService) {}
+  constructor(private deviceService: DeviceService) {
+    // Set up theme change effect to update CSS when theme changes
+    if (isPlatformBrowser(this.platformId)) {
+      effect(() => {
+        // React to theme changes
+        const isDark = this.themeService.isDarkMode();
+        this.updateGridThemeCSS(isDark);
+      });
+    }
+  }
 
   /**
    * Loads ag-Grid module dynamically
@@ -117,15 +128,184 @@ export class GridLoaderService {
       return;
     }
 
-    if (document.querySelector('style[data-ag-grid-minimal]')) {
+    // Initialize with current theme
+    const isDark = this.themeService.isDarkMode();
+    this.updateGridThemeCSS(isDark);
+  }
+
+  /**
+   * Update ag-Grid theme CSS based on current theme
+   */
+  private updateGridThemeCSS(isDark: boolean): void {
+    // Skip CSS injection on server-side rendering
+    if (!isPlatformBrowser(this.platformId)) {
       return;
     }
 
+    // Remove existing theme CSS if it exists
+    const existingStyle = document.querySelector('style[data-ag-grid-theme]');
+    if (existingStyle) {
+      existingStyle.remove();
+    }
+
     const style = document.createElement('style');
-    style.setAttribute('data-ag-grid-minimal', 'true');
+    style.setAttribute('data-ag-grid-theme', 'true');
+    
+    // Create theme-specific CSS variables
+    const themeVars = this.getThemeVariables(isDark);
+    
     style.textContent = `
-      /* Essential ag-Grid base styles for proper layout */
-      .ag-theme-alpine {
+      /* Essential ag-Grid theme styles with dynamic theme support */
+      .ag-theme-alpine, .ag-theme-alpine-dark {
+        ${themeVars}
+        font-family: var(--ag-font-family);
+        font-size: var(--ag-font-size);
+        line-height: 1.4;
+        color: var(--ag-foreground-color);
+        background-color: var(--ag-background-color);
+        box-sizing: border-box;
+      }
+      
+      .ag-theme-alpine *, .ag-theme-alpine-dark * {
+        box-sizing: border-box;
+      }
+      
+      .ag-theme-alpine .ag-root-wrapper, .ag-theme-alpine-dark .ag-root-wrapper {
+        border: 1px solid var(--ag-border-color);
+        border-radius: 6px;
+        overflow: hidden;
+        background-color: var(--ag-background-color);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      
+      .ag-theme-alpine .ag-header, .ag-theme-alpine-dark .ag-header {
+        background-color: var(--ag-header-background-color);
+        border-bottom: 1px solid var(--ag-border-color);
+        color: var(--ag-foreground-color);
+        font-weight: 600;
+        display: flex;
+        width: 100%;
+      }
+      
+      .ag-theme-alpine .ag-header-row, .ag-theme-alpine-dark .ag-header-row {
+        display: flex;
+        width: 100%;
+        height: var(--ag-header-height);
+      }
+      
+      .ag-theme-alpine .ag-header-cell, .ag-theme-alpine-dark .ag-header-cell {
+        height: var(--ag-header-height);
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid var(--ag-border-color);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      
+      .ag-theme-alpine .ag-header-cell:last-child, .ag-theme-alpine-dark .ag-header-cell:last-child {
+        border-right: none;
+      }
+      
+      .ag-theme-alpine .ag-body-viewport, .ag-theme-alpine-dark .ag-body-viewport {
+        flex: 1 1 auto;
+        overflow: auto;
+      }
+      
+      .ag-theme-alpine .ag-center-cols-container, .ag-theme-alpine-dark .ag-center-cols-container {
+        display: block;
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+      }
+      
+      .ag-theme-alpine .ag-row, .ag-theme-alpine-dark .ag-row {
+        border-bottom: 1px solid var(--ag-border-color);
+        height: var(--ag-row-height);
+        display: flex;
+        width: 100%;
+        position: absolute;
+        left: 0;
+      }
+      
+      .ag-theme-alpine .ag-row:hover, .ag-theme-alpine-dark .ag-row:hover {
+        background-color: var(--ag-row-hover-color);
+      }
+      
+      .ag-theme-alpine .ag-row:nth-child(even), .ag-theme-alpine-dark .ag-row:nth-child(even) {
+        background-color: var(--ag-even-row-background-color);
+      }
+      
+      .ag-theme-alpine .ag-cell, .ag-theme-alpine-dark .ag-cell {
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid var(--ag-border-color);
+        line-height: var(--ag-list-item-height);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        height: 100%;
+      }
+      
+      .ag-theme-alpine .ag-cell:last-child, .ag-theme-alpine-dark .ag-cell:last-child {
+        border-right: none;
+      }
+      
+      .ag-theme-alpine .ag-cell:focus, .ag-theme-alpine-dark .ag-cell:focus {
+        outline: 2px solid var(--ag-focus-color);
+        outline-offset: -2px;
+      }
+      
+      .ag-theme-alpine .ag-paging-panel, .ag-theme-alpine-dark .ag-paging-panel {
+        border-top: 1px solid var(--ag-border-color);
+        background-color: var(--ag-header-background-color);
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .ag-theme-alpine, .ag-theme-alpine-dark {
+          --ag-border-color: ${isDark ? '#ffffff' : '#000000'};
+          --ag-focus-color: ${isDark ? '#00ffff' : '#ff0000'};
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  /**
+   * Get theme-specific CSS variables
+   */
+  private getThemeVariables(isDark: boolean): string {
+    if (isDark) {
+      // Dark theme variables
+      return `
+        --ag-font-family: inherit;
+        --ag-font-size: 14px;
+        --ag-row-height: 40px;
+        --ag-header-height: 45px;
+        --ag-list-item-height: 24px;
+        --ag-border-color: #4a5568;
+        --ag-background-color: #2d3748;
+        --ag-header-background-color: #1a202c;
+        --ag-odd-row-background-color: transparent;
+        --ag-even-row-background-color: #374151;
+        --ag-row-hover-color: #4a5568;
+        --ag-foreground-color: #f7fafc;
+        --ag-secondary-foreground-color: #e2e8f0;
+        --ag-disabled-foreground-color: #718096;
+        --ag-focus-color: #63b3ed;
+      `;
+    } else {
+      // Light theme variables
+      return `
         --ag-font-family: inherit;
         --ag-font-size: 14px;
         --ag-row-height: 40px;
@@ -140,118 +320,16 @@ export class GridLoaderService {
         --ag-foreground-color: #1a202c;
         --ag-secondary-foreground-color: #4a5568;
         --ag-disabled-foreground-color: #a0aec0;
-        font-family: var(--ag-font-family);
-        font-size: var(--ag-font-size);
-        line-height: 1.4;
-        color: var(--ag-foreground-color);
-        background-color: var(--ag-background-color);
-        box-sizing: border-box;
-      }
-      
-      .ag-theme-alpine * {
-        box-sizing: border-box;
-      }
-      
-      .ag-theme-alpine .ag-root-wrapper {
-        border: 1px solid var(--ag-border-color);
-        border-radius: 6px;
-        overflow: hidden;
-        background-color: var(--ag-background-color);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
-      
-      .ag-theme-alpine .ag-header {
-        background-color: var(--ag-header-background-color);
-        border-bottom: 1px solid var(--ag-border-color);
-        color: var(--ag-foreground-color);
-        font-weight: 600;
-        display: flex;
-        width: 100%;
-      }
-      
-      .ag-theme-alpine .ag-header-row {
-        display: flex;
-        width: 100%;
-        height: var(--ag-header-height);
-      }
-      
-      .ag-theme-alpine .ag-header-cell {
-        height: var(--ag-header-height);
-        padding: 8px 12px;
-        display: flex;
-        align-items: center;
-        border-right: 1px solid var(--ag-border-color);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      
-      .ag-theme-alpine .ag-header-cell:last-child {
-        border-right: none;
-      }
-      
-      .ag-theme-alpine .ag-body-viewport {
-        flex: 1 1 auto;
-        overflow: auto;
-      }
-      
-      .ag-theme-alpine .ag-center-cols-container {
-        display: block;
-        position: relative;
-        height: 100%;
-        overflow: hidden;
-      }
-      
-      .ag-theme-alpine .ag-row {
-        border-bottom: 1px solid var(--ag-border-color);
-        height: var(--ag-row-height);
-        display: flex;
-        width: 100%;
-        position: absolute;
-        left: 0;
-      }
-      
-      .ag-theme-alpine .ag-row:hover {
-        background-color: var(--ag-row-hover-color);
-      }
-      
-      .ag-theme-alpine .ag-row:nth-child(even) {
-        background-color: var(--ag-even-row-background-color);
-      }
-      
-      .ag-theme-alpine .ag-cell {
-        padding: 8px 12px;
-        display: flex;
-        align-items: center;
-        border-right: 1px solid var(--ag-border-color);
-        line-height: var(--ag-list-item-height);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        height: 100%;
-      }
-      
-      .ag-theme-alpine .ag-cell:last-child {
-        border-right: none;
-      }
-      
-      .ag-theme-alpine .ag-cell:focus {
-        outline: 2px solid #3182ce;
-        outline-offset: -2px;
-      }
-      
-      .ag-theme-alpine .ag-paging-panel {
-        border-top: 1px solid var(--ag-border-color);
-        background-color: var(--ag-header-background-color);
-        padding: 8px 12px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-    `;
-    document.head.appendChild(style);
+        --ag-focus-color: #3182ce;
+      `;
+    }
+  }
+
+  /**
+   * Get the appropriate ag-Grid theme class name based on current theme
+   */
+  getThemeClass(): string {
+    return this.themeService.isDarkMode() ? 'ag-theme-alpine-dark' : 'ag-theme-alpine';
   }
 
   /**
