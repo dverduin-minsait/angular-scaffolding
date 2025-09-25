@@ -10,6 +10,8 @@ describe('GridLoaderService', () => {
   let service: GridLoaderService;
   let mockThemeService: {
     isDarkMode: ReturnType<typeof signal>;
+    currentTheme: ReturnType<typeof signal>;
+    getCurrentThemePair: jest.Mock;
   };
   let mockDeviceService: {
     supportsGrids: jest.Mock;
@@ -17,7 +19,9 @@ describe('GridLoaderService', () => {
 
   beforeEach(() => {
     mockThemeService = {
-      isDarkMode: signal(false)
+      isDarkMode: signal(false),
+      currentTheme: signal('light'),
+      getCurrentThemePair: jest.fn().mockReturnValue(1)
     };
 
     mockDeviceService = {

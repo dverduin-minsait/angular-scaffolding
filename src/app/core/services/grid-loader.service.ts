@@ -34,9 +34,10 @@ export class GridLoaderService {
     // Set up theme change effect to update CSS when theme changes
     if (isPlatformBrowser(this.platformId)) {
       effect(() => {
-        // React to theme changes
-        const isDark = this.themeService.isDarkMode();
-        this.updateGridThemeCSS(isDark);
+        // React to theme changes - now supports theme pairs
+        const currentTheme = this.themeService.currentTheme();
+        const currentThemePair = this.themeService.getCurrentThemePair();
+        this.updateGridThemeCSS(currentTheme, currentThemePair);
       });
     }
   }
@@ -129,14 +130,15 @@ export class GridLoaderService {
     }
 
     // Initialize with current theme
-    const isDark = this.themeService.isDarkMode();
-    this.updateGridThemeCSS(isDark);
+    const currentTheme = this.themeService.currentTheme();
+    const currentThemePair = this.themeService.getCurrentThemePair();
+    this.updateGridThemeCSS(currentTheme, currentThemePair);
   }
 
   /**
-   * Update ag-Grid theme CSS based on current theme
+   * Update ag-Grid theme CSS based on current theme and theme pair
    */
-  private updateGridThemeCSS(isDark: boolean): void {
+  private updateGridThemeCSS(currentTheme: string, themePair: number): void {
     // Skip CSS injection on server-side rendering
     if (!isPlatformBrowser(this.platformId)) {
       return;
@@ -152,7 +154,7 @@ export class GridLoaderService {
     style.setAttribute('data-ag-grid-theme', 'true');
     
     // Create theme-specific CSS variables
-    const themeVars = this.getThemeVariables(isDark);
+    const themeVars = this.getThemeVariables(currentTheme, themePair);
     
     style.textContent = `
       /* Essential ag-Grid theme styles with dynamic theme support */
@@ -272,8 +274,8 @@ export class GridLoaderService {
       /* High contrast mode support */
       @media (prefers-contrast: high) {
         .ag-theme-alpine, .ag-theme-alpine-dark {
-          --ag-border-color: ${isDark ? '#ffffff' : '#000000'};
-          --ag-focus-color: ${isDark ? '#00ffff' : '#ff0000'};
+          --ag-border-color: ${currentTheme.includes('dark') ? '#ffffff' : '#000000'};
+          --ag-focus-color: ${currentTheme.includes('dark') ? '#00ffff' : '#ff0000'};
         }
       }
     `;
@@ -281,48 +283,27 @@ export class GridLoaderService {
   }
 
   /**
-   * Get theme-specific CSS variables
+   * Get theme-specific CSS variables based on current theme and theme pair
    */
-  private getThemeVariables(isDark: boolean): string {
-    if (isDark) {
-      // Dark theme variables
-      return `
-        --ag-font-family: inherit;
-        --ag-font-size: 14px;
-        --ag-row-height: 40px;
-        --ag-header-height: 45px;
-        --ag-list-item-height: 24px;
-        --ag-border-color: #4a5568;
-        --ag-background-color: #2d3748;
-        --ag-header-background-color: #1a202c;
-        --ag-odd-row-background-color: transparent;
-        --ag-even-row-background-color: #374151;
-        --ag-row-hover-color: #4a5568;
-        --ag-foreground-color: #f7fafc;
-        --ag-secondary-foreground-color: #e2e8f0;
-        --ag-disabled-foreground-color: #718096;
-        --ag-focus-color: #63b3ed;
-      `;
-    } else {
-      // Light theme variables
-      return `
-        --ag-font-family: inherit;
-        --ag-font-size: 14px;
-        --ag-row-height: 40px;
-        --ag-header-height: 45px;
-        --ag-list-item-height: 24px;
-        --ag-border-color: #e2e8f0;
-        --ag-background-color: #ffffff;
-        --ag-header-background-color: #f8fafc;
-        --ag-odd-row-background-color: transparent;
-        --ag-even-row-background-color: #f8fafc;
-        --ag-row-hover-color: #f1f5f9;
-        --ag-foreground-color: #1a202c;
-        --ag-secondary-foreground-color: #4a5568;
-        --ag-disabled-foreground-color: #a0aec0;
-        --ag-focus-color: #3182ce;
-      `;
-    }
+  private getThemeVariables(currentTheme: string, themePair: number): string {
+    // Use CSS custom properties from our theme system instead of hardcoded values
+    return `
+      --ag-font-family: inherit;
+      --ag-font-size: 14px;
+      --ag-row-height: 40px;
+      --ag-header-height: 45px;
+      --ag-list-item-height: 24px;
+      --ag-border-color: var(--border-primary);
+      --ag-background-color: var(--bg-primary);
+      --ag-header-background-color: var(--bg-tertiary);
+      --ag-odd-row-background-color: transparent;
+      --ag-even-row-background-color: var(--secondary-200);
+      --ag-row-hover-color: var(--hover-bg);
+      --ag-foreground-color: var(--text-primary);
+      --ag-secondary-foreground-color: var(--text-secondary);
+      --ag-disabled-foreground-color: var(--disabled-text);
+      --ag-focus-color: var(--primary-600);
+    `;
   }
 
   /**
