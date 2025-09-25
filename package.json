@@ -9,7 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
-    "serve:ssr:angular-architecture": "node dist/angular-architecture/server/server.mjs"
+    "serve:ssr:angular-architecture": "node dist/angular-architecture/server/server.mjs",
+    "api": "json-server db.json --port 3000",
+    "dev": "concurrently \"npm run api\" \"npm start\""
   },
   "prettier": {
     "printWidth": 100,
@@ -51,8 +53,10 @@
     "@types/express": "^5.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^20.17.19",
+    "concurrently": "^9.1.0",
     "jest": "^29.7.0",
     "jest-preset-angular": "^14.4.0",
+    "json-server": "^0.17.4",
     "typescript": "~5.9.2"
   }
 }
