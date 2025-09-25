@@ -5,3 +5,4 @@ export { InteractiveDemoComponent } from './interactive-demo/interactive-demo.co
 export { StatusIndicatorsComponent } from './status-indicators/status-indicators.component';
 export { ResponsiveDemoComponent } from './responsive-demo/responsive-demo.component';
 export { ConfigPanelComponent } from './config-panel/config-panel.component';
+export { ThemePairDemoComponent } from './theme-pair-demo/theme-pair-demo.component';

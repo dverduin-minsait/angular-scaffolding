@@ -1,0 +1,113 @@
+// Dark Theme 2 Variables - Warm/Orange dark variant
+// Define all color values for the second dark theme
+
+@use 'variables' as *;
+
+$dark-theme2: (
+  // Primary colors (Orange/Warm scale - adjusted for dark)
+  primary-50: #431407,
+  primary-100: #7c2d12,
+  primary-200: #9a3412,
+  primary-300: #c2410c,
+  primary-400: #ea580c,
+  primary-500: #f97316,
+  primary-600: #fb923c,
+  primary-700: #fdba74,
+  primary-800: #fed7aa,
+  primary-900: #ffedd5,
+  primary-950: #fff7ed,
+
+  // Secondary colors (Warm Gray scale - inverted for dark)
+  secondary-50: #0c0a09,
+  secondary-100: #1c1917,
+  secondary-200: #292524,
+  secondary-300: #44403c,
+  secondary-400: #57534e,
+  secondary-500: #78716c,
+  secondary-600: #a8a29e,
+  secondary-700: #d6d3d1,
+  secondary-800: #e7e5e4,
+  secondary-900: #f5f5f4,
+  secondary-950: #fafaf9,
+
+  // Background colors - Dark warm tones
+  bg-primary: #1c1917,
+  bg-secondary: #292524,
+  bg-tertiary: #44403c,
+  bg-accent: #7c2d12,
+  bg-muted: #57534e,
+
+  // Text colors - Light warm tones
+  text-primary: #fafaf9,
+  text-secondary: #e7e5e4,
+  text-tertiary: #d6d3d1,
+  text-accent: #fb923c,
+  text-muted: #a8a29e,
+  text-inverse: #1c1917,
+
+  // Border colors - Dark warm
+  border-primary: #57534e,
+  border-secondary: #44403c,
+  border-accent: #c2410c,
+  border-muted: #292524,
+  border-focus: #fb923c,
+
+  // Status colors - Dark variants with warm undertones
+  success-50: #0f2419,
+  success-100: #14532d,
+  success-500: #22c55e,
+  success-600: #16a34a,
+  success-700: #15803d,
+
+  error-50: #2d1b1b,
+  error-100: #451a1a,
+  error-500: #ef4444,
+  error-600: #dc2626,
+  error-700: #b91c1c,
+
+  warning-50: #2d1f0a,
+  warning-100: #451f07,
+  warning-500: #f59e0b,
+  warning-600: #d97706,
+  warning-700: #b45309,
+
+  info-50: #172554,
+  info-100: #1e3a8a,
+  info-500: #3b82f6,
+  info-600: #2563eb,
+  info-700: #1d4ed8,
+
+  // Shadow colors - Dark with warm tint
+  shadow-light: rgba(28, 25, 23, 0.4),
+  shadow-medium: rgba(28, 25, 23, 0.6),
+  shadow-heavy: rgba(28, 25, 23, 0.8),
+
+  // Interactive states - Dark warm
+  hover-bg: #44403c,
+  active-bg: #57534e,
+  focus-ring: rgba(251, 146, 60, 0.6),
+  disabled-bg: #292524,
+  disabled-text: #78716c,
+
+  // Component-specific colors - Dark warm
+  card-bg: #292524,
+  card-border: #44403c,
+  input-bg: #1c1917,
+  input-border: #57534e,
+  button-primary-bg: #f97316,
+  button-primary-text: #1c1917,
+  button-secondary-bg: #44403c,
+  button-secondary-text: #e7e5e4
+);
+
+// Dark theme 2 class
+html.dark-theme2 {
+  @include theme-variables($dark-theme2);
+}
+
+// Dark theme 2 media query support for system preference
+@media (prefers-color-scheme: dark) {
+  html.system-theme2 {
+    @include theme-variables($dark-theme2);
+  }
+}

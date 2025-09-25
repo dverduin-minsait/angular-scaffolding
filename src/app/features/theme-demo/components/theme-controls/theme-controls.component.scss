@@ -35,6 +35,27 @@
       @include button-style('primary');
       box-shadow: 0 0 0 2px var(--primary-200);
     }
+
+    &.warm-theme {
+      position: relative;
+      
+      &:hover {
+        background: linear-gradient(135deg, #fff7ed, #fed7aa);
+        border-color: #fb923c;
+      }
+
+      &.active {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        border-color: #ea580c;
+      }
+    }
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
   }
   
   .toggle-button {

@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { ThemeUtils } from '../utils/theme.utils';
 
-export type Theme = 'light' | 'dark' | 'system' | string;
+export type Theme = 'light' | 'dark' | 'light2' | 'dark2' | 'system' | string;
 
 export interface CustomTheme {
   name: string;
@@ -175,13 +175,21 @@ export class ThemeService {
       const htmlElement = this.document.documentElement;
       
       // Remove all theme classes
-      htmlElement.classList.remove('dark-theme', 'light-theme', 'high-contrast');
+      htmlElement.classList.remove('dark-theme', 'light-theme', 'dark-theme2', 'light-theme2', 'high-contrast');
       this._customThemes().forEach(theme => {
         htmlElement.classList.remove(theme.cssClass);
       });
       
       // Apply current theme classes
-      if (currentTheme === 'light' || currentTheme === 'dark' || currentTheme === 'system') {
+      if (currentTheme === 'light') {
+        htmlElement.classList.add('light-theme');
+      } else if (currentTheme === 'dark') {
+        htmlElement.classList.add('dark-theme');
+      } else if (currentTheme === 'light2') {
+        htmlElement.classList.add('light-theme2');
+      } else if (currentTheme === 'dark2') {
+        htmlElement.classList.add('dark-theme2');
+      } else if (currentTheme === 'system') {
         htmlElement.classList.toggle('dark-theme', isDark);
         htmlElement.classList.toggle('light-theme', !isDark);
       } else {
@@ -234,9 +242,9 @@ export class ThemeService {
     if (currentTheme === 'system') {
       const systemPrefersDark = this.mediaQuery?.matches ?? false;
       this._isDarkMode.set(systemPrefersDark);
-    } else if (currentTheme === 'dark') {
+    } else if (currentTheme === 'dark' || currentTheme === 'dark2') {
       this._isDarkMode.set(true);
-    } else if (currentTheme === 'light') {
+    } else if (currentTheme === 'light' || currentTheme === 'light2') {
       this._isDarkMode.set(false);
     } else {
       // Custom theme - check if it's a dark theme variant
@@ -254,7 +262,7 @@ export class ThemeService {
    * Validate if a theme is valid (built-in or registered custom theme)
    */
   private isValidTheme(theme: Theme): boolean {
-    const builtInThemes = ['light', 'dark', 'system'];
+    const builtInThemes = ['light', 'dark', 'light2', 'dark2', 'system'];
     if (builtInThemes.includes(theme)) {
       return true;
     }
@@ -308,10 +316,57 @@ export class ThemeService {
       // If currently system, toggle to opposite of system preference
       const systemPrefersDark = this.mediaQuery?.matches ?? false;
       this.setTheme(systemPrefersDark ? 'light' : 'dark');
+    } else if (current === 'light') {
+      this.setTheme('dark');
+    } else if (current === 'dark') {
+      this.setTheme('light');
+    } else if (current === 'light2') {
+      this.setTheme('dark2');
+    } else if (current === 'dark2') {
+      this.setTheme('light2');
     } else {
-      // Toggle between light and dark
+      // For custom themes, fall back to standard toggle
       this.setTheme(current === 'light' ? 'dark' : 'light');
     }
+  }
+
+  /**
+   * Toggle between theme pairs (1 and 2)
+   */
+  toggleThemePair(): void {
+    const current = this._currentTheme();
+    
+    switch (current) {
+      case 'light':
+        this.setTheme('light2');
+        break;
+      case 'dark':
+        this.setTheme('dark2');
+        break;
+      case 'light2':
+        this.setTheme('light');
+        break;
+      case 'dark2':
+        this.setTheme('dark');
+        break;
+      case 'system':
+        // For system, toggle to the warm variant
+        const systemPrefersDark = this.mediaQuery?.matches ?? false;
+        this.setTheme(systemPrefersDark ? 'dark2' : 'light2');
+        break;
+      default:
+        // For custom themes, default to light2
+        this.setTheme('light2');
+        break;
+    }
+  }
+
+  /**
+   * Get the current theme pair (1 or 2)
+   */
+  getCurrentThemePair(): 1 | 2 {
+    const current = this._currentTheme();
+    return (current === 'light2' || current === 'dark2') ? 2 : 1;
   }
   
   /**
@@ -510,6 +565,8 @@ export class ThemeService {
     const builtInThemes = [
       { name: 'light' as Theme, displayName: 'Light', icon: '☀️', isCustom: false },
       { name: 'dark' as Theme, displayName: 'Dark', icon: '🌙', isCustom: false },
+      { name: 'light2' as Theme, displayName: 'Light (Warm)', icon: '🌅', isCustom: false },
+      { name: 'dark2' as Theme, displayName: 'Dark (Warm)', icon: '🌆', isCustom: false },
       { name: 'system' as Theme, displayName: 'System', icon: '🖥️', isCustom: false }
     ];
     

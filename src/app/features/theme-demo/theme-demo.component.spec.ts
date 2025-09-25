@@ -18,6 +18,8 @@ const mockThemeService = {
   toggleTheme: jest.fn(),
   setUseSystemPreference: jest.fn(),
   resetToDefaults: jest.fn(),
+  getCurrentThemePair: jest.fn(() => 1),
+  toggleThemePair: jest.fn(),
 };
 
 describe('ThemeDemoComponent', () => {
@@ -60,10 +62,11 @@ describe('ThemeDemoComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const demoSections = compiled.querySelectorAll('.demo-section');
+    // Count only direct children demo sections, not nested ones
+    const demoSections = compiled.querySelectorAll('.theme-demo > .demo-section');
     
-    // Should have 7 demo sections (main + 6 sub-sections)
-    expect(demoSections).toHaveLength(7);
+    // Should have 8 demo sections (main + 7 sub-sections)
+    expect(demoSections).toHaveLength(8);
   });
 
   it('should render all section headings', () => {
@@ -72,13 +75,14 @@ describe('ThemeDemoComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const sectionHeadings = compiled.querySelectorAll('h3');
     
-    expect(sectionHeadings).toHaveLength(6);
+    expect(sectionHeadings).toHaveLength(7);
     expect(sectionHeadings[0].textContent?.trim()).toBe('🎛️ Theme Controls');
-    expect(sectionHeadings[1].textContent?.trim()).toBe('🎨 Color Palette');
-    expect(sectionHeadings[2].textContent?.trim()).toBe('🧩 Interactive Components');
-    expect(sectionHeadings[3].textContent?.trim()).toBe('📊 Status Indicators');
-    expect(sectionHeadings[4].textContent?.trim()).toBe('📱 Responsive Design');
-    expect(sectionHeadings[5].textContent?.trim()).toBe('🔧 Theme Configuration');
+    expect(sectionHeadings[1].textContent?.trim()).toBe('🎨 Theme Pair Demonstration');
+    expect(sectionHeadings[2].textContent?.trim()).toBe('🎨 Color Palette');
+    expect(sectionHeadings[3].textContent?.trim()).toBe('🧩 Interactive Components');
+    expect(sectionHeadings[4].textContent?.trim()).toBe('📊 Status Indicators');
+    expect(sectionHeadings[5].textContent?.trim()).toBe('📱 Responsive Design');
+    expect(sectionHeadings[6].textContent?.trim()).toBe('🔧 Theme Configuration');
   });
 
   it('should include theme-status component', () => {
@@ -159,16 +163,18 @@ describe('ThemeDemoComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const demoSections = compiled.querySelectorAll('.demo-section');
+    // Count only direct children demo sections
+    const demoSections = compiled.querySelectorAll('.theme-demo > .demo-section');
     
     // Verify each section has the expected component
     expect(demoSections[0].querySelector('app-theme-status')).toBeTruthy();
     expect(demoSections[1].querySelector('app-theme-controls')).toBeTruthy();
-    expect(demoSections[2].querySelector('app-color-palette')).toBeTruthy();
-    expect(demoSections[3].querySelector('app-interactive-demo')).toBeTruthy();
-    expect(demoSections[4].querySelector('app-status-indicators')).toBeTruthy();
-    expect(demoSections[5].querySelector('app-responsive-demo')).toBeTruthy();
-    expect(demoSections[6].querySelector('app-config-panel')).toBeTruthy();
+    expect(demoSections[2].querySelector('app-theme-pair-demo')).toBeTruthy();
+    expect(demoSections[3].querySelector('app-color-palette')).toBeTruthy();
+    expect(demoSections[4].querySelector('app-interactive-demo')).toBeTruthy();
+    expect(demoSections[5].querySelector('app-status-indicators')).toBeTruthy();
+    expect(demoSections[6].querySelector('app-responsive-demo')).toBeTruthy();
+    expect(demoSections[7].querySelector('app-config-panel')).toBeTruthy();
   });
 
   it('should be a presentation component without complex logic', () => {
@@ -181,6 +187,7 @@ describe('ThemeDemoComponent', () => {
     // but it includes child components that do have interactive elements
     expect(compiled.querySelectorAll('app-theme-status')).toHaveLength(1);
     expect(compiled.querySelectorAll('app-theme-controls')).toHaveLength(1);
+    expect(compiled.querySelectorAll('app-theme-pair-demo')).toHaveLength(1);
     expect(compiled.querySelectorAll('app-color-palette')).toHaveLength(1);
     expect(compiled.querySelectorAll('app-interactive-demo')).toHaveLength(1);
     expect(compiled.querySelectorAll('app-status-indicators')).toHaveLength(1);
@@ -188,7 +195,7 @@ describe('ThemeDemoComponent', () => {
     expect(compiled.querySelectorAll('app-config-panel')).toHaveLength(1);
     
     // Should have the expected structural elements
-    expect(compiled.querySelectorAll('.demo-section')).toHaveLength(7);
+    expect(compiled.querySelectorAll('.theme-demo > .demo-section')).toHaveLength(8);
     expect(compiled.querySelector('.theme-demo')).toBeTruthy();
   });
 });

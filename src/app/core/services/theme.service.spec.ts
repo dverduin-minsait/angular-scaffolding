@@ -228,16 +228,16 @@ describe('ThemeService', () => {
       service.setTheme('dark');
       // Wait for effects to run
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('dark-theme', true);
-      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('light-theme', false);
+      expect(mockHtmlElement.classList.add).toHaveBeenCalledWith('dark-theme');
+      expect(mockHtmlElement.classList.remove).toHaveBeenCalledWith('dark-theme', 'light-theme', 'dark-theme2', 'light-theme2', 'high-contrast');
     });
 
     it('should toggle light-theme class when light mode is enabled', async () => {
       service.setTheme('light');
       // Wait for effects to run
       await new Promise(resolve => setTimeout(resolve, 0));
-      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('light-theme', true);
-      expect(mockHtmlElement.classList.toggle).toHaveBeenCalledWith('dark-theme', false);
+      expect(mockHtmlElement.classList.add).toHaveBeenCalledWith('light-theme');
+      expect(mockHtmlElement.classList.remove).toHaveBeenCalledWith('dark-theme', 'light-theme', 'dark-theme2', 'light-theme2', 'high-contrast');
     });
   });
 

@@ -12,6 +12,8 @@ const mockThemeService = {
   toggleTheme: jest.fn(),
   setUseSystemPreference: jest.fn(),
   resetToDefaults: jest.fn(),
+  getCurrentThemePair: jest.fn(() => 1),
+  toggleThemePair: jest.fn(),
 };
 
 describe('ThemeControlsComponent', () => {
@@ -47,10 +49,12 @@ describe('ThemeControlsComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const themeButtons = compiled.querySelectorAll('.theme-btn');
     
-    expect(themeButtons).toHaveLength(3);
+    expect(themeButtons).toHaveLength(5);
     expect(themeButtons[0].textContent?.trim()).toContain('Light');
     expect(themeButtons[1].textContent?.trim()).toContain('Dark');
-    expect(themeButtons[2].textContent?.trim()).toContain('System');
+    expect(themeButtons[2].textContent?.trim()).toContain('Light (Warm)');
+    expect(themeButtons[3].textContent?.trim()).toContain('Dark (Warm)');
+    expect(themeButtons[4].textContent?.trim()).toContain('System');
   });
 
   it('should mark active theme button correctly', () => {
@@ -133,7 +137,7 @@ describe('ThemeControlsComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const resetButton = compiled.querySelector('.btn-secondary') as HTMLButtonElement;
+    const resetButton = compiled.querySelector('button[aria-label*="Reset theme settings"]') as HTMLButtonElement;
     
     resetButton.click();
     

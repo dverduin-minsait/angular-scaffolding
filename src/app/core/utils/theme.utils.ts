@@ -11,6 +11,8 @@ export class ThemeUtils {
     switch (theme) {
       case 'light': return 'Light';
       case 'dark': return 'Dark';
+      case 'light2': return 'Light (Warm)';
+      case 'dark2': return 'Dark (Warm)';
       case 'system': return 'System';
       default: return theme; // Return the theme name itself for custom themes
     }
@@ -23,6 +25,8 @@ export class ThemeUtils {
     switch (theme) {
       case 'light': return '☀️';
       case 'dark': return '🌙';
+      case 'light2': return '🌅';
+      case 'dark2': return '🌆';
       case 'system': return '🖥️';
       default: return '🎨'; // Default icon for custom themes
     }

@@ -7,7 +7,8 @@ import {
   InteractiveDemoComponent,
   StatusIndicatorsComponent,
   ResponsiveDemoComponent,
-  ConfigPanelComponent
+  ConfigPanelComponent,
+  ThemePairDemoComponent
 } from './components';
 
 @Component({
@@ -17,6 +18,7 @@ import {
     CommonModule,
     ThemeStatusComponent,
     ThemeControlsComponent,
+    ThemePairDemoComponent,
     ColorPaletteComponent,
     InteractiveDemoComponent,
     StatusIndicatorsComponent,
@@ -35,6 +37,10 @@ import {
       <div class="demo-section">
         <h3>🎛️ Theme Controls</h3>
         <app-theme-controls />
+      </div>
+
+      <div class="demo-section">
+        <app-theme-pair-demo />
       </div>
 
       <div class="demo-section">

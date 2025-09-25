@@ -36,6 +36,28 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
               <span aria-hidden="true">🌙</span> Dark
             </button>
             <button 
+              class="theme-btn warm-theme"
+              [class.active]="themeService.currentTheme() === 'light2'"
+              (click)="setTheme('light2')"
+              role="radio"
+              [attr.aria-checked]="themeService.currentTheme() === 'light2'"
+              [attr.aria-label]="'Light warm theme' + (themeService.currentTheme() === 'light2' ? ' (selected)' : '')"
+              type="button"
+            >
+              <span aria-hidden="true">🌅</span> Light (Warm)
+            </button>
+            <button 
+              class="theme-btn warm-theme"
+              [class.active]="themeService.currentTheme() === 'dark2'"
+              (click)="setTheme('dark2')"
+              role="radio"
+              [attr.aria-checked]="themeService.currentTheme() === 'dark2'"
+              [attr.aria-label]="'Dark warm theme' + (themeService.currentTheme() === 'dark2' ? ' (selected)' : '')"
+              type="button"
+            >
+              <span aria-hidden="true">🌆</span> Dark (Warm)
+            </button>
+            <button 
               class="theme-btn"
               [class.active]="themeService.currentTheme() === 'system'"
               (click)="setTheme('system')"
@@ -49,19 +71,32 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
           </div>
         </fieldset>
       </div>
-      
+
       <div class="control-group">
-        <label for="quick-toggle">Quick Toggle</label>
-        <button 
-          id="quick-toggle"
-          class="toggle-button btn-primary" 
-          (click)="toggleTheme()"
-          [attr.aria-label]="'Switch to ' + (themeService.isDarkMode() ? 'light' : 'dark') + ' theme'"
-          type="button"
-        >
-          <span aria-hidden="true">{{ themeService.isDarkMode() ? '☀️' : '🌙' }}</span>
-          {{ themeService.isDarkMode() ? 'Switch to Light' : 'Switch to Dark' }}
-        </button>
+        <fieldset>
+          <legend>Quick Actions</legend>
+          <div class="quick-actions">
+            <button 
+              class="toggle-button btn-primary" 
+              (click)="toggleTheme()"
+              [attr.aria-label]="'Switch to ' + (themeService.isDarkMode() ? 'light' : 'dark') + ' theme'"
+              type="button"
+            >
+              <span aria-hidden="true">{{ themeService.isDarkMode() ? '☀️' : '🌙' }}</span>
+              {{ themeService.isDarkMode() ? 'Switch to Light' : 'Switch to Dark' }}
+            </button>
+            
+            <button 
+              class="toggle-button btn-secondary" 
+              (click)="toggleThemePair()"
+              [attr.aria-label]="'Switch to ' + (getCurrentThemePairName() === 'Cool' ? 'Warm' : 'Cool') + ' theme pair'"
+              type="button"
+            >
+              <span aria-hidden="true">{{ getCurrentThemePairName() === 'Cool' ? '🌅' : '❄️' }}</span>
+              Switch to {{ getCurrentThemePairName() === 'Cool' ? 'Warm' : 'Cool' }}
+            </button>
+          </div>
+        </fieldset>
       </div>
       
       <div class="control-group">
@@ -105,6 +140,14 @@ export class ThemeControlsComponent {
   
   protected toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  protected toggleThemePair(): void {
+    this.themeService.toggleThemePair();
+  }
+
+  protected getCurrentThemePairName(): string {
+    return this.themeService.getCurrentThemePair() === 2 ? 'Warm' : 'Cool';
   }
   
   protected toggleSystemPreference(): void {
