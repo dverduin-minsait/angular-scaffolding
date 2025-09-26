@@ -27,11 +27,6 @@ export const routes: Routes = [
       import('./features/clothes/clothes.routes').then(m => m.CLOTHES_ROUTES)
   },
   {
-    path: 'api-comparison',
-    loadComponent: () => 
-      import('./core/api/examples/api-comparison-demo.component').then(m => m.ApiComparisonComponent)
-  },
-  {
     path: '**',
     redirectTo: '/dashboard'
   }

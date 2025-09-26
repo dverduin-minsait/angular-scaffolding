@@ -1,23 +1,7 @@
 {
   "clothes": [
     {
-      "id": 1,
-      "name": "Classic Cotton T-Shirt",
-      "brand": "BasicWear",
-      "price": 25.99,
-      "size": "M",
-      "color": "white",
-      "stock": 45,
-      "season": "Spring",
-      "category": "T-Shirts",
-      "description": "Comfortable 100% cotton t-shirt perfect for everyday wear",
-      "imageUrl": "https://via.placeholder.com/300x400/ffffff/000000?text=Classic+T-Shirt",
-      "createdAt": "2025-01-15T10:30:00Z",
-      "updatedAt": "2025-09-20T14:22:00Z"
-    },
-    {
-      "id": 2,
-      "name": "Denim Jacket",
+      "name": "Denim Jacketa",
       "brand": "UrbanStyle",
       "price": 89.99,
       "size": "L",
@@ -27,11 +11,10 @@
       "category": "Jackets",
       "description": "Vintage-style denim jacket with classic fit and premium quality",
       "imageUrl": "https://via.placeholder.com/300x400/4169e1/ffffff?text=Denim+Jacket",
-      "createdAt": "2025-02-10T09:15:00Z",
-      "updatedAt": "2025-09-22T16:45:00Z"
+      "updatedAt": "2025-09-26T11:30:34.526Z",
+      "id": 2
     },
     {
-      "id": 3,
       "name": "Summer Floral Dress",
       "brand": "FloralFashion",
       "price": 65.5,
@@ -40,10 +23,10 @@
       "stock": 8,
       "season": "Summer",
       "category": "Dresses",
-      "description": "Light and airy floral dress perfect for summer occasions",
+      "description": "Light and airy floral dress perfect for summer occasionses",
       "imageUrl": "https://via.placeholder.com/300x400/ffb6c1/000000?text=Floral+Dress",
-      "createdAt": "2025-03-05T11:20:00Z",
-      "updatedAt": "2025-09-18T12:10:00Z"
+      "updatedAt": "2025-09-26T11:27:52.909Z",
+      "id": 3
     },
     {
       "id": 4,
@@ -226,12 +209,19 @@
       "updatedAt": "2025-09-22T15:10:00Z"
     },
     {
-      "stock": 8,
-      "id": 16
-    },
-    {
-      "stock": 8,
-      "id": 17
+      "name": "Denim Jacket",
+      "brand": "UrbanStyle",
+      "price": 89.99,
+      "size": "L",
+      "color": "blue",
+      "stock": 12,
+      "season": "Fall",
+      "category": "Jackets",
+      "description": "Vintage-style denim jacket with classic fit and premium quality",
+      "imageUrl": "https://via.placeholder.com/300x400/4169e1/ffffff?text=Denim+Jacket",
+      "updatedAt": "2025-09-26T11:11:37.745Z",
+      "createdAt": "2025-09-26T11:11:37.745Z",
+      "id": 18
     }
   ]
 }

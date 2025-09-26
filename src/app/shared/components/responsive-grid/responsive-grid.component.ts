@@ -57,6 +57,8 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#region Inputs & Outputs
   dataConfig = input.required<GridDataConfig>();
   config = input<ResponsiveGridConfig>({});
+  // Optional direct signal-based data (bypasses GridDataService loading)
+  dataSignal = input<any[] | null | undefined>(undefined);
 
   gridReady = output<any>();
   dataLoaded = output<any[]>();
@@ -111,9 +113,28 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
 
     // Effect to handle data config changes
     effect(() => {
+      // Skip standard loading if a direct dataSignal is provided
+      if (this.dataSignal()) return;
       const currentConfig = this.dataConfig();
       if (currentConfig) {
         this.loadData(currentConfig);
+      }
+    });
+
+    // Effect for direct signal-driven data updates
+    effect(() => {
+      const directData = this.dataSignal();
+      if (directData) {
+        this.isLoading.set(false);
+        this.hasError.set(false);
+        this.data.set(directData);
+        if (this.showDesktopGrid() && directData.length) {
+          if (!this.agGridComponent) {
+            this.safeSetTimeout(() => this.ensureGridSetup(), 80);
+          } else {
+            this.updateGridData();
+          }
+        }
       }
     });
 
