@@ -21,6 +21,7 @@ See `ADR-0000-template.md` for the canonical structure.
 (Keep this updated when adding ADRs)  
 - 001: Adopt Angular 20 Standalone + Zoneless + Signals (Accepted)
 - 002: Grid Library (AG Grid) + BaseApiService Abstraction + CSS Variable Theming (Proposed)
+- 003: Unified Modal Service on Angular CDK Dialog (Proposed)
 
 ## Authoring Workflow
 1. Copy template -> new file with next sequential number
