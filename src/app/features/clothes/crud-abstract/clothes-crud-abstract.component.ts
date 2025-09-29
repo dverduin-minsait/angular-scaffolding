@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, Injector, runInInjectionContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ClothesApiService, ClothingItemApi } from '../../../core/api/clothes/clothes.service';
@@ -13,7 +13,7 @@ import { ButtonDirective } from '../../../shared/directives';
 @Component({
   selector: 'app-clothes-crud-abstract',
   standalone: true,
-  providers: [ClothesApiService],
+  // Removed providers override so tests can supply a mock ClothesApiService
   imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective],
   templateUrl: './clothes-crud-abstract.component.html',
   styleUrls: ['./clothes-crud-abstract.component.scss']
@@ -22,6 +22,8 @@ export class ClothesCrudAbstractComponent implements OnInit {
   private fb = inject(FormBuilder);
   protected clothesService = inject(ClothesApiService);
   private modal = inject(ModalService);
+  // Capture injector so we can safely create runtime effects in methods regardless of caller context (aids testability)
+  private injector = inject(Injector);
 
   // Form for adding/editing items
   itemForm: FormGroup;
@@ -174,18 +176,20 @@ export class ClothesCrudAbstractComponent implements OnInit {
       disableEscapeClose: false,
       disableBackdropClose: false
     });
-    // Observe signal after microtask
-    effect(() => {
-      const closed = ref.closed();
-      if (closed?.data === true) {
-        this.clothesService.delete(id).subscribe({
-          next: () => {
-            console.log('✅ Item deleted successfully');
-            if (this.selectedItem()?.id === id) this.clearSelection();
-          },
-          error: (error) => console.error('❌ Error deleting item:', error)
-        });
-      }
+    // Observe signal after microtask inside a guaranteed injection context
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const closed = ref.closed();
+        if (closed?.data === true) {
+          this.clothesService.delete(id).subscribe({
+            next: () => {
+              console.log('✅ Item deleted successfully');
+              if (this.selectedItem()?.id === id) this.clearSelection();
+            },
+            error: (error) => console.error('❌ Error deleting item:', error)
+          });
+        }
+      });
     });
   }
 

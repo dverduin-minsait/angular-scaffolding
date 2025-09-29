@@ -80,12 +80,17 @@ export class GridLoaderService {
         error: null, 
         loadEndTime: Date.now() 
       });
+      // Clear the promise reference after successful resolution so future calls
+      // can start a fresh load if needed (and to free memory for large modules)
+      this.loadPromise = null;
       
       return this.gridModule;
     } catch (error) {
       const err = error as Error;
       this.updateLoadState({ isLoading: false, isLoaded: false, error: err });
       console.error('Failed to load ag-Grid:', err);
+      // Allow subsequent calls to retry after a failure
+      this.loadPromise = null;
       throw err;
     }
   }
