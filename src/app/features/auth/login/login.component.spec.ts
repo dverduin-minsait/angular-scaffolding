@@ -81,13 +81,14 @@ describe('LoginComponent', () => {
     const signInButton = buttons[0];
     expect(signInButton.textContent?.trim()).toBe('Sign In');
     expect(signInButton.getAttribute('type')).toBe('submit');
-    expect(signInButton).toHaveClass('btn-primary');
+  expect(signInButton.className).toContain('btn');
+  expect(signInButton.className).toContain('btn--primary');
     
     // Google sign-in button
     const googleButton = buttons[1];
     expect(googleButton.textContent?.trim()).toBe('Sign in with Google');
     expect(googleButton.getAttribute('type')).toBe('button');
-    expect(googleButton).toHaveClass('btn-secondary');
+  expect(googleButton.className).toContain('btn--secondary');
   });
 
   it('should display auth footer with registration link', () => {
@@ -130,8 +131,8 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('.auth-footer')).toBeTruthy();
     
     // Form elements
-    expect(compiled.querySelectorAll('.form-group')).toHaveLength(2);
-    expect(compiled.querySelectorAll('.form-input')).toHaveLength(2);
+  expect(compiled.querySelectorAll('.form-group')).toHaveLength(2);
+  expect(compiled.querySelectorAll('.form-control')).toHaveLength(2);
     expect(compiled.querySelector('.form-actions')).toBeTruthy();
   });
 

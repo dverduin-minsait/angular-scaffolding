@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeService, Theme } from '../../../../core/services/theme.service';
+import { ButtonDirective } from '../../../../shared/directives/button.directive';
 
 @Component({
   selector: 'app-theme-controls',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective],
   template: `
     <div class="theme-controls">
       <div class="control-group">
@@ -15,6 +16,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
           <div class="theme-buttons" role="radiogroup" aria-label="Choose theme">
             <button 
               class="theme-btn"
+              appButton variant="secondary"
               [class.active]="themeService.currentTheme() === 'light'"
               (click)="setTheme('light')"
               role="radio"
@@ -26,6 +28,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
             </button>
             <button 
               class="theme-btn"
+              appButton variant="secondary"
               [class.active]="themeService.currentTheme() === 'dark'"
               (click)="setTheme('dark')"
               role="radio"
@@ -37,6 +40,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
             </button>
             <button 
               class="theme-btn warm-theme"
+              appButton variant="secondary"
               [class.active]="themeService.currentTheme() === 'light2'"
               (click)="setTheme('light2')"
               role="radio"
@@ -48,6 +52,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
             </button>
             <button 
               class="theme-btn warm-theme"
+              appButton variant="secondary"
               [class.active]="themeService.currentTheme() === 'dark2'"
               (click)="setTheme('dark2')"
               role="radio"
@@ -59,6 +64,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
             </button>
             <button 
               class="theme-btn"
+              appButton variant="secondary"
               [class.active]="themeService.currentTheme() === 'system'"
               (click)="setTheme('system')"
               role="radio"
@@ -77,7 +83,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
           <legend>Quick Actions</legend>
           <div class="quick-actions">
             <button 
-              class="toggle-button btn-primary" 
+              class="toggle-button" appButton variant="primary" 
               (click)="toggleTheme()"
               [attr.aria-label]="'Switch to ' + (themeService.isDarkMode() ? 'light' : 'dark') + ' theme'"
               type="button"
@@ -87,7 +93,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
             </button>
             
             <button 
-              class="toggle-button btn-secondary" 
+              class="toggle-button" appButton variant="secondary" 
               (click)="toggleThemePair()"
               [attr.aria-label]="'Switch to ' + (getCurrentThemePairName() === 'Cool' ? 'Warm' : 'Cool') + ' theme pair'"
               type="button"
@@ -119,7 +125,7 @@ import { ThemeService, Theme } from '../../../../core/services/theme.service';
       
       <div class="control-group">
         <button 
-          class="btn-secondary" 
+          appButton variant="secondary" 
           (click)="resetTheme()"
           aria-label="Reset theme settings to default values"
           type="button"

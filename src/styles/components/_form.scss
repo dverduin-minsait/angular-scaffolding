@@ -1,0 +1,43 @@
+/* Form field & control baseline styling */
+.form-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.form-field--horizontal { flex-direction: row; align-items: center; }
+
+.form-label { font-weight: 500; line-height: 1.2; }
+.form-hint { font-size: 0.75rem; color: var(--text-muted); }
+.form-error { font-size: 0.75rem; color: var(--error); }
+
+.form-control {
+  display: block;
+  width: 100%;
+  background-color: var(--fc-bg);
+  color: var(--fc-fg);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--fc-radius);
+  padding: var(--fc-padding-y) var(--fc-padding-x);
+  font: inherit;
+  line-height: 1.3;
+  transition: var(--fc-transition);
+}
+
+.form-control:focus-visible {
+  outline: var(--fc-focus-ring);
+  outline-offset: 2px;
+}
+
+.form-control[aria-invalid='true'] {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--error) 35%, transparent);
+}
+
+.form-control:disabled, .form-control[aria-disabled='true'] {
+  background-color: var(--fc-disabled-bg);
+  color: var(--fc-disabled-fg);
+  cursor: not-allowed;
+}
+
+.form-error[role='alert'] { /* emphasize live errors */
+  font-weight: 500;
+}
+
+/* High contrast adjustments */
+.high-contrast .form-control:focus-visible { outline-width: 3px; }

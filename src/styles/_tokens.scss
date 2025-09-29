@@ -1,0 +1,32 @@
+// Design tokens bridging existing theme variables to component-level custom properties.
+// These map existing --primary-* etc. to semantic component tokens we can evolve without touching components.
+
+:root {
+  /* Button tokens */
+  --btn-font-weight: 500;
+  --btn-radius: 0.375rem;
+  --btn-padding-y: 0.5rem;
+  --btn-padding-x: 1rem;
+  --btn-gap: 0.5rem;
+  --btn-focus-ring: var(--focus-ring);
+  --btn-transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  /* Form control tokens */
+  --fc-radius: 0.375rem;
+  --fc-padding-y: 0.5rem;
+  --fc-padding-x: 0.75rem;
+  --fc-transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  --fc-focus-ring: var(--focus-ring);
+  --fc-bg: var(--bg-primary);
+  --fc-fg: var(--text-primary);
+  --fc-border: var(--border-primary);
+  --fc-placeholder: var(--text-muted);
+  --fc-disabled-bg: var(--disabled-bg);
+  --fc-disabled-fg: var(--disabled-text);
+}
+
+/* High contrast adjustments - rely on existing .high-contrast class applied by ThemeService */
+.high-contrast {
+  --btn-focus-ring: var(--focus-ring); /* Could swap to thicker ring if desired */
+  --fc-focus-ring: var(--focus-ring);
+}

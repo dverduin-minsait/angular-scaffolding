@@ -20,7 +20,7 @@
             formControlName="firstName"
             type="text" 
             placeholder="First name"
-            class="form-input"
+              class="form-control"
             required
             aria-required="true"
             autocomplete="given-name"
@@ -40,7 +40,7 @@
             formControlName="lastName"
             type="text" 
             placeholder="Last name"
-            class="form-input"
+              class="form-control"
             required
             aria-required="true"
             autocomplete="family-name"
@@ -62,7 +62,7 @@
           formControlName="email"
           type="email" 
           placeholder="Enter your email"
-          class="form-input"
+            class="form-control"
           required
           aria-required="true"
           email
@@ -114,7 +114,7 @@
         <select 
           id="language" 
           formControlName="language"
-          class="form-input"
+            class="form-control"
           required
           aria-required="true"
           [attr.aria-invalid]="languageError() ? 'true' : 'false'"
@@ -139,7 +139,7 @@
           id="observations" 
           formControlName="observations"
           placeholder="Any additional comments or notes (optional)"
-          class="form-input"
+            class="form-control"
           rows="3"
           maxlength="500"
           aria-describedby="observations-hint"
@@ -154,7 +154,7 @@
           formControlName="password"
           type="password" 
           placeholder="Create a password"
-          class="form-input"
+            class="form-control"
           required
           aria-required="true"
           minlength="8"
@@ -208,7 +208,7 @@
           formControlName="confirmPassword"
           type="password" 
           placeholder="Confirm your password"
-          class="form-input"
+            class="form-control"
           required
           aria-required="true"
           autocomplete="new-password"
@@ -244,7 +244,7 @@
       <div class="form-actions">
         <button 
           type="submit" 
-          class="btn-primary"
+            appButton variant="primary"
           [disabled]="!isFormValid() || isSubmitting()"
           [attr.aria-describedby]="submitError() ? 'submit-error' : null"
         >
@@ -252,7 +252,7 @@
         </button>
         <button 
           type="button" 
-          class="btn-secondary"
+            appButton variant="secondary"
           (click)="signUpWithGoogle()"
           [disabled]="isSubmitting()"
         >

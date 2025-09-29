@@ -1,12 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../shared/directives/button.directive';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ButtonDirective],
   template: `
     <div class="auth-page">
       <div class="auth-container">
@@ -28,7 +29,7 @@ import { RouterLink } from '@angular/router';
               name="email"
               type="email" 
               placeholder="Enter your email"
-              class="form-input"
+              class="form-control"
               [(ngModel)]="formData().email"
               required
               email
@@ -51,7 +52,7 @@ import { RouterLink } from '@angular/router';
               name="password"
               type="password" 
               placeholder="Enter your password"
-              class="form-input"
+              class="form-control"
               [(ngModel)]="formData().password"
               required
               minlength="6"
@@ -70,7 +71,7 @@ import { RouterLink } from '@angular/router';
           <div class="form-actions">
             <button 
               type="submit" 
-              class="btn-primary"
+              appButton variant="primary"
               [disabled]="loginForm.invalid || isSubmitting()"
               [attr.aria-describedby]="submitError() ? 'submit-error' : null"
             >
@@ -78,7 +79,7 @@ import { RouterLink } from '@angular/router';
             </button>
             <button 
               type="button" 
-              class="btn-secondary"
+              appButton variant="secondary"
               (click)="signInWithGoogle()"
               [disabled]="isSubmitting()"
             >

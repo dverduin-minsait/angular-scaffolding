@@ -8,12 +8,13 @@ import { MiniCurrencyPipe } from '../../../shared/pipes/mini-currency.pipe';
 import { effect } from '@angular/core';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../core/services/modal/confirm-dialog.component';
+import { ButtonDirective } from '../../../shared/directives';
 
 @Component({
   selector: 'app-clothes-crud-abstract',
   standalone: true,
   providers: [ClothesApiService],
-  imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe],
+  imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective],
   templateUrl: './clothes-crud-abstract.component.html',
   styleUrls: ['./clothes-crud-abstract.component.scss']
 })

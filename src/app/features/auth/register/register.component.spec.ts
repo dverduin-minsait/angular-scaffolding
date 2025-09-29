@@ -152,13 +152,13 @@ describe('RegisterComponent', () => {
     const createButton = buttons[0];
     expect(createButton.textContent?.trim()).toBe('Create Account');
     expect(createButton.getAttribute('type')).toBe('submit');
-    expect(createButton).toHaveClass('btn-primary');
+  expect(createButton.className).toContain('btn--primary');
     
     // Google sign-up button
     const googleButton = buttons[1];
     expect(googleButton.textContent?.trim()).toBe('Sign up with Google');
     expect(googleButton.getAttribute('type')).toBe('button');
-    expect(googleButton).toHaveClass('btn-secondary');
+  expect(googleButton.className).toContain('btn--secondary');
   });
 
   it('should display auth footer with login link', () => {
@@ -198,9 +198,9 @@ describe('RegisterComponent', () => {
     expect(compiled.querySelector('.auth-form')).toBeTruthy();
     expect(compiled.querySelector('.auth-footer')).toBeTruthy();
     
-    // Form elements - now includes 7 inputs (2 text, 1 email, 1 select, 1 textarea, 2 password)
-    expect(compiled.querySelector('.form-group-inline')).toBeTruthy();
-    expect(compiled.querySelectorAll('.form-input')).toHaveLength(7);
+  // Form controls - 7 main controls (first, last, email, language select, observations textarea, password, confirm password)
+  expect(compiled.querySelector('.form-group-inline')).toBeTruthy();
+  expect(compiled.querySelectorAll('.form-control')).toHaveLength(7);
     expect(compiled.querySelector('.password-strength')).toBeTruthy();
     expect(compiled.querySelector('.terms-group')).toBeTruthy();
     expect(compiled.querySelector('.form-actions')).toBeTruthy();

@@ -32,12 +32,7 @@ h3 { font-size: 1.25rem; margin: 0 0 1rem; color: var(--text-primary); }
 .error-message { color:var(--danger,#dc3545); font-size:.7rem; font-weight:500; }
 
 .form-actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:.5rem; }
-.btn-primary, .btn-secondary { border:none; cursor:pointer; font:inherit; font-weight:600; padding:.8rem 1.25rem; border-radius:.75rem; min-height:44px; display:inline-flex; align-items:center; justify-content:center; transition:background .2s, box-shadow .2s, transform .2s; }
-.btn-primary { background:linear-gradient(135deg,var(--primary-500,#3b82f6),var(--primary-600,#2563eb)); color:#fff; }
-.btn-primary:hover:not(:disabled){ filter:brightness(1.05); }
-.btn-secondary { background:var(--bg-primary); border:1px solid var(--border-primary); color:var(--text-primary); }
-.btn-secondary:hover { background:var(--bg-hover,#f5f7fa); }
-.btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+/* Buttons now use shared .btn classes via appButton directive. Minor form-actions spacing retained. */
 
 /* Stats */
 .stats-section { margin-bottom:1rem; }

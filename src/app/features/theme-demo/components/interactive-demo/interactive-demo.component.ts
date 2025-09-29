@@ -1,21 +1,22 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../shared/directives';
 
 @Component({
   selector: 'app-interactive-demo',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective],
   template: `
     <div class="interactive-demo">
       <div class="component-grid">
         <div class="component-group">
           <h4>Buttons</h4>
           <div class="demo-buttons">
-            <button class="btn-primary">Primary Button</button>
-            <button class="btn-secondary">Secondary Button</button>
-            <button class="btn-ghost">Ghost Button</button>
-            <button class="btn-primary" disabled>Disabled Button</button>
+            <button appButton variant="primary">Primary Button</button>
+            <button appButton variant="secondary">Secondary Button</button>
+            <button appButton variant="ghost">Ghost Button</button>
+            <button appButton variant="primary" disabled>Disabled Button</button>
           </div>
         </div>
         
@@ -48,12 +49,12 @@ import { FormsModule } from '@angular/forms';
             <div class="demo-card">
               <h5>Standard Card</h5>
               <p>This card demonstrates the standard card styling with theme variables.</p>
-              <button class="btn-primary btn-small">Action</button>
+              <button appButton variant="primary" size="sm">Action</button>
             </div>
             <div class="demo-card">
               <h5>Another Card</h5>
               <p>Cards automatically adapt to light and dark themes seamlessly.</p>
-              <button class="btn-secondary btn-small">Secondary</button>
+              <button appButton variant="secondary" size="sm">Secondary</button>
             </div>
           </div>
         </div>

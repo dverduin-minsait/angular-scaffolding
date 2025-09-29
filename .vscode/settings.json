@@ -1,0 +1,11 @@
+{
+  "eslint.enable": true,
+  "eslint.useFlatConfig": true,
+  "eslint.runtime": "node",
+  "eslint.workingDirectories": [ { "mode": "auto" } ],
+  "eslint.validate": ["typescript", "html"],
+  // Optional: surface as error (default) or downgrade to warn
+  "eslint.rules.customizations": [
+    { "rule": "no-unused-vars", "severity": "warn" }
+  ]
+}

@@ -1,0 +1,62 @@
+@use '../../app/themes/mixins' as *; // Reuse existing logic if needed
+
+/* Base button class using design tokens */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+  font-weight: var(--btn-font-weight);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  line-height: 1.2;
+  text-decoration: none;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-primary);
+  transition: var(--btn-transition);
+}
+
+/* Variants (map to existing theme palette) */
+.btn--primary {
+  background-color: var(--primary-500);
+  border-color: var(--primary-500);
+  color: var(--text-inverse);
+}
+.btn--primary:hover:not(:disabled) { background-color: var(--primary-600); border-color: var(--primary-600); }
+
+.btn--secondary {
+  background-color: transparent;
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+.btn--secondary:hover:not(:disabled) { background-color: var(--hover-bg); }
+
+.btn--ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--text-primary);
+}
+.btn--ghost:hover:not(:disabled) { background-color: var(--hover-bg); }
+
+.btn--danger {
+  background-color: var(--error);
+  border-color: var(--error);
+  color: var(--text-inverse);
+}
+.btn--danger:hover:not(:disabled) { background-color: color-mix(in srgb, var(--error) 85%, black); }
+
+/* Size modifiers */
+.btn--sm { padding: calc(var(--btn-padding-y) - 0.125rem) calc(var(--btn-padding-x) - 0.25rem); font-size: 0.75rem; }
+.btn--md { font-size: 0.875rem; }
+.btn--lg { padding: calc(var(--btn-padding-y) + 0.25rem) calc(var(--btn-padding-x) + 0.25rem); font-size: 1rem; }
+
+/* States */
+.btn:focus-visible { outline: 2px solid var(--btn-focus-ring); outline-offset: 2px; }
+.btn:disabled, .btn[aria-disabled='true'] { opacity: 0.55; cursor: not-allowed; }
+
+/* High contrast overrides */
+.high-contrast .btn:focus-visible { outline-width: 3px; }

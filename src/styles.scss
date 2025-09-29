@@ -3,7 +3,13 @@
 // Import theme system first (using @use)
 @use 'app/themes/index' as *;
 
-// Import accessibility styles  
+// New design system token + component partials
+@use 'styles/tokens';
+@use 'styles/components/button';
+@use 'styles/components/form';
+@use 'styles/utilities/a11y';
+
+// Import accessibility styles
 @use 'app/accessibility.scss' as *;
 @use 'app/themes/modal';
 
@@ -66,25 +72,8 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-// Example usage of theme variables and mixins
-.btn-primary {
-  @include button-style('primary');
-}
-
-.btn-secondary {
-  @include button-style('secondary');
-}
-
-.btn-ghost {
-  @include button-style('ghost');
-}
-
+// Card uses existing mixin; keep until we migrate to a utility or component style
 .card {
   @include card-style;
   padding: 1.5rem;
-}
-
-.form-input {
-  @include input-style;
-  width: 100%;
 }

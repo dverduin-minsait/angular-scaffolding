@@ -22,20 +22,7 @@
     }
   }
 
-  .demo-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    
-    .btn-primary { @include button-style('primary'); }
-    .btn-secondary { @include button-style('secondary'); }
-    .btn-ghost { @include button-style('ghost'); }
-    
-    .btn-small {
-      padding: 0.375rem 0.75rem;
-      font-size: 0.875rem;
-    }
-  }
+  .demo-buttons { display:flex; flex-direction:column; gap:0.75rem; }
   
   .demo-cards {
     display: flex;
