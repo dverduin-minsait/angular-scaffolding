@@ -5,6 +5,7 @@
 
 // Import accessibility styles  
 @use 'app/accessibility.scss' as *;
+@use 'app/themes/modal';
 
 // NOTE: ag-Grid CSS is no longer imported globally to optimize bundle size.
 // The grid now uses the new Theme API (v33+) and loads CSS dynamically when needed.

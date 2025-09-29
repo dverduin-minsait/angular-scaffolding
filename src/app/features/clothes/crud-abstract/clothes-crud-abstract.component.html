@@ -15,6 +15,7 @@
     <div class="grid-actions">
       <button type="button" class="btn btn-secondary" (click)="refreshData()" [disabled]="clothesService.loading().isLoading">Refresh</button>
       <button type="button" class="btn btn-secondary" (click)="clearSelection()" [disabled]="!selectedItem()">Clear Selection</button>
+      <button type="button" class="btn btn-secondary" (click)="openTestModal()">Open Test Modal</button>
       <details class="column-toggle-panel">
         <summary>Columns</summary>
         <div class="columns-list">

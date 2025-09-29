@@ -99,7 +99,6 @@ Don’t:
 ## 16. Future Enhancements (Backlog Ideas)
 - Add bundle analyzer step & size budget enforcement.
 - Integrate jest-axe for automated a11y assertions.
-- Expand ADR set (current: ADR-001 adopted Angular 20 standalone + zoneless + signals). New significant decisions must add an ADR in `docs/adr`.
 
 ---
 Last updated: 2025-09-26

@@ -6,6 +6,8 @@ import { ResponsiveGridComponent, ResponsiveGridConfig } from '../../../shared/c
 import { GridDataConfig } from '../../../core/services/grid-data.service';
 import { MiniCurrencyPipe } from '../../../shared/pipes/mini-currency.pipe';
 import { effect } from '@angular/core';
+import { ModalService } from '../../../core/services/modal/modal.service';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../core/services/modal/confirm-dialog.component';
 
 @Component({
   selector: 'app-clothes-crud-abstract',
@@ -18,6 +20,7 @@ import { effect } from '@angular/core';
 export class ClothesCrudAbstractComponent implements OnInit {
   private fb = inject(FormBuilder);
   protected clothesService = inject(ClothesApiService);
+  private modal = inject(ModalService);
 
   // Form for adding/editing items
   itemForm: FormGroup;
@@ -163,17 +166,35 @@ export class ClothesCrudAbstractComponent implements OnInit {
   }
 
   deleteItem(id: number): void {
-    if (confirm('Are you sure you want to delete this item?')) {
-      this.clothesService.delete(id).subscribe({
-        next: () => {
-          console.log('✅ Item deleted successfully');
-          if (this.selectedItem()?.id === id) {
-            this.clearSelection();
-          }
-        },
-        error: (error) => console.error('❌ Error deleting item:', error)
-      });
-    }
+    const ref = this.modal.open(ConfirmDialogComponent, {
+      data: { title: 'Delete Item', message: 'Are you sure you want to delete this item?' } satisfies ConfirmDialogData,
+      labelledBy: 'confirmDialogTitle',
+      describedBy: 'confirmDialogDesc',
+      disableEscapeClose: false,
+      disableBackdropClose: false
+    });
+    // Observe signal after microtask
+    effect(() => {
+      const closed = ref.closed();
+      if (closed?.data === true) {
+        this.clothesService.delete(id).subscribe({
+          next: () => {
+            console.log('✅ Item deleted successfully');
+            if (this.selectedItem()?.id === id) this.clearSelection();
+          },
+          error: (error) => console.error('❌ Error deleting item:', error)
+        });
+      }
+    });
+  }
+
+  // Manual test opener for modal service (not tied to CRUD action)
+  openTestModal(): void {
+    this.modal.open(ConfirmDialogComponent, {
+      data: { title: 'Test Modal', message: 'This is a manual test modal.' },
+      labelledBy: 'confirmDialogTitle',
+      describedBy: 'confirmDialogDesc'
+    });
   }
 
   resetForm(): void {
