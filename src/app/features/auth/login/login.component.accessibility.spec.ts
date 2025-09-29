@@ -158,7 +158,7 @@ describe('LoginComponent Accessibility', () => {
       component['onSubmit']();
       fixture.detectChanges();
 
-      const errorElements = fixture.nativeElement.querySelectorAll('.error-message');
+  const errorElements = fixture.nativeElement.querySelectorAll('.form-error');
       
       errorElements.forEach((element: Element) => {
         expect(element.getAttribute('role')).toBe('alert');

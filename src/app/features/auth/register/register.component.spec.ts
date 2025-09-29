@@ -62,17 +62,17 @@ describe('RegisterComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const form = compiled.querySelector('.auth-form');
+  const form = compiled.querySelector('.crud-form');
     
     expect(form).toBeTruthy();
     expect(form?.tagName.toLowerCase()).toBe('form');
   });
 
-  it('should display name fields in inline group', () => {
+  it('should display name fields in field grid group', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const inlineGroup = compiled.querySelector('.form-group-inline');
+  const inlineGroup = compiled.querySelector('.field-grid');
     const firstNameLabel = compiled.querySelector('label[for="firstName"]');
     const firstNameInput = compiled.querySelector('#firstName');
     const lastNameLabel = compiled.querySelector('label[for="lastName"]');
@@ -177,10 +177,10 @@ describe('RegisterComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const formGroups = compiled.querySelectorAll('.form-group');
+  const formFields = compiled.querySelectorAll('.form-field');
     
-    // Should have 7 form groups (inline names, email, gender, language, observations, password, confirm password)
-    expect(formGroups).toHaveLength(7);
+  // Should have 8 form fields now (first name, last name, email, gender, language, observations, password, confirm password)
+  expect(formFields).toHaveLength(8);
     
     // Should also have terms group
     const termsGroup = compiled.querySelector('.terms-group');
@@ -195,11 +195,11 @@ describe('RegisterComponent', () => {
     expect(compiled.querySelector('.auth-page')).toBeTruthy();
     expect(compiled.querySelector('.auth-container')).toBeTruthy();
     expect(compiled.querySelector('.auth-header')).toBeTruthy();
-    expect(compiled.querySelector('.auth-form')).toBeTruthy();
+  expect(compiled.querySelector('.crud-form')).toBeTruthy();
     expect(compiled.querySelector('.auth-footer')).toBeTruthy();
     
   // Form controls - 7 main controls (first, last, email, language select, observations textarea, password, confirm password)
-  expect(compiled.querySelector('.form-group-inline')).toBeTruthy();
+  expect(compiled.querySelector('.field-grid')).toBeTruthy();
   expect(compiled.querySelectorAll('.form-control')).toHaveLength(7);
     expect(compiled.querySelector('.password-strength')).toBeTruthy();
     expect(compiled.querySelector('.terms-group')).toBeTruthy();

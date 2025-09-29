@@ -1,13 +1,15 @@
-/* Refactored styling aligned with register form aesthetics */
+/* Scoped layout & component-specific styles. Generic form styling is now provided by global form component classes. */
 
 .crud-container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 h2 { font-size: 2rem; margin: 0 0 1.5rem; color: var(--text-primary); }
 h3 { font-size: 1.25rem; margin: 0 0 1rem; color: var(--text-primary); }
 
+/* Status bar */
 .status-bar { display:flex; gap:.75rem; flex-wrap:wrap; margin-bottom:1.25rem; }
 .status-item { background: var(--bg-secondary); border:1px solid var(--border-primary); padding:.5rem .75rem; border-radius:.5rem; font-size:.875rem; }
 .status-item.loading { animation:pulse 1s infinite; }
 
+/* Grid & actions */
 .grid-section { margin-bottom:2rem; }
 .grid-actions { display:flex; gap:.75rem; margin-bottom:.75rem; flex-wrap:wrap; }
 
@@ -21,18 +23,11 @@ h3 { font-size: 1.25rem; margin: 0 0 1rem; color: var(--text-primary); }
 .mobile-card .row { font-size:.75rem; display:flex; gap:.25rem; align-items:center; }
 .mobile-card .low-stock { color: var(--danger,#c62828); font-weight:600; }
 
-/* Form styling (borrowing auth form patterns) */
+/* Form wrapper only: remove duplicated control styling */
 .form-section { background:var(--bg-secondary); border:1px solid var(--border-primary); padding:1.75rem; border-radius:1rem; margin-bottom:2rem; }
-.auth-form { display:flex; flex-direction:column; gap:1rem; }
-.form-group, .form-group-inline > div { display:flex; flex-direction:column; gap:.4rem; }
-.form-group-inline { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
-.auth-form label { font-size:.75rem; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:var(--text-secondary); }
-.auth-form input, .auth-form select, .auth-form textarea { border:1px solid var(--border-primary); background:var(--bg-primary); color:var(--text-primary); padding:.75rem .85rem; font:inherit; border-radius:.65rem; transition:border-color .2s, box-shadow .2s; }
-.auth-form input:focus, .auth-form select:focus, .auth-form textarea:focus { outline:none; border-color:var(--primary-500,#3b82f6); box-shadow:0 0 0 3px rgba(59,130,246,.25); }
-.error-message { color:var(--danger,#dc3545); font-size:.7rem; font-weight:500; }
-
+.crud-form { display:flex; flex-direction:column; gap:1.25rem; }
+.field-grid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
 .form-actions { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:.5rem; }
-/* Buttons now use shared .btn classes via appButton directive. Minor form-actions spacing retained. */
 
 /* Stats */
 .stats-section { margin-bottom:1rem; }

@@ -42,16 +42,17 @@ describe('InteractiveDemoComponent', () => {
     
     expect(buttons).toHaveLength(4);
     
-    expect(buttons[0]).toHaveClass('btn-primary');
+  // Updated to BEM class naming (legacy alias btn-primary removed)
+  expect(buttons[0]).toHaveClass('btn--primary');
     expect(buttons[0].textContent?.trim()).toBe('Primary Button');
     
-    expect(buttons[1]).toHaveClass('btn-secondary');
+  expect(buttons[1]).toHaveClass('btn--secondary');
     expect(buttons[1].textContent?.trim()).toBe('Secondary Button');
     
-    expect(buttons[2]).toHaveClass('btn-ghost');
+  expect(buttons[2]).toHaveClass('btn--ghost');
     expect(buttons[2].textContent?.trim()).toBe('Ghost Button');
     
-    expect(buttons[3]).toHaveClass('btn-primary');
+  expect(buttons[3]).toHaveClass('btn--primary');
     expect(buttons[3].textContent?.trim()).toBe('Disabled Button');
     expect(buttons[3]).toBeDisabled();
   });
@@ -108,8 +109,8 @@ describe('InteractiveDemoComponent', () => {
     expect(firstCard.querySelector('p')?.textContent?.trim()).toContain('standard card styling');
     
     const firstCardButton = firstCard.querySelector('button');
-    expect(firstCardButton).toHaveClass('btn-primary');
-    expect(firstCardButton).toHaveClass('btn-small');
+  expect(firstCardButton).toHaveClass('btn--primary');
+  expect(firstCardButton).toHaveClass('btn--sm');
     expect(firstCardButton?.textContent?.trim()).toBe('Action');
     
     // Second card
@@ -118,8 +119,8 @@ describe('InteractiveDemoComponent', () => {
     expect(secondCard.querySelector('p')?.textContent?.trim()).toContain('automatically adapt');
     
     const secondCardButton = secondCard.querySelector('button');
-    expect(secondCardButton).toHaveClass('btn-secondary');
-    expect(secondCardButton).toHaveClass('btn-small');
+  expect(secondCardButton).toHaveClass('btn--secondary');
+  expect(secondCardButton).toHaveClass('btn--sm');
     expect(secondCardButton?.textContent?.trim()).toBe('Secondary');
   });
 

@@ -13,22 +13,13 @@
     @include auth-header;
   }
 
-  .auth-form {
-    @include auth-form-base;
-  }
+  .crud-form { @include auth-form-base; }
 
   .auth-footer {
     @include auth-footer;
   }
 
-  // Login-specific message styles
-  .error-message {
-    @include auth-message('error');
-  }
-
-  .success-message {
-    @include auth-message('success');
-  }
+  .form-error { @include auth-message('error'); }
 }
 
 // Responsive design

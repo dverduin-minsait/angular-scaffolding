@@ -16,14 +16,14 @@ import { RouterLink } from '@angular/router';
           <p>Sign in to your account</p>
         </header>
         
-        <form class="auth-form" 
+        <form class="crud-form" 
               (ngSubmit)="onSubmit()" 
               #loginForm="ngForm"
               aria-labelledby="login-title"
               novalidate>
-              
-          <div class="form-group">
-            <label for="email">Email <span aria-label="required">*</span></label>
+          
+          <div class="form-field">
+            <label class="form-label" for="email">Email <span aria-label="required">*</span></label>
             <input 
               id="email" 
               name="email"
@@ -39,14 +39,14 @@ import { RouterLink } from '@angular/router';
               #emailField="ngModel"
             />
             @if (emailError()) {
-              <div id="email-error" class="error-message" role="alert" aria-live="polite">
+              <div id="email-error" class="form-error" role="alert" aria-live="polite">
                 {{ emailError() }}
               </div>
             }
           </div>
           
-          <div class="form-group">
-            <label for="password">Password <span aria-label="required">*</span></label>
+          <div class="form-field">
+            <label class="form-label" for="password">Password <span aria-label="required">*</span></label>
             <input 
               id="password" 
               name="password"
@@ -62,7 +62,7 @@ import { RouterLink } from '@angular/router';
               #passwordField="ngModel"
             />
             @if (passwordError()) {
-              <div id="password-error" class="error-message" role="alert" aria-live="polite">
+              <div id="password-error" class="form-error" role="alert" aria-live="polite">
                 {{ passwordError() }}
               </div>
             }
@@ -88,7 +88,7 @@ import { RouterLink } from '@angular/router';
           </div>
           
           @if (submitError()) {
-            <div id="submit-error" class="error-message" role="alert" aria-live="assertive">
+            <div id="submit-error" class="form-error" role="alert" aria-live="assertive">
               {{ submitError() }}
             </div>
           }

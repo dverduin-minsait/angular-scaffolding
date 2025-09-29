@@ -35,7 +35,7 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const form = compiled.querySelector('.auth-form');
+  const form = compiled.querySelector('.crud-form');
     
     expect(form).toBeTruthy();
     expect(form?.tagName.toLowerCase()).toBe('form');
@@ -108,12 +108,12 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const formGroups = compiled.querySelectorAll('.form-group');
+    const formFields = compiled.querySelectorAll('.form-field');
     
-    expect(formGroups).toHaveLength(2);
+    expect(formFields).toHaveLength(2);
     
-    // Each form group should have a label and input
-    formGroups.forEach(group => {
+    // Each form field should have a label and input
+    formFields.forEach(group => {
       expect(group.querySelector('label')).toBeTruthy();
       expect(group.querySelector('input')).toBeTruthy();
     });
@@ -127,11 +127,11 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('.auth-page')).toBeTruthy();
     expect(compiled.querySelector('.auth-container')).toBeTruthy();
     expect(compiled.querySelector('.auth-header')).toBeTruthy();
-    expect(compiled.querySelector('.auth-form')).toBeTruthy();
+  expect(compiled.querySelector('.crud-form')).toBeTruthy();
     expect(compiled.querySelector('.auth-footer')).toBeTruthy();
     
     // Form elements
-  expect(compiled.querySelectorAll('.form-group')).toHaveLength(2);
+  expect(compiled.querySelectorAll('.form-field')).toHaveLength(2);
   expect(compiled.querySelectorAll('.form-control')).toHaveLength(2);
     expect(compiled.querySelector('.form-actions')).toBeTruthy();
   });
@@ -195,7 +195,7 @@ describe('LoginComponent', () => {
     const authPage = compiled.querySelector('.auth-page');
     const authContainer = compiled.querySelector('.auth-container');
     const authHeader = compiled.querySelector('.auth-header');
-    const authForm = compiled.querySelector('.auth-form');
+  const authForm = compiled.querySelector('.crud-form');
     const authFooter = compiled.querySelector('.auth-footer');
     
     // Verify proper nesting

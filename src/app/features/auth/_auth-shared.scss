@@ -49,271 +49,22 @@
   }
 }
 
-// Base button styles (simplified to avoid theme system dependency)
-@mixin auth-button($variant: 'primary') {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 500;
-  border: 1px solid;
+// (Removed deprecated auth-button mixin & nested .form-actions button styles —
+//  button appearance now standardized via ButtonDirective + global button/theme mixins.)
 
-  @if $variant == 'primary' {
-    background-color: var(--primary-500);
-    color: var(--text-inverse);
-    border-color: var(--primary-500);
-
-    &:hover:not(:disabled) {
-      background-color: var(--primary-600);
-      border-color: var(--primary-600);
-    }
-  } @else {
-    background-color: transparent;
-    color: var(--text-primary);
-    border-color: var(--border-primary);
-
-    &:hover:not(:disabled) {
-      background-color: var(--hover-bg);
-    }
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--focus-ring);
-  }
-
-  &:disabled {
-    background-color: var(--disabled-bg);
-    color: var(--disabled-text);
-    border-color: var(--disabled-bg);
-    cursor: not-allowed;
-  }
-}
-
-// Simplified input styles
-@mixin auth-input {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary-500);
-    box-shadow: 0 0 0 3px var(--focus-ring);
-  }
-
-  &:disabled {
-    background-color: var(--disabled-bg);
-    color: var(--disabled-text);
-    cursor: not-allowed;
-  }
-
-  &::placeholder {
-    color: var(--text-muted);
-  }
-}
-
-// Auth form base styles
+// Bridge mixin: auth-form-base
+// Purpose: Legacy include retained in auth component SCSS; maps to generic form system.
+// Provides only minimal spacing hooks so auth pages can add layout tweaks without duplicating form styles.
 @mixin auth-form-base {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-
-    label {
-      color: var(--text-primary);
-      font-weight: 500;
-      font-size: 0.875rem;
-    }
-
-    input, select, textarea {
-      @include auth-input;
-    }
-    
-    select {
-      cursor: pointer;
-      
-      option:disabled {
-        color: var(--text-muted);
-        font-style: italic;
-      }
-    }
-    
-    textarea {
-      resize: vertical;
-      min-height: 4rem;
-      font-family: inherit;
-      line-height: 1.5;
-    }
-    
-    .form-hint {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      margin-top: -0.25rem;
-    }
-    
-    // Radio button group styles - Modern Card Design
-    .radio-group {
-      border: none;
-      padding: 0;
-      margin: 0;
-      
-      legend {
-        color: var(--text-primary);
-        font-weight: 500;
-        font-size: 0.875rem;
-        padding: 0;
-        margin-bottom: 0.75rem;
-      }
-      
-      .radio-options {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 0.75rem;
-        
-        @media (max-width: 640px) {
-          grid-template-columns: 1fr;
-        }
-      }
-      
-      .radio-option {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        cursor: pointer;
-        padding: 1rem;
-        border: 2px solid var(--border-primary);
-        border-radius: 0.75rem;
-        background: var(--bg-primary);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow: hidden;
-        
-        // Gradient overlay effect
-        &::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
-          opacity: 0;
-          transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          z-index: 0;
-        }
-        
-        &:hover {
-          border-color: var(--primary-400);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 25px -8px var(--primary-500);
-          
-          &::before {
-            opacity: 0.1;
-          }
-        }
-        
-        // Custom radio button
-        input[type="radio"] {
-          position: relative;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border: 2px solid var(--border-primary);
-          border-radius: 50%;
-          background: var(--bg-secondary);
-          cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          z-index: 1;
-          flex-shrink: 0;
-          
-          &::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary-500);
-            transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-          }
-          
-          &:checked {
-            border-color: var(--primary-500);
-            background: var(--bg-secondary);
-            
-            &::before {
-              transform: translate(-50%, -50%) scale(1);
-            }
-          }
-          
-          &:focus {
-            outline: none;
-            border-color: var(--primary-500);
-            box-shadow: 0 0 0 4px var(--focus-ring);
-          }
-        }
-        
-        // Label styling
-        .radio-label {
-          color: var(--text-primary);
-          font-weight: 500;
-          font-size: 0.875rem;
-          cursor: pointer;
-          position: relative;
-          z-index: 1;
-          transition: color 0.3s ease;
-        }
-        
-        // Selected state
-        &:has(input:checked) {
-          border-color: var(--primary-500);
-          background: var(--bg-secondary);
-          
-          &::before {
-            opacity: 0.15;
-          }
-          
-          .radio-label {
-            color: var(--primary-600);
-            font-weight: 600;
-          }
-        }
-        
-        // Active/pressed state
-        &:active {
-          transform: translateY(-1px);
-        }
-      }
-    }
-  }
+  gap: 1.25rem; // vertical rhythm between form-field groups
 
   .form-actions {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
-
-    .btn-primary {
-      @include auth-button('primary');
-      width: 100%;
-      justify-content: center;
-    }
-
-    .btn-secondary {
-      @include auth-button('secondary');
-      width: 100%;
-      justify-content: center;
-    }
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
   }
 }
 
@@ -342,16 +93,6 @@
 }
 
 // Register-specific mixins
-@mixin form-group-inline {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-}
-
 @mixin terms-checkbox {
   display: flex;
   align-items: flex-start;

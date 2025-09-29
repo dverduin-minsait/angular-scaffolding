@@ -89,7 +89,7 @@ describe('ThemeControlsComponent Accessibility', () => {
 
   describe('Button Accessibility', () => {
     it('should have proper button types and labels', () => {
-      const quickToggle = fixture.nativeElement.querySelector('.toggle-button.btn-primary');
+  const quickToggle = fixture.nativeElement.querySelector('.toggle-button.btn--primary');
       const resetButton = fixture.nativeElement.querySelector('button[aria-label*="Reset theme settings"]');
 
       expect(quickToggle.getAttribute('type')).toBe('button');
@@ -135,7 +135,7 @@ describe('ThemeControlsComponent Accessibility', () => {
       // Should include: radio buttons, quick toggle, checkbox, reset button
       const expectedElements = [
         '[role="radio"]',
-        '.toggle-button.btn-primary',
+        '.toggle-button.btn--primary',
         'input[type="checkbox"]',
         'button[aria-label*="Reset theme settings"]'
       ];
@@ -160,7 +160,7 @@ describe('ThemeControlsComponent Accessibility', () => {
 
   describe('Screen Reader Support', () => {
     it('should provide descriptive labels for all controls', () => {
-      const quickToggle = fixture.nativeElement.querySelector('.toggle-button.btn-primary');
+  const quickToggle = fixture.nativeElement.querySelector('.toggle-button.btn--primary');
       const checkboxLabel = fixture.nativeElement.querySelector('label.checkbox-label span');
 
       expect(quickToggle.getAttribute('aria-label')).toContain('Switch to');
