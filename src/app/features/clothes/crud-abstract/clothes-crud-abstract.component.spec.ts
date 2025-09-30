@@ -5,6 +5,7 @@ import { ClothesApiService, ClothingItemApi } from '../../../core/api/clothes/cl
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
+import { suppressClothesCrudConsole } from '../../../testing/suppress-console';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 
 // --- Mock Modal ---
@@ -123,6 +124,15 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     modal = TestBed.inject(ModalService) as unknown as MockModalService;
     api.seed([seedItem]);
     fixture.detectChanges();
+  });
+
+  // Suppress noisy success/error logs specific to this component while testing behavior
+  let restoreConsole: () => void;
+  beforeAll(() => {
+    restoreConsole = suppressClothesCrudConsole();
+  });
+  afterAll(() => {
+    restoreConsole?.();
   });
 
   it('initial state: form invalid & not editing', () => {

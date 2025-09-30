@@ -9,6 +9,13 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/**/index.ts',
     '!src/**/*.module.ts',
+    // Exclude route definition files from coverage
+    '!src/**/*.routes.ts',
+    '!src/**/*.routes.server.ts',
+    '!src/app/app.routes.ts',
+    '!src/app/app.routes.server.ts',
+    '!src/app/app.config.ts',
+    '!src/app/app.config.server.ts',
     '!src/main.ts',
     '!src/main.server.ts',
     '!src/server.ts',

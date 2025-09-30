@@ -369,4 +369,140 @@ describe('ThemeService', () => {
       expect(service.getThemeIcon()).toBe('🌙');
     });
   });
+
+  describe('Variant & Pair Toggling', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should toggle light2 -> dark2 and dark2 -> light2', () => {
+      service.setTheme('light2');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('dark2');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('light2');
+    });
+
+    it('should toggle custom theme to light (fallback branch)', () => {
+      // Register a custom theme that does not include dark keyword
+      const custom = { name: 'ocean', displayName: 'Ocean', icon: '🌊', cssClass: 'ocean-theme' };
+      service.registerCustomTheme(custom);
+      service.setTheme('ocean');
+      service.toggleTheme();
+      expect(service.currentTheme()).toBe('light');
+    });
+
+    it('should toggle theme pair across all built-ins', () => {
+      service.setTheme('light');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('light2');
+      service.toggleThemePair(); // light2 -> light
+      expect(service.currentTheme()).toBe('light');
+      service.setTheme('dark');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('dark2');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('dark');
+    });
+
+    it('should toggle theme pair for system respecting media query (dark preferred)', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: true, configurable: true });
+      service.setTheme('system');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('dark2');
+    });
+
+    it('should toggle theme pair for system when light preferred', () => {
+      Object.defineProperty(mockMediaQuery, 'matches', { value: false, configurable: true });
+      service.setTheme('system');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('light2');
+    });
+
+    it('should toggle theme pair for custom theme to light2', () => {
+      const custom = { name: 'forest', displayName: 'Forest', icon: '🌳', cssClass: 'forest-theme' };
+      service.registerCustomTheme(custom);
+      service.setTheme('forest');
+      service.toggleThemePair();
+      expect(service.currentTheme()).toBe('light2');
+    });
+
+    it('should compute theme pair correctly', () => {
+      service.setTheme('light');
+      expect(service.getCurrentThemePair()).toBe(1);
+      service.setTheme('dark2');
+      expect(service.getCurrentThemePair()).toBe(2);
+    });
+  });
+
+  describe('High Contrast & Custom Themes', () => {
+    beforeEach(() => {
+      service = TestBed.inject(ThemeService);
+    });
+
+    it('should set and toggle high contrast', () => {
+      expect(service.highContrast()).toBe(false);
+      service.setHighContrast(true);
+      expect(service.highContrast()).toBe(true);
+      service.toggleHighContrast();
+      expect(service.highContrast()).toBe(false);
+    });
+
+    it('should register, update, and list custom theme and detect dark mode naming', () => {
+      const darkCustom = { name: 'dark-ocean', displayName: 'Dark Ocean', icon: '🌊', cssClass: 'dark-ocean-theme' };
+      service.registerCustomTheme(darkCustom);
+      service.setTheme('dark-ocean');
+      expect(service.isDarkMode()).toBe(true); // name includes dark
+      // Update existing
+      const updated = { ...darkCustom, displayName: 'Deep Dark Ocean' };
+      service.registerCustomTheme(updated);
+      const all = service.getAllThemes();
+      const found = all.find(t => t.name === 'dark-ocean');
+      expect(found?.displayName).toBe('Deep Dark Ocean');
+    });
+
+    it('should unregister custom theme and fallback to system when removing current theme', () => {
+      const theme = { name: 'sunset', displayName: 'Sunset', icon: '🌇', cssClass: 'sunset-theme' };
+      service.registerCustomTheme(theme);
+      service.setTheme('sunset');
+      service.unregisterCustomTheme('sunset');
+      expect(service.currentTheme()).toBe('system');
+      const all = service.getAllThemes();
+      expect(all.find(t => t.name === 'sunset')).toBeUndefined();
+    });
+
+    it('should apply config with customThemes and highContrast', async () => {
+      const customList = [{ name: 'cool', displayName: 'Cool', icon: '🧊', cssClass: 'cool-theme' }];
+      service.applyThemeConfig({ customThemes: customList, highContrast: true });
+      expect(service.highContrast()).toBe(true);
+      expect(service.getAllThemes().some(t => t.name === 'cool')).toBe(true);
+      // debounce write
+      await new Promise(r => setTimeout(r, 350));
+      expect(mockStorage.setItem).toHaveBeenCalledWith('theme-high-contrast', 'true');
+    });
+  });
+
+  describe('Auto Switch Time-Based Logic', () => {
+    beforeEach(() => {
+      jest.useFakeTimers({ now: new Date('2025-09-30T10:00:00Z').getTime() }); // 10 AM UTC
+      service = TestBed.inject(ThemeService);
+      service.setUseSystemPreference(false); // allow override
+    });
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should set light theme during day when autoSwitch enabled', () => {
+      service.setTheme('dark'); // start dark
+      service.setAutoSwitch(true); // immediate update should run
+      expect(['light', 'light2', 'system']).toContain(service.currentTheme());
+    });
+
+    it('should set dark theme at night when autoSwitch enabled', () => {
+      jest.setSystemTime(new Date('2025-09-30T23:00:00Z'));
+      service.setTheme('light');
+      service.setAutoSwitch(true);
+      expect(['dark', 'dark2', 'system']).toContain(service.currentTheme());
+    });
+  });
 });
