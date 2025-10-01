@@ -13,7 +13,7 @@ import { ButtonDirective } from '../../../shared/directives';
 @Component({
   selector: 'app-clothes-crud-abstract',
   standalone: true,
-  // Removed providers override so tests can supply a mock ClothesApiService
+  providers: [ClothesApiService],
   imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective],
   templateUrl: './clothes-crud-abstract.component.html',
   styleUrls: ['./clothes-crud-abstract.component.scss']

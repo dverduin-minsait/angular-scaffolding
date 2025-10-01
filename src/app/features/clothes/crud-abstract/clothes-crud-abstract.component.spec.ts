@@ -104,7 +104,6 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     await TestBed.configureTestingModule({
       imports: [ClothesCrudAbstractComponent, HttpClientTestingModule],
       providers: [
-        { provide: ClothesApiService, useClass: MockClothesApiService },
         { provide: ModalService, useClass: MockModalService },
         {
           provide: LOCAL_STORAGE,
@@ -116,11 +115,19 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
           }
         }
       ]
-    }).compileComponents();
+    })
+    .overrideComponent(ClothesCrudAbstractComponent, {
+      set: {
+        providers: [
+          { provide: ClothesApiService, useClass: MockClothesApiService }
+        ]
+      }
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(ClothesCrudAbstractComponent);
     component = fixture.componentInstance;
-    api = TestBed.inject(ClothesApiService) as unknown as MockClothesApiService;
+    api = component['clothesService'] as unknown as MockClothesApiService;
     modal = TestBed.inject(ModalService) as unknown as MockModalService;
     api.seed([seedItem]);
     fixture.detectChanges();
