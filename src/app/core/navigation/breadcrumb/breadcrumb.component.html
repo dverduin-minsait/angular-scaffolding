@@ -1,0 +1,24 @@
+@if (items().length) {
+  <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+    <div class="breadcrumb-container">
+      <ol class="breadcrumb" role="list">
+        <!-- Home entry -->
+        <li class="breadcrumb__item breadcrumb__home">
+          <a routerLink="/dashboard" aria-label="Home">
+            <span class="breadcrumb__icon" aria-hidden="true">🏠</span>
+            <span class="breadcrumb__visually-hidden">Home</span>
+          </a>
+        </li>
+        @for (item of items(); track item.url) {
+          <li class="breadcrumb__item" [class.is-active]="item.isLast">
+            @if (!item.isLast) {
+              <a [routerLink]="item.url">{{ item.label }}</a>
+            } @else {
+              <span aria-current="page">{{ item.label }}</span>
+            }
+          </li>
+        }
+      </ol>
+    </div>
+  </nav>
+}

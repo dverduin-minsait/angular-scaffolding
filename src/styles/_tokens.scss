@@ -23,6 +23,16 @@
   --fc-placeholder: var(--text-muted);
   --fc-disabled-bg: var(--disabled-bg);
   --fc-disabled-fg: var(--disabled-text);
+
+  /* Breadcrumb tokens */
+  --bc-gap: 0.5rem;
+  --bc-fg: var(--text-muted);
+  --bc-fg-active: var(--text-primary);
+  --bc-separator: var(--border-primary);
+  --bc-font-size: 1rem; /* elevated for better prominence */
+
+  /* Layout tokens */
+  --layout-max-width: 1200px; /* shared container width for header, breadcrumb, main sections */
 }
 
 /* High contrast adjustments - rely on existing .high-contrast class applied by ThemeService */
