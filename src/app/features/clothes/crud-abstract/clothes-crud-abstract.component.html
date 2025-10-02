@@ -2,21 +2,21 @@
   <h2 id="crud-title">Clothes Manager</h2>
 
   <section class="status-bar" aria-labelledby="crud-title">
-    <div class="status-item" [class.loading]="clothesService.loading().isLoading">
+    <div class="status-item" [class.loading]="clothesStore.loading().isLoading">
       <span aria-live="polite">
-        {{ clothesService.loading().isLoading ? 'Loading ' + clothesService.loading().operation : 'Ready' }}
+        {{ clothesStore.loading().isLoading ? 'Loading ' + clothesStore.loading().operation : 'Ready' }}
       </span>
     </div>
-    <div class="status-item" aria-label="Items loaded">Items: {{ clothesService.items().length }}</div>
-    <div class="status-item" *ngIf="clothesService.error()" role="alert" aria-live="assertive">
-      ⚠️ {{ clothesService.error()?.message }}
+    <div class="status-item" aria-label="Items loaded">Items: {{ clothesStore.items().length }}</div>
+    <div class="status-item" *ngIf="clothesStore.error()" role="alert" aria-live="assertive">
+      ⚠️ {{ clothesStore.error()?.message }}
     </div>
   </section>
 
   <section class="grid-section" aria-label="Items list">
     <div class="grid-actions">
       <button type="button" appButton variant="secondary" (click)="refreshData()"
-        [disabled]="clothesService.loading().isLoading">
+        [disabled]="clothesStore.loading().isLoading">
         Refresh
       </button>
       <button type="button" appButton variant="secondary" (click)="clearSelection()" [disabled]="!selectedItem()">
@@ -35,9 +35,9 @@
         </div>
       </details>
     </div>
-    <app-responsive-grid [dataConfig]="dataConfig" [dataSignal]="clothesService.items()" [config]="gridConfig">
+    <app-responsive-grid [dataConfig]="dataConfig" [dataSignal]="clothesStore.items()" [config]="gridConfig">
       <div slot="mobile-cards" class="mobile-cards">
-        @for (item of clothesService.items(); track item.id) {
+        @for (item of clothesStore.items(); track item.id) {
         <div class="mobile-card" (click)="editItem(item)" tabindex="0" (keydown.enter)="editItem(item)"
           (keydown.space)="editItem(item)">
           <header class="card-header">
@@ -136,7 +136,7 @@
 
       <div class="form-actions">
         <button type="submit" appButton variant="primary"
-          [disabled]="itemForm.invalid || clothesService.loading().isLoading">{{ isEditing()? 'Update Item' : 'Create Item' }}</button>
+          [disabled]="itemForm.invalid || clothesStore.loading().isLoading">{{ isEditing()? 'Update Item' : 'Create Item' }}</button>
         <button type="button" appButton variant="secondary" (click)="resetForm()">Reset</button>
         @if(isEditing()){<button type="button" appButton variant="secondary" (click)="cancelEdit()">Cancel</button>}
       </div>
@@ -146,13 +146,13 @@
   <section class="stats-section" aria-label="Statistics">
     <div class="stats-grid">
       <div class="stat-card" aria-label="Total items"><span class="stat-label">Total</span><span class="stat-value">{{
-          clothesService.items().length }}</span></div>
+          clothesStore.items().length }}</span></div>
       <div class="stat-card" aria-label="Available items"><span class="stat-label">Available</span><span
-          class="stat-value">{{ clothesService.availableItems().length }}</span></div>
+          class="stat-value">{{ clothesStore.availableItems().length }}</span></div>
       <div class="stat-card" aria-label="Low stock items"><span class="stat-label">Low Stock</span><span
-          class="stat-value">{{ clothesService.lowStockItems().length }}</span></div>
+          class="stat-value">{{ clothesStore.lowStockItems().length }}</span></div>
       <div class="stat-card" aria-label="Inventory value"><span class="stat-label">Value</span><span
-          class="stat-value">${{ clothesService.totalValue().toFixed(2) }}</span></div>
+          class="stat-value">${{ clothesStore.totalValue().toFixed(2) }}</span></div>
     </div>
   </section>
 </div>

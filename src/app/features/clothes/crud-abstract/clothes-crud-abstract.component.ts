@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, Injector, runInInjectionContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
-import { ClothesApiService, ClothingItemApi } from '../../../core/api/clothes/clothes.service';
+import { ClothingItemApi } from '../../../core/api/clothes/clothes';
 import { ResponsiveGridComponent, ResponsiveGridConfig } from '../../../shared/components/responsive-grid/responsive-grid.component';
 import { GridDataConfig } from '../../../core/services/grid-data.service';
 import { MiniCurrencyPipe } from '../../../shared/pipes/mini-currency.pipe';
@@ -9,18 +9,19 @@ import { effect } from '@angular/core';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../core/services/modal/confirm-dialog.component';
 import { ButtonDirective } from '../../../shared/directives';
+import { ClothesStore } from '../../../core/store/clothes/clothes.store';
 
 @Component({
   selector: 'app-clothes-crud-abstract',
   standalone: true,
-  providers: [ClothesApiService],
+  providers: [ClothesStore],
   imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective],
   templateUrl: './clothes-crud-abstract.component.html',
   styleUrls: ['./clothes-crud-abstract.component.scss']
 })
 export class ClothesCrudAbstractComponent implements OnInit {
   private fb = inject(FormBuilder);
-  protected clothesService = inject(ClothesApiService);
+  protected clothesStore = inject(ClothesStore);
   private modal = inject(ModalService);
   // Capture injector so we can safely create runtime effects in methods regardless of caller context (aids testability)
   private injector = inject(Injector);
@@ -107,7 +108,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   }
 
   refreshData(): void {
-    this.clothesService.refresh().subscribe({
+    this.clothesStore.refresh().subscribe({
       next: () => console.log('✅ Data loaded successfully'),
       error: (error) => console.error('❌ Error loading data:', error)
     });
@@ -126,7 +127,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
       if (this.isEditing()) {
         const id = this.selectedItem()!.id;
-        this.clothesService.update(id, itemData).subscribe({
+        this.clothesStore.update(id, itemData).subscribe({
           next: (updated) => {
             console.log('✅ Item updated successfully:', updated);
             this.resetForm();
@@ -135,7 +136,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
           error: (error) => console.error('❌ Error updating item:', error)
         });
       } else {
-        this.clothesService.create(itemData).subscribe({
+        this.clothesStore.create(itemData).subscribe({
           next: (created) => {
             console.log('✅ Item created successfully:', created);
             this.resetForm();
@@ -148,7 +149,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   selectItem(item: ClothingItemApi): void {
     this.selectedItem.set(item);
-    this.clothesService.setSelectedItem(item);
+    this.clothesStore.setSelected(item);
   }
 
   editItem(item: ClothingItemApi): void {
@@ -181,7 +182,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
       effect(() => {
         const closed = ref.closed();
         if (closed?.data === true) {
-          this.clothesService.delete(id).subscribe({
+          this.clothesStore.delete(id).subscribe({
             next: () => {
               console.log('✅ Item deleted successfully');
               if (this.selectedItem()?.id === id) this.clearSelection();
@@ -224,7 +225,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   clearSelection(): void {
     this.selectedItem.set(null);
-    this.clothesService.setSelectedItem(null);
+    this.clothesStore.setSelected(null);
   }
 
   isFieldInvalid(fieldName: string): boolean {
