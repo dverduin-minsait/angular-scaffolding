@@ -7,6 +7,7 @@ import { TranslationService } from './core/services/translation.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
 import { Component as NgComponent } from '@angular/core';
 
 @NgComponent({
@@ -68,37 +69,18 @@ describe('App', () => {
           provide: WINDOW_DOCUMENT,
           useValue: mockDocument
         },
-        {
-          provide: TranslationService,
-          useValue: {
-            currentLang: () => 'en',
-            use: () => {},
-            availableLangs: ['en','es','pt','ca','gl'],
-            instant: (key: string) => {
-              const dict: Record<string,string> = {
-                'app.title': 'Angular Architecture',
-                'app.navigation.dashboard': 'Dashboard',
-                'app.navigation.clothes': 'Clothes',
-                'app.navigation.auth': 'Authentication',
-                'app.navigation.themeDemo': 'Theme Demo',
-                'app.navigation.settings': 'Settings',
-                'app.actions.toggleTheme': 'Switch to {{theme}} theme',
-                'app.actions.openMenu': 'Open menu',
-                'app.actions.closeMenu': 'Close menu'
-              };
-              return dict[key] ?? key;
-            }
-          }
-        }
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to light theme' })
       ]
-    }).compileComponents();
+    });
 
-    // Override HeaderComponent to swap out language switcher
+    // Override HeaderComponent to swap out language switcher and add translate stub pipe
     TestBed.overrideComponent(HeaderComponent, {
       set: {
-        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent]
+        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe]
       }
     });
+
+    await TestBed.compileComponents();
   });
 
   it('should create the app', () => {

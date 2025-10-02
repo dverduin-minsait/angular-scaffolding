@@ -1,191 +1,128 @@
-# AngularArchitecture
+# Angular Architecture Blueprint (Angular 20)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+Modern, production-ready Angular 20 reference application: standalone APIs, signals-first reactivity, zoneless change detection, SSR + hydration, accessibility focus, and a disciplined architecture documented through ADRs.
 
-## Development server
+<!-- Badges: replace placeholder links when workflows are added -->
+![CI](https://img.shields.io/badge/CI-pending-lightgrey.svg) ![Coverage](https://img.shields.io/badge/coverage-TBD-lightgrey.svg) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-To start a local development server, run:
+## Why This Project
+* Demonstrates a future-facing Angular stack (standalone + signals + zoneless) with pragmatic patterns.
+* Serves as a seed / blueprint for real product teams (not a toy demo).
+* Emphasizes accessibility (WCAG AA intent) and testability from the start.
+* Documents architectural decisions in ADRs for transparency & evolution.
 
+## Tech Stack
+* Angular 20 (standalone, no NgModules) + zoneless change detection.
+* Signals for UI state (RxJS reserved for external/event/HTTP boundary use).
+* SSR + hydration (`server.ts`, platform-server integration).
+* Jest + Testing Library + strict TypeScript.
+* SCSS design tokens + theme foundations.
+* Lightweight i18n strategy with fast translation stubs in unit tests.
+
+## Quick Start
 ```bash
-ng serve
+npm install
+npm start              # Dev server: http://localhost:4200
+# or include mock/local configs:
+npm run start:mock     # Uses mock configuration
+npm run start:local    # Local environment configuration
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### SSR (Server-Side Rendering)
+Build + run the generated server bundle (adjust if a custom script is added later):
 ```bash
-ng generate component component-name
+npm run build
+node dist/angular-architecture/server/server.mjs
 ```
+Then visit http://localhost:4000 (or the configured port) if your server sets one. (Add a dedicated npm script later for ergonomics.)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Available Scripts
+| Script | Purpose |
+| ------ | ------- |
+| npm start | Standard dev server (HMR) |
+| npm run start:mock | Dev server with mock env |
+| npm run start:local | Dev server with local env |
+| npm run dev | Run JSON mock API + dev server concurrently |
+| npm run dev:mock | Mock API + mock env dev server |
+| npm run dev:local | Mock API + local env dev server |
+| npm test | Run Jest test suite |
+| npm run test:watch | Jest in watch mode |
+| npm run coverage | Jest with coverage report |
+| npm run build | Production build |
+| npm run build:prod | Explicit production build (alias) |
+| npm run build:mock | Mock configuration build |
+| npm run build:local | Local configuration build |
+| npm run watch | Rebuild on file changes |
+| npm run api | Launch JSON mock API (json-server) |
 
-```bash
-ng generate --help
+## Architecture Snapshot
+* Feature-first organization: `src/app/features/<domain>` (all lazily routed).
+* `core/` holds cross-cutting infrastructure (tokens, base API service, etc.).
+* `shared/` reserved for purely generic, stateless UI and utilities.
+* Signals & computed values drive component view state; minimize manual subscriptions.
+* HTTP layer normalizes/serializes data at the boundary (extend the existing Base API service—see codebase).
+* Strict separation of business vs presentational concerns.
+* ADRs in `docs/adr` record decisions (e.g., zoneless, modal architecture, design system foundations).
+
+## Key Features
+| Area | Highlights |
+| ---- | ---------- |
+| Reactivity | Signals-first; RxJS only at integration boundaries |
+| Performance | Zoneless + OnPush semantics via signals & computed pre-derivations |
+| SSR | Server build + hydration-ready entry points |
+| Accessibility | Semantic elements, accessible names, focus management strategy |
+| i18n | JSON translation files + fast testing stubs (no network) |
+| Testing | Jest + Testing Library; role/name-first queries |
+| Theming | SCSS tokens + theme toggle patterns |
+| Architecture | Documented via ADRs & enforced conventions |
+
+## Testing & Quality
+* Framework: Jest + @testing-library/angular + jest-dom matchers.
+* Each new component/service: happy path + at least one edge case.
+* Accessibility smoke assertions (role / name queries) encouraged.
+* Coverage command: `npm run coverage` (thresholds configurable in `jest.config.js`).
+* i18n unit tests use translation stubs for speed & determinism.
+
+## i18n Example (Unit Test Stub)
+```ts
+import { provideStubTranslationService, TranslateStubPipe } from 'src/app/testing/i18n-testing';
+
+await TestBed.configureTestingModule({
+  imports: [MyComponent, TranslateStubPipe],
+  providers: [
+    ...provideStubTranslationService({ 'app.title': 'Custom Title' })
+  ]
+});
 ```
+Use real translations by importing the production translation module instead of stubs in integration tests.
 
-## Building
+## Accessibility Commitments
+* Every interactive control has an accessible name.
+* Forms: explicit labels + described-by for hints/errors.
+* Decorative images: empty alt or `aria-hidden="true"`.
+* Focus management after route transitions (primary landmark/heading).
+* Aim for WCAG 2.1 AA contrast ratios.
 
-To build the project run:
+## Documentation & Decisions
+* Architectural Decision Records: `docs/adr`
+* AI development & contribution guidelines: `AI_GUIDELINES.md`
 
-```bash
-ng build
-```
+## Roadmap
+* [ ] Bundle size budgets + analyzer script
+* [ ] Playwright E2E tests
+* [ ] jest-axe a11y assertions
+* [ ] Expanded design system components
+* [ ] Logging / observability abstraction
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Contributing
+1. Fork & branch using Conventional Commits (e.g., `feat:`, `fix:`).
+2. Add/update ADRs if introducing or modifying an architectural decision.
+3. Maintain or raise test coverage; include a11y considerations in PR description.
+4. Run lint & tests locally before opening PR.
+5. Keep changes scoped and documented.
 
-## Running unit tests
+## License
+Released under the MIT License. See [`LICENSE`](./LICENSE).
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-# Angular 20 Architecture Blueprint Implementation
-
-This project demonstrates the implementation of Angular 20 Architecture Blueprint for Real Teams, featuring modern practices and best patterns.
-
-## 🏗️ Architecture Overview
-
-### ✅ Implemented Features
-
-1. **Standalone APIs First**
-   - All components use standalone: true
-   - No NgModules used
-   - Clean provider configuration in `app.config.ts`
-
-2. **Signals-First Approach**
-   - Header component uses signals for reactive state
-   - Theme toggle with signal-based state management
-   - Navigation links managed through signals
-
-3. **Domain-Driven Folder Structure**
-   ```
-   src/app/
-   ├── core/          # Singleton services, guards
-   ├── shared/        # UI components, directives, pipes
-   │   └── components/
-   │       └── header/
-   └── features/      # Feature modules
-       ├── auth/
-       ├── dashboard/
-       └── settings/
-   ```
-
-4. **Modern Routing with Lazy Loading**
-   - Standalone components with lazy loading
-   - Feature-based route organization
-   - Clean route definitions
-
-5. **Modern Testing Stack**
-   - Comprehensive test suite for header component
-   - Jasmine/Karma configuration
-   - Accessibility and responsiveness testing
-
-## 🧩 Components
-
-### Header Component (`shared/components/header`)
-
-A fully-featured navigation header with:
-
-- **Signal-based Navigation Links**: Dynamic navigation menu using Angular signals
-- **Theme Toggle**: Dark/light theme switching with localStorage persistence
-- **Responsive Design**: Mobile-friendly responsive layout
-- **Accessibility**: Full ARIA support and keyboard navigation
-- **Type Safety**: Full TypeScript support with interfaces
-
-#### Features:
-- 🔗 Dynamic navigation links with icons
-- 🌓 Theme switching (light/dark) with persistence
-- 📱 Responsive design for mobile and desktop
-- ♿ Full accessibility support
-- 🧪 Comprehensive test coverage
-
-#### Usage:
-```typescript
-// The header is automatically included in the main app
-// Navigation links are configurable through signals
-const links = [
-  { label: 'Dashboard', path: '/dashboard', icon: '📊' },
-  { label: 'Settings', path: '/settings', icon: '⚙️' }
-];
-```
-
-## 🧪 Testing
-
-The project includes comprehensive tests for the header component covering:
-
-- Component initialization and rendering
-- Navigation link functionality
-- Theme toggle behavior
-- Accessibility compliance
-- Responsive design
-- Signal-based state management
-- localStorage integration
-
-### Running Tests
-
-```bash
-npm test
-```
-
-## 🚀 Development Server
-
-```bash
-npm start
-```
-
-Navigate to `http://localhost:4200/`
-
-## 📝 Key Architecture Principles Implemented
-
-1. **Single Responsibility Principle**: Each component and service has a single, well-defined responsibility
-2. **Presentational vs Smart Components**: Header is a presentational component with minimal logic
-3. **Separation of Concerns**: UI, state, and routing logic are properly separated
-4. **Signal-First Reactivity**: Using Angular signals for reactive state management
-5. **Modern Testing**: Comprehensive test coverage with modern testing practices
-
-## 🔄 Future Enhancements
-
-- [ ] Add more feature modules (auth, settings)
-- [ ] Implement signal-based state management service
-- [ ] Add component library with more shared components
-- [ ] Implement SSR optimizations
-- [ ] Add E2E tests with Playwright
-
-## 📚 Architecture Decisions
-
-### Why Signals?
-- Better performance than RxJS for UI state
-- Simpler mental model for component state
-- Future-proof with Angular's direction
-
-### Why Domain-Driven Structure?
-- Better scalability for large teams
-- Clear ownership boundaries
-- Easier to maintain and test
-
-### Why Standalone Components?
-- Smaller bundle sizes
-- Better tree-shaking
-- Simpler dependency injection
-- Future-proof with Angular 20+
-
-This implementation showcases modern Angular development practices while maintaining simplicity and performance.
+---
+If this blueprint helps you, consider opening an ADR or issue to propose improvements. Feedback and contributions welcome!

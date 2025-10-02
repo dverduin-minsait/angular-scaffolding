@@ -8,6 +8,7 @@ import { of } from 'rxjs';
 import { LOCAL_STORAGE } from './core/tokens/local.storage.token';
 import { DOCUMENT, CommonModule } from '@angular/common';
 import { TranslationService } from './core/services/translation.service';
+import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
 import { Component as NgComponent } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -44,6 +45,7 @@ describe('App Accessibility Integration', () => {
     })
     class StubLanguageSwitcherComponent {}
 
+    // Provide a lightweight stub translate pipe to satisfy template bindings without pulling full translation stack
     await TestBed.configureTestingModule({
       imports: [TestAppComponent],
       providers: [
@@ -82,34 +84,15 @@ describe('App Accessibility Integration', () => {
           provide: DOCUMENT,
           useValue: document
         },
-        {
-          provide: TranslationService,
-          useValue: {
-            currentLang: () => 'en',
-            use: () => {},
-            availableLangs: ['en','es','pt','ca','gl'],
-            instant: (key: string) => {
-              const map: Record<string,string> = {
-                'app.title': 'Angular Architecture',
-                'app.navigation.dashboard': 'Dashboard',
-                'app.navigation.clothes': 'Clothes',
-                'app.navigation.auth': 'Auth',
-                'app.navigation.themeDemo': 'Theme Demo',
-                'app.navigation.settings': 'Settings',
-                'app.actions.toggleTheme': 'Switch to dark theme',
-                'app.actions.openMenu': 'Open menu',
-                'app.actions.closeMenu': 'Close menu'
-              };
-              return map[key] ?? key;
-            }
-          }
-        }
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
       ]
-    }).compileComponents();
+    });
 
     TestBed.overrideComponent(HeaderComponent, {
-      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent] }
+      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe] }
     });
+
+    await TestBed.compileComponents();
 
     // Create component in a fresh container
     fixture = TestBed.createComponent(TestAppComponent);
@@ -338,34 +321,15 @@ describe('Tabulation Flow Tests', () => {
           provide: DOCUMENT,
           useValue: document
         },
-        {
-          provide: TranslationService,
-          useValue: {
-            currentLang: () => 'en',
-            use: () => {},
-            availableLangs: ['en','es','pt','ca','gl'],
-            instant: (key: string) => {
-              const map: Record<string,string> = {
-                'app.title': 'Angular Architecture',
-                'app.navigation.dashboard': 'Dashboard',
-                'app.navigation.clothes': 'Clothes',
-                'app.navigation.auth': 'Auth',
-                'app.navigation.themeDemo': 'Theme Demo',
-                'app.navigation.settings': 'Settings',
-                'app.actions.toggleTheme': 'Switch to dark theme',
-                'app.actions.openMenu': 'Open menu',
-                'app.actions.closeMenu': 'Close menu'
-              };
-              return map[key] ?? key;
-            }
-          }
-        }
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
       ]
-    }).compileComponents();
+    });
 
     TestBed.overrideComponent(HeaderComponent, {
-      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent2] }
+      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent2, TranslateStubPipe] }
     });
+
+    await TestBed.compileComponents();
 
     // Create component in a fresh container
     fixture = TestBed.createComponent(TestAppComponent);
