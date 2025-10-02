@@ -1,0 +1,24 @@
+{
+  "app": {
+    "title": "Anguliño",
+    "navigation": {
+      "dashboard": "Panel",
+      "clothes": "Roupa",
+      "auth": "Autenticación",
+      "themeDemo": "Demo Tema",
+      "settings": "Configuración"
+    },
+    "actions": {
+      "toggleTheme": "Cambiar ao tema {{theme}}",
+      "openMenu": "Abrir menú",
+      "closeMenu": "Pechar menú"
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español",
+      "pt": "Portugués",
+      "ca": "Catalán",
+      "gl": "Galego"
+    }
+  }
+}

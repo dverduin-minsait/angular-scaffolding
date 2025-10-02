@@ -1,0 +1,24 @@
+{
+  "app": {
+    "title": "Angulo",
+    "navigation": {
+      "dashboard": "Panel",
+      "clothes": "Ropa",
+      "auth": "Autenticación",
+      "themeDemo": "Demo Tema",
+      "settings": "Configuración"
+    },
+    "actions": {
+      "toggleTheme": "Cambiar a tema {{theme}}",
+      "openMenu": "Abrir menú",
+      "closeMenu": "Cerrar menú"
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español",
+      "pt": "Portugués",
+      "ca": "Catalán",
+      "gl": "Gallego"
+    }
+  }
+}

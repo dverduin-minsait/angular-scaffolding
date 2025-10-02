@@ -1,7 +1,7 @@
 <header class="header" role="banner">
   <div class="header-content">
     <div class="logo">
-      <h1>{{ title() }}</h1>
+      <h1>{{ title() | translate}}</h1>
     </div>
     
     <!-- Desktop Navigation -->
@@ -13,13 +13,13 @@
               [routerLink]="link.path" 
               routerLinkActive="active"
               class="nav-link"
-              [attr.aria-label]="link.label"
+              [attr.aria-label]="link.label | translate"
               [attr.aria-current]="isLinkActive(link.path) ? 'page' : null"
             >
               @if (link.icon) {
                 <span class="nav-icon" [attr.aria-hidden]="true">{{ link.icon }}</span>
               }
-              {{ link.label }}
+              {{ link.label | translate }}
             </a>
           </li>
         }
@@ -27,6 +27,16 @@
     </nav>
     
     <div class="header-actions">
+      <label for="lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
+      <select id="lang-select"
+              class="lang-select"
+              [value]="i18n.currentLang()"
+              (change)="onLanguageChange($event)"
+              aria-label="{{ 'app.actions.changeLanguage' | translate }}">
+        @for (lang of languages; track lang) {
+          <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
+        }
+      </select>
       <button 
         class="theme-toggle"
         (click)="toggleTheme()"
@@ -72,7 +82,7 @@
        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
   <div class="sidebar-content">
     <div class="sidebar-header">
-      <h2 id="sidebar-title">{{ title() }}</h2>
+  <h2 id="sidebar-title">{{ title() | translate }}</h2>
       <button 
         class="close-button"
         (click)="closeSidebar()"
@@ -92,7 +102,7 @@
               [routerLink]="link.path" 
               routerLinkActive="active"
               class="sidebar-nav-link"
-              [attr.aria-label]="link.label"
+              [attr.aria-label]="link.label | translate"
               [attr.aria-current]="isLinkActive(link.path) ? 'page' : null"
               [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
               (click)="closeSidebar()"
@@ -100,7 +110,7 @@
               @if (link.icon) {
                 <span class="sidebar-nav-icon" [attr.aria-hidden]="true">{{ link.icon }}</span>
               }
-              {{ link.label }}
+              {{ link.label | translate }}
             </a>
           </li>
         }
@@ -108,6 +118,19 @@
     </nav>
     
     <div class="sidebar-footer">
+      <div class="sidebar-lang">
+        <label for="sidebar-lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
+        <select id="sidebar-lang-select"
+                class="lang-select"
+                [value]="i18n.currentLang()"
+                (change)="onLanguageChange($event)"
+                [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+                aria-label="{{ 'app.actions.changeLanguage' | translate }}">
+          @for (lang of languages; track lang) {
+            <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
+          }
+        </select>
+      </div>
       <button 
         class="sidebar-theme-toggle"
         (click)="toggleTheme()"

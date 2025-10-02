@@ -1,0 +1,24 @@
+{
+  "app": {
+    "title": "Angle",
+    "navigation": {
+      "dashboard": "Tauler",
+      "clothes": "Roba",
+      "auth": "Autenticació",
+      "themeDemo": "Demo Tema",
+      "settings": "Configuració"
+    },
+    "actions": {
+      "toggleTheme": "Canviar al tema {{theme}}",
+      "openMenu": "Obrir menú",
+      "closeMenu": "Tancar menú"
+    },
+    "languages": {
+      "en": "Anglès",
+      "es": "Espanyol",
+      "pt": "Portuguès",
+      "ca": "Català",
+      "gl": "Gallec"
+    }
+  }
+}

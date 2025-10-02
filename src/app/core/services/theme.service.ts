@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Injectable, inject, signal, effect, InjectionToken } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { ThemeUtils } from '../utils/theme.utils';
@@ -67,7 +67,12 @@ export class ThemeService {
   
   // Debounced storage write
   private _storageWriteTimeout: number | null = null;
-  private readonly STORAGE_WRITE_DEBOUNCE_MS = 300;
+  // Allow debounce to be overridden in tests
+  private static readonly DEFAULT_STORAGE_DEBOUNCE = 300;
+  public static readonly THEME_STORAGE_DEBOUNCE_MS = new InjectionToken<number>('THEME_STORAGE_DEBOUNCE_MS', {
+    factory: () => ThemeService.DEFAULT_STORAGE_DEBOUNCE
+  });
+  private readonly STORAGE_WRITE_DEBOUNCE_MS = inject(ThemeService.THEME_STORAGE_DEBOUNCE_MS);
   
   private get mediaQuery(): MediaQueryList | null {
     if (this._mediaQuery === null && this.document.defaultView && typeof this.document.defaultView.matchMedia === 'function') {

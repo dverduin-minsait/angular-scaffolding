@@ -1,0 +1,24 @@
+{
+  "app": {
+    "title": "Angle",
+    "navigation": {
+      "dashboard": "Dashboard",
+      "clothes": "Clothes",
+      "auth": "Authentication",
+      "themeDemo": "Theme Demo",
+      "settings": "Settings"
+    },
+    "actions": {
+      "toggleTheme": "Switch to {{theme}} theme",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "languages": {
+      "en": "English",
+      "es": "Spanish",
+      "pt": "Portuguese",
+      "ca": "Catalan",
+      "gl": "Galician"
+    }
+  }
+}

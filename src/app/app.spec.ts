@@ -3,6 +3,18 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { App } from './app';
+import { TranslationService } from './core/services/translation.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { Component as NgComponent } from '@angular/core';
+
+@NgComponent({
+  selector: 'app-language-switcher',
+  standalone: true,
+  template: '<!-- stub language switcher -->'
+})
+class StubLanguageSwitcherComponent {}
 import { LOCAL_STORAGE } from './core/tokens/local.storage.token';
 import { WINDOW_DOCUMENT } from './core/tokens/document.token';
 
@@ -55,9 +67,38 @@ describe('App', () => {
         {
           provide: WINDOW_DOCUMENT,
           useValue: mockDocument
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            currentLang: () => 'en',
+            use: () => {},
+            availableLangs: ['en','es','pt','ca','gl'],
+            instant: (key: string) => {
+              const dict: Record<string,string> = {
+                'app.title': 'Angular Architecture',
+                'app.navigation.dashboard': 'Dashboard',
+                'app.navigation.clothes': 'Clothes',
+                'app.navigation.auth': 'Authentication',
+                'app.navigation.themeDemo': 'Theme Demo',
+                'app.navigation.settings': 'Settings',
+                'app.actions.toggleTheme': 'Switch to {{theme}} theme',
+                'app.actions.openMenu': 'Open menu',
+                'app.actions.closeMenu': 'Close menu'
+              };
+              return dict[key] ?? key;
+            }
+          }
         }
       ]
     }).compileComponents();
+
+    // Override HeaderComponent to swap out language switcher
+    TestBed.overrideComponent(HeaderComponent, {
+      set: {
+        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent]
+      }
+    });
   });
 
   it('should create the app', () => {

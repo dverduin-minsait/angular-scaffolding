@@ -29,3 +29,5 @@ if (shouldSuppress) {
 		originalConsoleError(...args);
 	};
 }
+
+// Provide global TranslateModule for tests (used by TranslationService)

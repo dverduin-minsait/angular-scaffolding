@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
+import { TranslationService } from '../../../core/services/translation.service';
+import { Component as NgComponent } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Router, UrlTree } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -71,9 +75,45 @@ describe('HeaderComponent Accessibility', () => {
             removeItem: jest.fn(),
             clear: jest.fn()
           }
+        },
+        {
+          provide: TranslationService,
+          useValue: {
+            currentLang: () => 'en',
+            use: () => {},
+            availableLangs: ['en','es','pt','ca','gl'],
+            // Provide deterministic, human-readable labels for accessibility expectations
+            instant: (key: string) => {
+              const map: Record<string, string> = {
+                'app.title': 'Angular Architecture',
+                'app.navigation.dashboard': 'Dashboard',
+                'app.navigation.clothes': 'Clothes',
+                'app.navigation.auth': 'Auth',
+                'app.navigation.themeDemo': 'Theme Demo',
+                'app.navigation.settings': 'Settings',
+                'app.actions.toggleTheme': 'Switch to dark theme',
+                'app.actions.openMenu': 'Open menu',
+                'app.actions.closeMenu': 'Close menu'
+              };
+              return map[key] ?? key;
+            }
+          }
         }
       ]
     }).compileComponents();
+
+    @NgComponent({
+      selector: 'app-language-switcher',
+      standalone: true,
+      template: '<!-- stub -->'
+    })
+    class StubLanguageSwitcherComponent {}
+
+    TestBed.overrideComponent(HeaderComponent, {
+      set: {
+        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent]
+      }
+    });
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
