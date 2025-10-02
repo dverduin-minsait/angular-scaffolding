@@ -5,6 +5,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay, withNoHttpTransferCache } from '@angular/platform-browser';
 import { localStorageProvider } from './core/tokens/local.storage.token';
+import { ENVIRONMENT } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,8 @@ export const appConfig: ApplicationConfig = {
       // Disable HTTP transfer cache for dynamic imports to ensure fresh loading
       withNoHttpTransferCache()
     ),
+    // Environment providers
+    ...ENVIRONMENT.PROVIDERS,
     // Core tokens
     localStorageProvider
   ]

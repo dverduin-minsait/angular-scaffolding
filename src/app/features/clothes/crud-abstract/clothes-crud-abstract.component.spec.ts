@@ -1,12 +1,14 @@
 import { Injectable, signal, WritableSignal, computed } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClothesCrudAbstractComponent } from './clothes-crud-abstract.component';
-import { ClothesApiService, ClothingItemApi } from '../../../core/api/clothes/clothes.service';
+import { ClothesApiClient } from '../../../core/api/clothes/clothes.service';
 import { ModalService } from '../../../core/services/modal/modal.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { suppressClothesCrudConsole } from '../../../testing/suppress-console';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
+import { ClothingItemApi } from '../../../core/api/clothes/clothes';
+import { ClothesStore } from '../../../core/store/clothes/clothes.store';
 
 // --- Mock Modal ---
 class MockModalRef<T = any> {
@@ -21,7 +23,7 @@ class MockModalService {
 
 // --- Injectable Mock Clothes API (mimics signals surface used by template) ---
 @Injectable()
-class MockClothesApiService {
+class MockClothesStore {
   private _items = signal<ClothingItemApi[]>([]);
   private _selected = signal<ClothingItemApi | null>(null);
   private _loading = signal({ isLoading: false, operation: undefined as any });
@@ -64,7 +66,7 @@ class MockClothesApiService {
     if (this._selected()?.id === id) this._selected.set(null);
     return of(void 0);
   });
-  setSelectedItem = jest.fn((item: ClothingItemApi | null) => this._selected.set(item));
+  setSelected = jest.fn((item: ClothingItemApi | null) => this._selected.set(item));
 
   // Utility for tests
   seed(items: ClothingItemApi[]) { this._items.set(items); }
@@ -97,7 +99,7 @@ function fillValidForm(c: ClothesCrudAbstractComponent) {
 describe('ClothesCrudAbstractComponent (behavior)', () => {
   let fixture: ComponentFixture<ClothesCrudAbstractComponent>;
   let component: ClothesCrudAbstractComponent;
-  let api: MockClothesApiService;
+  let store: MockClothesStore;
   let modal: MockModalService;
 
   beforeEach(async () => {
@@ -119,7 +121,7 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     .overrideComponent(ClothesCrudAbstractComponent, {
       set: {
         providers: [
-          { provide: ClothesApiService, useClass: MockClothesApiService }
+          { provide: ClothesStore, useClass: MockClothesStore }
         ]
       }
     })
@@ -127,9 +129,9 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
 
     fixture = TestBed.createComponent(ClothesCrudAbstractComponent);
     component = fixture.componentInstance;
-    api = component['clothesService'] as unknown as MockClothesApiService;
+    store = component['clothesStore'] as unknown as MockClothesStore;
     modal = TestBed.inject(ModalService) as unknown as MockModalService;
-    api.seed([seedItem]);
+    store.seed([seedItem]);
     fixture.detectChanges();
   });
 
@@ -163,7 +165,7 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
   it('create flow resets form & stays not editing', () => {
     fillValidForm(component);
     component.onSubmit();
-    expect(api.create).toHaveBeenCalled();
+    expect(store.create).toHaveBeenCalled();
     expect(component.itemForm.get('name')?.value).toBe('');
     expect(component.isEditing()).toBe(false);
   });
@@ -173,7 +175,7 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     expect(component.isEditing()).toBe(true);
     component.itemForm.get('name')?.setValue('Updated Name');
     component.onSubmit();
-    expect(api.update).toHaveBeenCalledWith(seedItem.id, expect.objectContaining({ name: 'Updated Name' }));
+    expect(store.update).toHaveBeenCalledWith(seedItem.id, expect.objectContaining({ name: 'Updated Name' }));
     expect(component.isEditing()).toBe(false);
   });
 
@@ -201,21 +203,21 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     modal.lastRef?.close(true);
     // Wait a macrotask to allow effect inside deleteItem to run
     await new Promise(res => setTimeout(res, 0));
-    expect(api.delete).toHaveBeenCalledWith(seedItem.id);
+    expect(store.delete).toHaveBeenCalledWith(seedItem.id);
   });
 
   it('delete cancelled does not remove item', async () => {
     component.deleteItem(seedItem.id);
     modal.lastRef?.close(false);
     await Promise.resolve();
-    expect(api.delete).not.toHaveBeenCalled();
+    expect(store.delete).not.toHaveBeenCalled();
   });
 
   it('clearSelection syncs with service', () => {
     component.editItem(seedItem);
     component.clearSelection();
     expect(component.selectedItem()).toBeNull();
-    expect(api.selectedItem()).toBeNull();
+    expect(store.selectedItem()).toBeNull();
   });
 
   it('isFieldInvalid logic', () => {
