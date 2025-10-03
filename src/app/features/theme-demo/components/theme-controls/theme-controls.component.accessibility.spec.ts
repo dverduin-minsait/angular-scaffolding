@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThemeControlsComponent } from './theme-controls.component';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { AccessibilityTestUtils } from '../../../../testing/accessibility-test-utils';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { signal } from '@angular/core';
 
 describe('ThemeControlsComponent Accessibility', () => {
@@ -19,6 +20,34 @@ describe('ThemeControlsComponent Accessibility', () => {
     toggleThemePair: jest.Mock;
   };
 
+  // Minimal translations for labels used in ThemeControlsComponent template
+  const enTranslations = {
+    app: {
+      themes: {
+        lightTheme: 'Light Theme',
+        darkTheme: 'Dark Theme',
+        light: 'Light',
+        dark: 'Dark',
+        lightWarmTheme: 'Light Warm Theme',
+        darkWarmTheme: 'Dark Warm Theme',
+        lightWarm: 'Light Warm',
+        darkWarm: 'Dark Warm'
+      },
+      actions: {
+        changeTheme: 'Choose theme',
+        quickActions: 'Quick Actions',
+        switchToLight: 'Switch to Light Mode',
+        switchToDark: 'Switch to Dark Mode',
+        toggleThemePair: 'Switch to {{ pair }} theme pair',
+        resetDefaults: 'Reset Defaults'
+      },
+      status: {
+        systemPreference: 'Use System Preference',
+        systemPreferenceDescription: 'Automatically switches themes based on your system settings.'
+      }
+    }
+  };
+
   beforeEach(async () => {
     mockThemeService = {
       currentTheme: signal('light'),
@@ -33,11 +62,15 @@ describe('ThemeControlsComponent Accessibility', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ThemeControlsComponent],
+      imports: [ThemeControlsComponent, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         { provide: ThemeService, useValue: mockThemeService }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', enTranslations, true);
+    translate.use('en');
 
     fixture = TestBed.createComponent(ThemeControlsComponent);
     component = fixture.componentInstance;
@@ -53,7 +86,8 @@ describe('ThemeControlsComponent Accessibility', () => {
       expect(radioGroup).toBeTruthy();
       expect(radioGroup.getAttribute('aria-label')).toBe('Choose theme');
       expect(fieldset).toBeTruthy();
-      expect(legend.textContent?.trim()).toBe('Theme Selection');
+  // Legend shows combined themes label per template
+  expect(legend.textContent?.trim()).toBe('Light Theme / Dark Theme');
     });
 
     it('should have proper radio button roles and states', () => {

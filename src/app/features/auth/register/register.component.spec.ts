@@ -4,6 +4,57 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { RegisterComponent } from './register.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+// Minimal English translations used in this spec. We inline them to avoid relying on JSON module resolution.
+// This keeps the test fast and decoupled from the full i18n asset set.
+const enTranslations = {
+  app: {
+    actions: {
+      goToLoginPage: 'Go to login page'
+    },
+    auth: {
+      register: {
+        title: 'Create Account',
+        subtitle: 'Join us and start your journey',
+        personalInformation: 'Personal Information',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        email: 'Email',
+        gender: 'Gender',
+        preferredLanguage: 'Preferred Language',
+        additionalObservations: 'Additional Observations',
+        observationsPlaceholder: 'Add any additional information here (optional)',
+        observationsHint: 'You can provide extra context or notes (max 500 characters).',
+        password: 'Password',
+        passwordPlaceholder: 'Create a password',
+        passwordRequirements: 'Password requirements:',
+        passwordReqMin: 'At least 8 characters',
+        passwordReqUpper: 'Contains uppercase letter',
+        passwordReqLower: 'Contains lowercase letter',
+        passwordReqNumber: 'Contains number',
+        passwordStrength: 'Password strength',
+        confirmPassword: 'Confirm Password',
+        confirmPasswordPlaceholder: 'Confirm your password',
+        termsTextPrefix: 'I agree to the',
+        termsService: 'Terms of Service',
+        opensInNewTab: '(opens in new tab)',
+        privacyPolicy: 'Privacy Policy',
+        submitCreate: 'Create Account',
+        submitCreating: 'Creating Account...',
+        signUpWithGoogle: 'Sign up with Google',
+        alreadyHaveAccount: 'Already have an account?',
+        signIn: 'Sign in'
+      }
+    },
+    breadcrumb: {
+      home: 'Home'
+    }
+  },
+  common: {
+    and: 'and'
+  }
+};
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -14,9 +65,17 @@ describe('RegisterComponent', () => {
       imports: [
         RegisterComponent,
         ReactiveFormsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        TranslateModule.forRoot({
+          fallbackLang: 'en'
+        })
       ]
     }).compileComponents();
+
+    // Inject translations (inline) and set active language
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', enTranslations, true);
+    translate.use('en');
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
@@ -54,8 +113,8 @@ describe('RegisterComponent', () => {
     const subtitle = compiled.querySelector('.auth-header p');
     
     expect(heading).toBeTruthy();
-    expect(heading?.textContent?.trim()).toBe('Create Account');
-    expect(subtitle?.textContent?.trim()).toBe('Join us and start your journey');
+  expect(heading?.textContent?.trim()).toBe(enTranslations.app.auth.register.title);
+  expect(subtitle?.textContent?.trim()).toBe(enTranslations.app.auth.register.subtitle);
   });
 
   it('should render the registration form', () => {
@@ -79,10 +138,10 @@ describe('RegisterComponent', () => {
     const lastNameInput = compiled.querySelector('#lastName');
     
     expect(inlineGroup).toBeTruthy();
-    expect(firstNameLabel?.textContent?.trim()).toBe('First Name *');
-    expect(firstNameInput?.getAttribute('placeholder')).toBe('First name');
-    expect(lastNameLabel?.textContent?.trim()).toBe('Last Name *');
-    expect(lastNameInput?.getAttribute('placeholder')).toBe('Last name');
+  expect(firstNameLabel?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.firstName} *`);
+  expect(firstNameInput?.getAttribute('placeholder')).toBe(enTranslations.app.auth.register.firstName);
+  expect(lastNameLabel?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.lastName} *`);
+  expect(lastNameInput?.getAttribute('placeholder')).toBe(enTranslations.app.auth.register.lastName);
   });
 
   it('should display email input field', () => {
@@ -92,9 +151,10 @@ describe('RegisterComponent', () => {
     const emailLabel = compiled.querySelector('label[for="email"]');
     const emailInput = compiled.querySelector('#email');
     
-    expect(emailLabel?.textContent?.trim()).toBe('Email *');
+  expect(emailLabel?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.email} *`);
     expect(emailInput?.getAttribute('type')).toBe('email');
-    expect(emailInput?.getAttribute('placeholder')).toBe('Enter your email');
+  // Placeholder uses same translation key as label for now
+  expect(emailInput?.getAttribute('placeholder')).toBe(enTranslations.app.auth.register.email);
   });
 
   it('should display password input with strength indicator', () => {
@@ -106,7 +166,7 @@ describe('RegisterComponent', () => {
     const strengthBar = compiled.querySelector('.strength-bar');
     const strengthText = compiled.querySelector('.strength-text');
     
-    expect(passwordLabel?.textContent?.trim()).toBe('Password *');
+  expect(passwordLabel?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.password} *`);
     expect(passwordInput?.getAttribute('type')).toBe('password');
     expect(passwordInput?.getAttribute('placeholder')).toBe('Create a password');
     expect(strengthBar).toBeTruthy();
@@ -120,7 +180,7 @@ describe('RegisterComponent', () => {
     const confirmLabel = compiled.querySelector('label[for="confirmPassword"]');
     const confirmInput = compiled.querySelector('#confirmPassword');
     
-    expect(confirmLabel?.textContent?.trim()).toBe('Confirm Password *');
+  expect(confirmLabel?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.confirmPassword} *`);
     expect(confirmInput?.getAttribute('type')).toBe('password');
     expect(confirmInput?.getAttribute('placeholder')).toBe('Confirm your password');
   });
@@ -136,8 +196,8 @@ describe('RegisterComponent', () => {
     
     expect(termsCheckbox?.getAttribute('type')).toBe('checkbox');
     expect(termsLabel).toBeTruthy();
-    expect(termsLink?.textContent?.trim()).toBe('Terms of Service (opens in new tab)');
-    expect(privacyLink?.textContent?.trim()).toBe('Privacy Policy (opens in new tab)');
+  expect(termsLink?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.termsService} ${enTranslations.app.auth.register.opensInNewTab}`);
+  expect(privacyLink?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.privacyPolicy} ${enTranslations.app.auth.register.opensInNewTab}`);
   });
 
   it('should display form action buttons', () => {
@@ -150,13 +210,13 @@ describe('RegisterComponent', () => {
     
     // Primary create account button
     const createButton = buttons[0];
-    expect(createButton.textContent?.trim()).toBe('Create Account');
+  expect(createButton.textContent?.trim()).toBe(enTranslations.app.auth.register.submitCreate);
     expect(createButton.getAttribute('type')).toBe('submit');
   expect(createButton.className).toContain('btn--primary');
     
     // Google sign-up button
     const googleButton = buttons[1];
-    expect(googleButton.textContent?.trim()).toBe('Sign up with Google');
+  expect(googleButton.textContent?.trim()).toBe(enTranslations.app.auth.register.signUpWithGoogle);
     expect(googleButton.getAttribute('type')).toBe('button');
   expect(googleButton.className).toContain('btn--secondary');
   });
@@ -168,8 +228,8 @@ describe('RegisterComponent', () => {
     const footerText = compiled.querySelector('.auth-footer p');
     const loginLink = compiled.querySelector('.auth-footer a');
     
-    expect(footerText?.textContent?.trim()).toBe('Already have an account?');
-    expect(loginLink?.textContent?.trim()).toBe('Sign in');
+  expect(footerText?.textContent?.trim()).toBe(enTranslations.app.auth.register.alreadyHaveAccount);
+  expect(loginLink?.textContent?.trim()).toBe(enTranslations.app.auth.register.signIn);
     expect(loginLink?.getAttribute('href')).toBe('/auth/login');
   });
 
@@ -274,8 +334,8 @@ describe('RegisterComponent', () => {
     
     expect(termsLink).toBeTruthy();
     expect(privacyLink).toBeTruthy();
-    expect(termsLink?.textContent?.trim()).toBe('Terms of Service (opens in new tab)');
-    expect(privacyLink?.textContent?.trim()).toBe('Privacy Policy (opens in new tab)');
+  expect(termsLink?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.termsService} ${enTranslations.app.auth.register.opensInNewTab}`);
+  expect(privacyLink?.textContent?.trim()).toBe(`${enTranslations.app.auth.register.privacyPolicy} ${enTranslations.app.auth.register.opensInNewTab}`);
   });
 
   it('should be a presentation component without logic', () => {
@@ -464,7 +524,8 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-      expect(component['firstNameError']()).toBe('First name is required');
+  // NOTE: Validation error messages not yet localized in component TS; keep literal expectation for now.
+  expect(component['firstNameError']()).toBe('First name is required');
     });
 
     it('should display email error when invalid', () => {
@@ -476,7 +537,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-      expect(component['emailError']()).toBe('Email is required');
+  expect(component['emailError']()).toBe('Email is required');
     });
 
     it('should display gender error when not selected', () => {
@@ -488,7 +549,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-      expect(component['genderError']()).toBe('Please select your gender');
+  expect(component['genderError']()).toBe('Please select your gender');
     });
 
     it('should display language error when not selected', () => {
@@ -500,7 +561,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-      expect(component['languageError']()).toBe('Please select your preferred language');
+  expect(component['languageError']()).toBe('Please select your preferred language');
     });
   });
 

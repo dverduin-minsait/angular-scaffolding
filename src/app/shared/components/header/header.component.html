@@ -86,7 +86,7 @@
       <button 
         class="close-button"
         (click)="closeSidebar()"
-        aria-label="Close menu"
+        [attr.aria-label]="'app.actions.closeMenu' | translate"
         type="button"
         [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
       >
@@ -140,7 +140,7 @@
         type="button"
       >
         {{ themeIcon() }}
-        <span>{{ sidebarThemeText() }}</span>
+        <span>{{ ('app.themes.' + (isDarkMode() ? 'light' : 'dark')) | translate }}</span>
       </button>
     </div>
   </div>

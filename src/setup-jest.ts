@@ -31,3 +31,5 @@ if (shouldSuppress) {
 }
 
 // Provide global TranslateModule for tests (used by TranslationService)
+
+// NOTE: Translation setup moved into individual specs that need it to avoid early TestBed instantiation conflicts.

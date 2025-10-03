@@ -4,9 +4,9 @@
       <ol class="breadcrumb" role="list">
         <!-- Home entry -->
         <li class="breadcrumb__item breadcrumb__home">
-          <a routerLink="/dashboard" aria-label="Home">
+          <a routerLink="/dashboard" [attr.aria-label]="'app.breadcrumb.home' | translate">
             <span class="breadcrumb__icon" aria-hidden="true">🏠</span>
-            <span class="breadcrumb__visually-hidden">Home</span>
+            <span class="breadcrumb__visually-hidden">{{ 'app.breadcrumb.home' | translate }}</span>
           </a>
         </li>
         @for (item of items(); track item.url) {

@@ -1,4 +1,7 @@
 {
+  "common": {
+    "and": "y"
+  },
   "app": {
     "title": "Angulo",
     "navigation": {
@@ -11,7 +14,73 @@
     "actions": {
       "toggleTheme": "Cambiar a tema {{theme}}",
       "openMenu": "Abrir menú",
-      "closeMenu": "Cerrar menú"
+      "closeMenu": "Cerrar menú",
+      "changeLanguage": "Cambiar idioma",
+      "switchToLight": "Cambiar a Claro",
+      "switchToDark": "Cambiar a Oscuro",
+      "changeTheme": "Cambiar tema",
+      "quickActions": "Acciones rápidas",
+      "toggleThemePair": "Cambiar a {{pair}}",
+      "resetDefaults": "Restablecer valores",
+      "goToLoginPage": "Ir a la página de inicio de sesión"
+    },
+    "skipLinks": {
+      "main": "Saltar al contenido principal",
+      "navigation": "Saltar a la navegación"
+    },
+    "breadcrumb": {
+      "home": "Inicio"
+    },
+    "themes": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "lightWarm": "Claro (Cálido)",
+      "darkWarm": "Oscuro (Cálido)",
+      "lightTheme": "Tema claro",
+      "darkTheme": "Tema oscuro",
+      "lightWarmTheme": "Tema claro cálido",
+      "darkWarmTheme": "Tema oscuro cálido"
+    },
+    "status": {
+      "darkMode": "Modo oscuro:",
+      "enabled": "Activado",
+      "disabled": "Desactivado",
+      "systemPreference": "Preferencia del sistema",
+      "systemPreferenceDescription": "Cambia automáticamente entre temas claro y oscuro según la configuración del sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Crear cuenta",
+        "subtitle": "Únete y comienza tu viaje",
+        "personalInformation": "Información personal",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "email": "Correo electrónico",
+        "gender": "Género",
+        "preferredLanguage": "Idioma preferido",
+        "additionalObservations": "Observaciones adicionales",
+        "observationsPlaceholder": "Cualquier comentario o nota adicional (opcional)",
+        "observationsHint": "Campo opcional. Máximo 500 caracteres.",
+        "password": "Contraseña",
+        "passwordPlaceholder": "Crea una contraseña",
+        "passwordRequirements": "Requisitos de la contraseña:",
+        "passwordReqMin": "Al menos 8 caracteres",
+        "passwordReqUpper": "Una letra mayúscula",
+        "passwordReqLower": "Una letra minúscula",
+        "passwordReqNumber": "Un número",
+        "passwordStrength": "Fortaleza de la contraseña:",
+        "confirmPassword": "Confirmar contraseña",
+        "confirmPasswordPlaceholder": "Confirma tu contraseña",
+        "termsTextPrefix": "Acepto los",
+        "termsService": "Términos de servicio",
+        "privacyPolicy": "Política de privacidad",
+        "opensInNewTab": "(se abre en una nueva pestaña)",
+        "submitCreating": "Creando cuenta...",
+        "submitCreate": "Crear cuenta",
+        "signUpWithGoogle": "Registrarse con Google",
+        "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+        "signIn": "Iniciar sesión"
+      }
     },
     "languages": {
       "en": "Inglés",

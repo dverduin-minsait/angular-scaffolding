@@ -1,18 +1,18 @@
 <div class="auth-page">
   <div class="auth-container">
     <header class="auth-header">
-      <h1 id="register-title">Create Account</h1>
-      <p>Join us and start your journey</p>
+  <h1 id="register-title">{{ 'app.auth.register.title' | translate }}</h1>
+  <p>{{ 'app.auth.register.subtitle' | translate }}</p>
     </header>
 
     <form class="crud-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" aria-labelledby="register-title"
       novalidate>
 
       <fieldset class="field-grid">
-        <legend class="visually-hidden">Personal Information</legend>
+  <legend class="visually-hidden">{{ 'app.auth.register.personalInformation' | translate }}</legend>
         <div class="form-field">
-          <label class="form-label" for="firstName">First Name <span aria-label="required">*</span></label>
-          <input id="firstName" formControlName="firstName" type="text" placeholder="First name" class="form-control"
+          <label class="form-label" for="firstName">{{ 'app.auth.register.firstName' | translate }} <span aria-label="required">*</span></label>
+          <input id="firstName" formControlName="firstName" type="text" [placeholder]="'app.auth.register.firstName' | translate" class="form-control"
             required aria-required="true" autocomplete="given-name"
             [attr.aria-invalid]="firstNameError() ? 'true' : 'false'"
             [attr.aria-describedby]="firstNameError() ? 'firstName-error' : null" />
@@ -23,8 +23,8 @@
           }
         </div>
         <div class="form-field">
-          <label class="form-label" for="lastName">Last Name <span aria-label="required">*</span></label>
-          <input id="lastName" formControlName="lastName" type="text" placeholder="Last name" class="form-control"
+          <label class="form-label" for="lastName">{{ 'app.auth.register.lastName' | translate }} <span aria-label="required">*</span></label>
+          <input id="lastName" formControlName="lastName" type="text" [placeholder]="'app.auth.register.lastName' | translate" class="form-control"
             required aria-required="true" autocomplete="family-name"
             [attr.aria-invalid]="lastNameError() ? 'true' : 'false'"
             [attr.aria-describedby]="lastNameError() ? 'lastName-error' : null" />
@@ -37,8 +37,8 @@
       </fieldset>
 
       <div class="form-field">
-        <label class="form-label" for="email">Email <span aria-label="required">*</span></label>
-        <input id="email" formControlName="email" type="email" placeholder="Enter your email" class="form-control"
+  <label class="form-label" for="email">{{ 'app.auth.register.email' | translate }} <span aria-label="required">*</span></label>
+  <input id="email" formControlName="email" type="email" [placeholder]="'app.auth.register.email' | translate" class="form-control"
           required aria-required="true" email autocomplete="email" [attr.aria-invalid]="emailError() ? 'true' : 'false'"
           [attr.aria-describedby]="emailError() ? 'email-error' : null" />
         @if (emailError()) {
@@ -50,7 +50,7 @@
 
       <div class="form-field">
         <fieldset class="radio-group">
-          <legend id="gender-label">Gender <span aria-label="required">*</span></legend>
+          <legend id="gender-label">{{ 'app.auth.register.gender' | translate }} <span aria-label="required">*</span></legend>
           <div class="radio-options" role="radiogroup" [attr.aria-invalid]="genderError() ? 'true' : 'false'"
             [attr.aria-describedby]="genderError() ? 'gender-error' : null" [attr.aria-labelledby]="'gender-label'"
             (keydown)="onRadioKeydown($event)">
@@ -71,7 +71,7 @@
       </div>
 
       <div class="form-field">
-        <label class="form-label" for="language">Preferred Language <span aria-label="required">*</span></label>
+  <label class="form-label" for="language">{{ 'app.auth.register.preferredLanguage' | translate }} <span aria-label="required">*</span></label>
         <select id="language" formControlName="language" class="form-control" required aria-required="true"
           [attr.aria-invalid]="languageError() ? 'true' : 'false'"
           [attr.aria-describedby]="languageError() ? 'language-error' : null">
@@ -89,44 +89,44 @@
       </div>
 
       <div class="form-field">
-        <label class="form-label" for="observations">Additional Observations</label>
+        <label class="form-label" for="observations">{{ 'app.auth.register.additionalObservations' | translate }}</label>
         <textarea id="observations" formControlName="observations"
-          placeholder="Any additional comments or notes (optional)" class="form-control" rows="3" maxlength="500"
+          [placeholder]="'app.auth.register.observationsPlaceholder' | translate" class="form-control" rows="3" maxlength="500"
           aria-describedby="observations-hint"></textarea>
-        <small id="observations-hint" class="form-hint">Optional field. Maximum 500 characters.</small>
+        <small id="observations-hint" class="form-hint">{{ 'app.auth.register.observationsHint' | translate }}</small>
       </div>
 
       <div class="form-field">
-        <label class="form-label" for="password">Password <span aria-label="required">*</span></label>
-        <input id="password" formControlName="password" type="password" placeholder="Create a password"
+        <label class="form-label" for="password">{{ 'app.auth.register.password' | translate }} <span aria-label="required">*</span></label>
+        <input id="password" formControlName="password" type="password" [placeholder]="'app.auth.register.passwordPlaceholder' | translate"
           class="form-control" required aria-required="true" minlength="8" autocomplete="new-password"
           [attr.aria-invalid]="passwordError() ? 'true' : 'false'"
           [attr.aria-describedby]="'password-requirements ' + (passwordError() ? 'password-error' : '')"
           (input)="checkPasswordStrength()" />
         <div id="password-requirements" class="password-requirements">
-          <p>Password requirements:</p>
+          <p>{{ 'app.auth.register.passwordRequirements' | translate }}</p>
           <ul>
-            <li [attr.aria-label]="hasMinLength() ? 'Requirement met' : 'Requirement not met'">
+            <li [attr.aria-label]="hasMinLength() ? ('app.status.enabled' | translate) : ('app.status.disabled' | translate)">
               <span [attr.aria-hidden]="true">{{ hasMinLength() ? '✓' : '✗' }}</span>
-              At least 8 characters
+              {{ 'app.auth.register.passwordReqMin' | translate }}
             </li>
-            <li [attr.aria-label]="hasUpperCase() ? 'Requirement met' : 'Requirement not met'">
+            <li [attr.aria-label]="hasUpperCase() ? ('app.status.enabled' | translate) : ('app.status.disabled' | translate)">
               <span [attr.aria-hidden]="true">{{ hasUpperCase() ? '✓' : '✗' }}</span>
-              One uppercase letter
+              {{ 'app.auth.register.passwordReqUpper' | translate }}
             </li>
-            <li [attr.aria-label]="hasLowerCase() ? 'Requirement met' : 'Requirement not met'">
+            <li [attr.aria-label]="hasLowerCase() ? ('app.status.enabled' | translate) : ('app.status.disabled' | translate)">
               <span [attr.aria-hidden]="true">{{ hasLowerCase() ? '✓' : '✗' }}</span>
-              One lowercase letter
+              {{ 'app.auth.register.passwordReqLower' | translate }}
             </li>
-            <li [attr.aria-label]="hasNumber() ? 'Requirement met' : 'Requirement not met'">
+            <li [attr.aria-label]="hasNumber() ? ('app.status.enabled' | translate) : ('app.status.disabled' | translate)">
               <span [attr.aria-hidden]="true">{{ hasNumber() ? '✓' : '✗' }}</span>
-              One number
+              {{ 'app.auth.register.passwordReqNumber' | translate }}
             </li>
           </ul>
         </div>
         <div class="password-strength">
           <div class="strength-bar" role="progressbar" [attr.aria-valuenow]="passwordStrengthScore()" aria-valuemin="0"
-            aria-valuemax="4" [attr.aria-label]="'Password strength: ' + passwordStrengthText()">
+            aria-valuemax="4" [attr.aria-label]="('app.auth.register.passwordStrength' | translate) + ' ' + passwordStrengthText()">
             <div class="strength-fill" [attr.data-strength]="passwordStrengthClass()"></div>
           </div>
           <span class="strength-text" aria-live="polite" aria-atomic="true">{{ passwordStrengthText() }}</span>
@@ -135,9 +135,9 @@
       </div>
 
       <div class="form-field">
-        <label class="form-label" for="confirmPassword">Confirm Password <span aria-label="required">*</span></label>
+        <label class="form-label" for="confirmPassword">{{ 'app.auth.register.confirmPassword' | translate }} <span aria-label="required">*</span></label>
         <input id="confirmPassword" formControlName="confirmPassword" type="password"
-          placeholder="Confirm your password" class="form-control" required aria-required="true"
+          [placeholder]="'app.auth.register.confirmPasswordPlaceholder' | translate" class="form-control" required aria-required="true"
           autocomplete="new-password" [attr.aria-invalid]="confirmPasswordError() ? 'true' : 'false'"
           [attr.aria-describedby]="confirmPasswordError() ? 'confirmPassword-error' : null" />
         @if (confirmPasswordError()) {
@@ -152,9 +152,9 @@
           [attr.aria-invalid]="termsError() ? 'true' : 'false'"
           [attr.aria-describedby]="termsError() ? 'terms-error' : null" />
         <label for="terms">
-          I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms of Service <span
-              class="visually-hidden">(opens in new tab)</span></a> and <a href="/privacy" target="_blank"
-            rel="noopener noreferrer">Privacy Policy <span class="visually-hidden">(opens in new tab)</span></a>
+          {{ 'app.auth.register.termsTextPrefix' | translate }} <a href="/terms" target="_blank" rel="noopener noreferrer">{{ 'app.auth.register.termsService' | translate }} <span
+              class="visually-hidden">{{ 'app.auth.register.opensInNewTab' | translate }}</span></a> {{ 'common.and' | translate : { default: 'and' } }} <a href="/privacy" target="_blank"
+            rel="noopener noreferrer">{{ 'app.auth.register.privacyPolicy' | translate }} <span class="visually-hidden">{{ 'app.auth.register.opensInNewTab' | translate }}</span></a>
         </label>
         @if (termsError()) {
         <div id="terms-error" class="form-error" role="alert" aria-live="polite">
@@ -166,10 +166,10 @@
       <div class="form-actions">
         <button type="submit" appButton variant="primary" [disabled]="!isFormValid() || isSubmitting()"
           [attr.aria-describedby]="submitError() ? 'submit-error' : null">
-          {{ isSubmitting() ? 'Creating Account...' : 'Create Account' }}
+          {{ isSubmitting() ? ('app.auth.register.submitCreating' | translate) : ('app.auth.register.submitCreate' | translate) }}
         </button>
         <button type="button" appButton variant="secondary" (click)="signUpWithGoogle()" [disabled]="isSubmitting()">
-          Sign up with Google
+          {{ 'app.auth.register.signUpWithGoogle' | translate }}
         </button>
       </div>
 
@@ -177,8 +177,8 @@
     </form>
 
     <footer class="auth-footer">
-      <p>Already have an account?</p>
-      <a routerLink="/auth/login" aria-label="Go to login page">Sign in</a>
+      <p>{{ 'app.auth.register.alreadyHaveAccount' | translate }}</p>
+      <a routerLink="/auth/login" [attr.aria-label]="'app.actions.goToLoginPage' | translate">{{ 'app.auth.register.signIn' | translate }}</a>
     </footer>
   </div>
 </div>

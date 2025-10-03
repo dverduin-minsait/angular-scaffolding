@@ -1,4 +1,7 @@
 {
+  "common": {
+    "and": "and"
+  },
   "app": {
     "title": "Angle",
     "navigation": {
@@ -11,7 +14,73 @@
     "actions": {
       "toggleTheme": "Switch to {{theme}} theme",
       "openMenu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "changeLanguage": "Change language",
+      "switchToLight": "Switch to Light",
+      "switchToDark": "Switch to Dark",
+      "changeTheme": "Change theme",
+      "quickActions": "Quick Actions",
+      "toggleThemePair": "Switch to {{pair}}",
+      "resetDefaults": "Reset to Defaults",
+      "goToLoginPage": "Go to login page"
+    },
+    "skipLinks": {
+      "main": "Skip to main content",
+      "navigation": "Skip to navigation"
+    },
+    "breadcrumb": {
+      "home": "Home"
+    },
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "lightWarm": "Light (Warm)",
+      "darkWarm": "Dark (Warm)",
+      "lightTheme": "Light theme",
+      "darkTheme": "Dark theme",
+      "lightWarmTheme": "Light warm theme",
+      "darkWarmTheme": "Dark warm theme"
+    },
+    "status": {
+      "darkMode": "Dark Mode:",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "systemPreference": "System Preference",
+      "systemPreferenceDescription": "Automatically switches between light and dark themes based on your system settings"
+    },
+    "auth": {
+      "register": {
+        "title": "Create Account",
+        "subtitle": "Join us and start your journey",
+        "personalInformation": "Personal Information",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "gender": "Gender",
+        "preferredLanguage": "Preferred Language",
+        "additionalObservations": "Additional Observations",
+        "observationsPlaceholder": "Any additional comments or notes (optional)",
+        "observationsHint": "Optional field. Maximum 500 characters.",
+        "password": "Password",
+        "passwordPlaceholder": "Create a password",
+        "passwordRequirements": "Password requirements:",
+        "passwordReqMin": "At least 8 characters",
+        "passwordReqUpper": "One uppercase letter",
+        "passwordReqLower": "One lowercase letter",
+        "passwordReqNumber": "One number",
+        "passwordStrength": "Password strength:",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your password",
+        "termsTextPrefix": "I agree to the",
+        "termsService": "Terms of Service",
+        "privacyPolicy": "Privacy Policy",
+        "opensInNewTab": "(opens in new tab)",
+        "submitCreating": "Creating Account...",
+        "submitCreate": "Create Account",
+        "signUpWithGoogle": "Sign up with Google",
+        "alreadyHaveAccount": "Already have an account?",
+        "signIn": "Sign in"
+      }
     },
     "languages": {
       "en": "English",

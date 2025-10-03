@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/angular';
 import { BreadcrumbComponent } from './breadcrumb.component';
 import { provideRouter, Routes, Router } from '@angular/router';
 import { Component } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({ selector: 'home-cmp', standalone: true, template: 'Home' })
 class HomeCmp {}
@@ -22,8 +23,13 @@ const routes: Routes = [
 describe('BreadcrumbComponent', () => {
   it('renders breadcrumb trail with aria attributes', async () => {
     const { fixture } = await render(BreadcrumbComponent, {
+      imports: [TranslateModule.forRoot({ defaultLanguage: 'en' })],
       providers: [provideRouter(routes)],
     });
+    // set minimal translations
+    const translate = fixture.debugElement.injector.get(TranslateService);
+    translate.setTranslation('en', { app: { breadcrumb: { home: 'Home'} } }, true);
+    translate.use('en');
     const router = fixture.debugElement.injector.get(Router);
     await router.navigateByUrl('/home/child');
     fixture.detectChanges();

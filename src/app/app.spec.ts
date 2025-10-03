@@ -8,6 +8,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Component as NgComponent } from '@angular/core';
 
 @NgComponent({
@@ -52,7 +53,7 @@ describe('App', () => {
     mockLocalStorage.setItem.mockClear();
     
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         provideZonelessChangeDetection(),
         provideRouter([
@@ -81,6 +82,18 @@ describe('App', () => {
     });
 
     await TestBed.compileComponents();
+
+    // Provide minimal real translations for skip links referenced directly in template
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', {
+      app: {
+        skipLinks: {
+          main: 'Skip to main content',
+          navigation: 'Skip to navigation'
+        }
+      }
+    }, true);
+    translate.use('en');
   });
 
   it('should create the app', () => {

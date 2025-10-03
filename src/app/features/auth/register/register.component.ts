@@ -4,11 +4,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractContro
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ButtonDirective } from '../../../shared/directives/button.directive';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonDirective, TranslatePipe],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

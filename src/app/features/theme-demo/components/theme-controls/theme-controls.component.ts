@@ -2,18 +2,19 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeService, Theme } from '../../../../core/services/theme.service';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonDirective } from '../../../../shared/directives/button.directive';
 
 @Component({
   selector: 'app-theme-controls',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective],
+  imports: [CommonModule, FormsModule, ButtonDirective, TranslatePipe],
   template: `
     <div class="theme-controls">
       <div class="control-group">
         <fieldset>
-          <legend>Theme Selection</legend>
-          <div class="theme-buttons" role="radiogroup" aria-label="Choose theme">
+          <legend>{{ 'app.themes.lightTheme' | translate }} / {{ 'app.themes.darkTheme' | translate }}</legend>
+          <div class="theme-buttons" role="radiogroup" [attr.aria-label]="'app.actions.changeTheme' | translate">
             <button 
               class="theme-btn"
               appButton variant="secondary"
@@ -21,10 +22,10 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               (click)="setTheme('light')"
               role="radio"
               [attr.aria-checked]="themeService.currentTheme() === 'light'"
-              [attr.aria-label]="'Light theme' + (themeService.currentTheme() === 'light' ? ' (selected)' : '')"
+              [attr.aria-label]="('app.themes.lightTheme' | translate) + (themeService.currentTheme() === 'light' ? ' (selected)' : '')"
               type="button"
             >
-              <span aria-hidden="true">☀️</span> Light
+              <span aria-hidden="true">☀️</span> {{ 'app.themes.light' | translate }}
             </button>
             <button 
               class="theme-btn"
@@ -33,10 +34,10 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               (click)="setTheme('dark')"
               role="radio"
               [attr.aria-checked]="themeService.currentTheme() === 'dark'"
-              [attr.aria-label]="'Dark theme' + (themeService.currentTheme() === 'dark' ? ' (selected)' : '')"
+              [attr.aria-label]="('app.themes.darkTheme' | translate) + (themeService.currentTheme() === 'dark' ? ' (selected)' : '')"
               type="button"
             >
-              <span aria-hidden="true">🌙</span> Dark
+              <span aria-hidden="true">🌙</span> {{ 'app.themes.dark' | translate }}
             </button>
             <button 
               class="theme-btn warm-theme"
@@ -45,10 +46,10 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               (click)="setTheme('light2')"
               role="radio"
               [attr.aria-checked]="themeService.currentTheme() === 'light2'"
-              [attr.aria-label]="'Light warm theme' + (themeService.currentTheme() === 'light2' ? ' (selected)' : '')"
+              [attr.aria-label]="('app.themes.lightWarmTheme' | translate) + (themeService.currentTheme() === 'light2' ? ' (selected)' : '')"
               type="button"
             >
-              <span aria-hidden="true">🌅</span> Light (Warm)
+              <span aria-hidden="true">🌅</span> {{ 'app.themes.lightWarm' | translate }}
             </button>
             <button 
               class="theme-btn warm-theme"
@@ -57,10 +58,10 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               (click)="setTheme('dark2')"
               role="radio"
               [attr.aria-checked]="themeService.currentTheme() === 'dark2'"
-              [attr.aria-label]="'Dark warm theme' + (themeService.currentTheme() === 'dark2' ? ' (selected)' : '')"
+              [attr.aria-label]="('app.themes.darkWarmTheme' | translate) + (themeService.currentTheme() === 'dark2' ? ' (selected)' : '')"
               type="button"
             >
-              <span aria-hidden="true">🌆</span> Dark (Warm)
+              <span aria-hidden="true">🌆</span> {{ 'app.themes.darkWarm' | translate }}
             </button>
             <button 
               class="theme-btn"
@@ -80,16 +81,16 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
 
       <div class="control-group">
         <fieldset>
-          <legend>Quick Actions</legend>
+          <legend>{{ 'app.actions.quickActions' | translate }}</legend>
           <div class="quick-actions">
             <button 
               class="toggle-button" appButton variant="primary" 
               (click)="toggleTheme()"
-              [attr.aria-label]="'Switch to ' + (themeService.isDarkMode() ? 'light' : 'dark') + ' theme'"
+              [attr.aria-label]="(themeService.isDarkMode() ? 'app.actions.switchToLight' : 'app.actions.switchToDark') | translate"
               type="button"
             >
               <span aria-hidden="true">{{ themeService.isDarkMode() ? '☀️' : '🌙' }}</span>
-              {{ themeService.isDarkMode() ? 'Switch to Light' : 'Switch to Dark' }}
+              {{ (themeService.isDarkMode() ? 'app.actions.switchToLight' : 'app.actions.switchToDark') | translate }}
             </button>
             
             <button 
@@ -99,7 +100,7 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               type="button"
             >
               <span aria-hidden="true">{{ getCurrentThemePairName() === 'Cool' ? '🌅' : '❄️' }}</span>
-              Switch to {{ getCurrentThemePairName() === 'Cool' ? 'Warm' : 'Cool' }}
+              {{ 'app.actions.toggleThemePair' | translate:{ pair: (getCurrentThemePairName() === 'Cool' ? 'Warm' : 'Cool') } }}
             </button>
           </div>
         </fieldset>
@@ -115,10 +116,10 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
               id="system-preference"
               [attr.aria-describedby]="'system-preference-description'"
             />
-            <span>Use System Preference</span>
+            <span>{{ 'app.status.systemPreference' | translate }}</span>
           </label>
           <div id="system-preference-description" class="control-description">
-            Automatically switches between light and dark themes based on your system settings
+            {{ 'app.status.systemPreferenceDescription' | translate }}
           </div>
         </div>
       </div>
@@ -130,7 +131,7 @@ import { ButtonDirective } from '../../../../shared/directives/button.directive'
           aria-label="Reset theme settings to default values"
           type="button"
         >
-          <span aria-hidden="true">🔄</span> Reset to Defaults
+          <span aria-hidden="true">🔄</span> {{ 'app.actions.resetDefaults' | translate }}
         </button>
       </div>
     </div>

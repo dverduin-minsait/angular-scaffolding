@@ -1,4 +1,7 @@
 {
+  "common": {
+    "and": "e"
+  },
   "app": {
     "title": "Anguliño",
     "navigation": {
@@ -11,7 +14,67 @@
     "actions": {
       "toggleTheme": "Cambiar ao tema {{theme}}",
       "openMenu": "Abrir menú",
-      "closeMenu": "Pechar menú"
+      "closeMenu": "Pechar menú",
+      "changeLanguage": "Cambiar idioma",
+      "switchToLight": "Cambiar a Claro",
+      "switchToDark": "Cambiar a Escuro"
+    },
+    "skipLinks": {
+      "main": "Ir ao contido principal",
+      "navigation": "Ir á navegación"
+    },
+    "breadcrumb": {
+      "home": "Inicio"
+    },
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "lightWarm": "Claro (Cálido)",
+      "darkWarm": "Escuro (Cálido)",
+      "lightTheme": "Tema claro",
+      "darkTheme": "Tema escuro",
+      "lightWarmTheme": "Tema claro cálido",
+      "darkWarmTheme": "Tema escuro cálido"
+    },
+    "status": {
+      "darkMode": "Modo escuro:",
+      "enabled": "Activado",
+      "disabled": "Desactivado",
+      "systemPreference": "Preferencia do sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Crear conta",
+        "subtitle": "Únete e comeza a túa viaxe",
+        "personalInformation": "Información persoal",
+        "firstName": "Nome",
+        "lastName": "Apelido",
+        "email": "Correo electrónico",
+        "gender": "Xénero",
+        "preferredLanguage": "Idioma preferido",
+        "additionalObservations": "Observacións adicionais",
+        "observationsPlaceholder": "Calquera comentario ou nota adicional (opcional)",
+        "observationsHint": "Campo opcional. Máximo 500 caracteres.",
+        "password": "Contrasinal",
+        "passwordPlaceholder": "Crea un contrasinal",
+        "passwordRequirements": "Requisitos do contrasinal:",
+        "passwordReqMin": "Polo menos 8 caracteres",
+        "passwordReqUpper": "Unha letra maiúscula",
+        "passwordReqLower": "Unha letra minúscula",
+        "passwordReqNumber": "Un número",
+        "passwordStrength": "Fortaleza do contrasinal:",
+        "confirmPassword": "Confirmar contrasinal",
+        "confirmPasswordPlaceholder": "Confirma o teu contrasinal",
+        "termsTextPrefix": "Acepto os",
+        "termsService": "Termos de servizo",
+        "privacyPolicy": "Política de privacidade",
+        "opensInNewTab": "(ábrese nunha nova lapela)",
+        "submitCreating": "Creando conta...",
+        "submitCreate": "Crear conta",
+        "signUpWithGoogle": "Rexistrarse con Google",
+        "alreadyHaveAccount": "Xa tes unha conta?",
+        "signIn": "Iniciar sesión"
+      }
     },
     "languages": {
       "en": "Inglés",

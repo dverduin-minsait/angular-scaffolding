@@ -1,4 +1,7 @@
 {
+  "common": {
+    "and": "i"
+  },
   "app": {
     "title": "Angle",
     "navigation": {
@@ -11,7 +14,67 @@
     "actions": {
       "toggleTheme": "Canviar al tema {{theme}}",
       "openMenu": "Obrir menú",
-      "closeMenu": "Tancar menú"
+      "closeMenu": "Tancar menú",
+      "changeLanguage": "Canviar idioma",
+      "switchToLight": "Canviar a Clar",
+      "switchToDark": "Canviar a Fosc"
+    },
+    "skipLinks": {
+      "main": "Saltar al contingut principal",
+      "navigation": "Saltar a la navegació"
+    },
+    "breadcrumb": {
+      "home": "Inici"
+    },
+    "themes": {
+      "light": "Clar",
+      "dark": "Fosc",
+      "lightWarm": "Clar (Càlid)",
+      "darkWarm": "Fosc (Càlid)",
+      "lightTheme": "Tema clar",
+      "darkTheme": "Tema fosc",
+      "lightWarmTheme": "Tema clar càlid",
+      "darkWarmTheme": "Tema fosc càlid"
+    },
+    "status": {
+      "darkMode": "Mode fosc:",
+      "enabled": "Activat",
+      "disabled": "Desactivat",
+      "systemPreference": "Preferència del sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Crear compte",
+        "subtitle": "Uneix-te i comença el teu viatge",
+        "personalInformation": "Informació personal",
+        "firstName": "Nom",
+        "lastName": "Cognom",
+        "email": "Correu electrònic",
+        "gender": "Gènere",
+        "preferredLanguage": "Idioma preferit",
+        "additionalObservations": "Observacions adicionals",
+        "observationsPlaceholder": "Qualsevol comentari o nota addicional (opcional)",
+        "observationsHint": "Camp opcional. Màxim 500 caràcters.",
+        "password": "Contrasenya",
+        "passwordPlaceholder": "Crea una contrasenya",
+        "passwordRequirements": "Requisits de la contrasenya:",
+        "passwordReqMin": "Almenys 8 caràcters",
+        "passwordReqUpper": "Una lletra majúscula",
+        "passwordReqLower": "Una lletra minúscula",
+        "passwordReqNumber": "Un número",
+        "passwordStrength": "Fortalesa de la contrasenya:",
+        "confirmPassword": "Confirmar contrasenya",
+        "confirmPasswordPlaceholder": "Confirma la teva contrasenya",
+        "termsTextPrefix": "Accepto els",
+        "termsService": "Termes del servei",
+        "privacyPolicy": "Política de privacitat",
+        "opensInNewTab": "(s'obre en una pestanya nova)",
+        "submitCreating": "Creant compte...",
+        "submitCreate": "Crear compte",
+        "signUpWithGoogle": "Registrar-se amb Google",
+        "alreadyHaveAccount": "Ja tens un compte?",
+        "signIn": "Iniciar sessió"
+      }
     },
     "languages": {
       "en": "Anglès",

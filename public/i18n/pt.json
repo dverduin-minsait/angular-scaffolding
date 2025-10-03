@@ -1,4 +1,7 @@
 {
+  "common": {
+    "and": "e"
+  },
   "app": {
     "title": "Angulinho",
     "navigation": {
@@ -11,7 +14,67 @@
     "actions": {
       "toggleTheme": "Mudar para tema {{theme}}",
       "openMenu": "Abrir menu",
-      "closeMenu": "Fechar menu"
+      "closeMenu": "Fechar menu",
+      "changeLanguage": "Mudar idioma",
+      "switchToLight": "Mudar para Claro",
+      "switchToDark": "Mudar para Escuro"
+    },
+    "skipLinks": {
+      "main": "Ir para o conteúdo principal",
+      "navigation": "Ir para a navegação"
+    },
+    "breadcrumb": {
+      "home": "Início"
+    },
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "lightWarm": "Claro (Quente)",
+      "darkWarm": "Escuro (Quente)",
+      "lightTheme": "Tema claro",
+      "darkTheme": "Tema escuro",
+      "lightWarmTheme": "Tema claro quente",
+      "darkWarmTheme": "Tema escuro quente"
+    },
+    "status": {
+      "darkMode": "Modo escuro:",
+      "enabled": "Ativado",
+      "disabled": "Desativado",
+      "systemPreference": "Preferência do sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Criar conta",
+        "subtitle": "Junte-se a nós e comece sua jornada",
+        "personalInformation": "Informações pessoais",
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "email": "Email",
+        "gender": "Gênero",
+        "preferredLanguage": "Idioma preferido",
+        "additionalObservations": "Observações adicionais",
+        "observationsPlaceholder": "Quaisquer comentários ou notas adicionais (opcional)",
+        "observationsHint": "Campo opcional. Máximo de 500 caracteres.",
+        "password": "Senha",
+        "passwordPlaceholder": "Crie uma senha",
+        "passwordRequirements": "Requisitos da senha:",
+        "passwordReqMin": "Pelo menos 8 caracteres",
+        "passwordReqUpper": "Uma letra maiúscula",
+        "passwordReqLower": "Uma letra minúscula",
+        "passwordReqNumber": "Um número",
+        "passwordStrength": "Força da senha:",
+        "confirmPassword": "Confirmar senha",
+        "confirmPasswordPlaceholder": "Confirme sua senha",
+        "termsTextPrefix": "Eu concordo com os",
+        "termsService": "Termos de serviço",
+        "privacyPolicy": "Política de privacidade",
+        "opensInNewTab": "(abre em nova aba)",
+        "submitCreating": "Criando conta...",
+        "submitCreate": "Criar conta",
+        "signUpWithGoogle": "Inscrever-se com Google",
+        "alreadyHaveAccount": "Já tem uma conta?",
+        "signIn": "Entrar"
+      }
     },
     "languages": {
       "en": "Inglês",
