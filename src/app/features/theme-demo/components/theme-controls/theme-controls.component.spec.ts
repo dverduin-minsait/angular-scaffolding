@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ThemeControlsComponent } from './theme-controls.component';
 import { ThemeService, Theme } from '../../../../core/services/theme.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Mock ThemeService
 const mockThemeService = {
@@ -21,9 +22,37 @@ describe('ThemeControlsComponent', () => {
   let fixture: ComponentFixture<ThemeControlsComponent>;
   let themeService: jest.Mocked<ThemeService>;
 
+  // Minimal i18n needed for this spec
+  const enTranslations = {
+    app: {
+      themes: {
+        lightTheme: 'Light Theme',
+        darkTheme: 'Dark Theme',
+        light: 'Light',
+        dark: 'Dark',
+        lightWarmTheme: 'Light Warm Theme',
+        darkWarmTheme: 'Dark Warm Theme',
+        lightWarm: 'Light Warm',
+        darkWarm: 'Dark Warm'
+      },
+      actions: {
+        changeTheme: 'Choose theme',
+        quickActions: 'Quick Actions',
+        switchToLight: 'Switch to Light Mode',
+        switchToDark: 'Switch to Dark Mode',
+        toggleThemePair: 'Switch to {{ pair }} theme pair',
+        resetDefaults: 'Reset Defaults'
+      },
+      status: {
+        systemPreference: 'Use System Preference',
+        systemPreferenceDescription: 'Automatically switches themes based on your system settings.'
+      }
+    }
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ThemeControlsComponent, FormsModule],
+      imports: [ThemeControlsComponent, FormsModule, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         { provide: ThemeService, useValue: mockThemeService }
       ]
@@ -32,6 +61,11 @@ describe('ThemeControlsComponent', () => {
     fixture = TestBed.createComponent(ThemeControlsComponent);
     component = fixture.componentInstance;
     themeService = TestBed.inject(ThemeService) as jest.Mocked<ThemeService>;
+
+    // Inject translations
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', enTranslations, true);
+    translate.use('en');
   });
 
   beforeEach(() => {
@@ -52,8 +86,8 @@ describe('ThemeControlsComponent', () => {
     expect(themeButtons).toHaveLength(5);
     expect(themeButtons[0].textContent?.trim()).toContain('Light');
     expect(themeButtons[1].textContent?.trim()).toContain('Dark');
-    expect(themeButtons[2].textContent?.trim()).toContain('Light (Warm)');
-    expect(themeButtons[3].textContent?.trim()).toContain('Dark (Warm)');
+  expect(themeButtons[2].textContent?.trim()).toContain('Light Warm');
+  expect(themeButtons[3].textContent?.trim()).toContain('Dark Warm');
     expect(themeButtons[4].textContent?.trim()).toContain('System');
   });
 

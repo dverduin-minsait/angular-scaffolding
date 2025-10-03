@@ -1,12 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Component, signal } from '@angular/core';
+import { Component, signal, Pipe, PipeTransform } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { HeaderComponent, NavigationLink } from './header.component';
+import { TranslationService } from '../../../core/services/translation.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 // Mock components for testing routes
@@ -29,6 +31,42 @@ class MockThemeDemoComponent { }
   template: '<p>Settings</p>'
 })
 class MockSettingsComponent { }
+
+// Mock Translate Pipe to avoid bringing in ngx-translate dependencies
+@Pipe({
+  name: 'translate',
+  standalone: true
+})
+class MockTranslatePipe implements PipeTransform {
+  private dict: Record<string,string> = {
+    'app.title': 'Angular Architecture',
+    'app.navigation.dashboard': 'Dashboard',
+    'app.navigation.clothes': 'Clothes',
+    'app.navigation.auth': 'Authentication',
+    'app.navigation.themeDemo': 'Theme Demo',
+    'app.navigation.settings': 'Settings',
+    'app.actions.toggleTheme': 'Switch to light theme', // base template; param used separately by service call
+    'app.actions.openMenu': 'Open menu',
+    'app.actions.closeMenu': 'Close menu',
+    'app.actions.changeLanguage': 'Change language',
+    'app.languages.en': 'English',
+    'app.languages.es': 'Spanish',
+    'app.languages.pt': 'Portuguese',
+    'app.languages.ca': 'Catalan',
+    'app.languages.gl': 'Galician'
+  };
+  transform(value: string): string {
+    return this.dict[value] ?? value;
+  }
+}
+
+// Stub Language Switcher to avoid pulling in TranslateModule / pipe
+@Component({
+  selector: 'app-language-switcher',
+  standalone: true,
+  template: '<!-- language switcher stub -->'
+})
+class StubLanguageSwitcherComponent {}
 
 // Mock ThemeService
 class MockThemeService {
@@ -56,7 +94,7 @@ describe('HeaderComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        CommonModule,
+  CommonModule,
         HeaderComponent,
         RouterTestingModule.withRoutes([
           { path: 'dashboard', component: MockDashboardComponent },
@@ -66,9 +104,44 @@ describe('HeaderComponent', () => {
         ])
       ],
       providers: [
-        { provide: ThemeService, useValue: mockThemeService }
+        { provide: ThemeService, useValue: mockThemeService },
+        {
+          provide: TranslationService,
+          useValue: {
+            currentLang: () => 'en',
+            use: jest.fn(),
+            availableLangs: ['en','es','pt','ca','gl'],
+            instant: (key: string, params?: Record<string,string>) => {
+              const dict: Record<string,string> = {
+                'app.title': 'Angular Architecture',
+                'app.navigation.dashboard': 'Dashboard',
+                'app.navigation.clothes': 'Clothes',
+                'app.navigation.auth': 'Authentication',
+                'app.navigation.themeDemo': 'Theme Demo',
+                'app.navigation.settings': 'Settings',
+                'app.actions.toggleTheme': `Switch to ${params?.['theme'] ?? '{{theme}}'} theme`,
+                'app.actions.openMenu': 'Open menu',
+                'app.actions.closeMenu': 'Close menu',
+                'app.actions.changeLanguage': 'Change language',
+                'app.languages.en': 'English',
+                'app.languages.es': 'Spanish',
+                'app.languages.pt': 'Portuguese',
+                'app.languages.ca': 'Catalan',
+                'app.languages.gl': 'Galician'
+              };
+              return dict[key] ?? key;
+            }
+          }
+        }
       ]
     }).compileComponents();
+
+    // Override component to replace real TranslatePipe with mock pipe
+    TestBed.overrideComponent(HeaderComponent, {
+      set: {
+        imports: [CommonModule, RouterLink, RouterLinkActive, MockTranslatePipe]
+      }
+    });
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
@@ -82,7 +155,7 @@ describe('HeaderComponent', () => {
 
   describe('Component Initialization', () => {
     it('should initialize with default title', () => {
-      expect(component['title']()).toBe('Angular Architecture');
+      expect(component['title']()).toBe('app.title');
     });
 
     it('should initialize with sidebar closed', () => {
@@ -94,23 +167,23 @@ describe('HeaderComponent', () => {
       expect(links).toHaveLength(5);
       
       // Test individual properties to avoid emoji encoding issues
-      expect(links[0].label).toBe('Dashboard');
+  expect(links[0].label).toBe('app.navigation.dashboard');
       expect(links[0].path).toBe('/dashboard');
       expect(links[0].icon).toBeDefined();
       
-      expect(links[1].label).toBe('Clothes');
+  expect(links[1].label).toBe('app.navigation.clothes');
       expect(links[1].path).toBe('/clothes');
       expect(links[1].icon).toBeDefined();
       
-      expect(links[2].label).toBe('Authentication');
+  expect(links[2].label).toBe('app.navigation.auth');
       expect(links[2].path).toBe('/auth/login');
       expect(links[2].icon).toBeDefined();
       
-      expect(links[3].label).toBe('Theme Demo');
+  expect(links[3].label).toBe('app.navigation.themeDemo');
       expect(links[3].path).toBe('/theme-demo');
       expect(links[3].icon).toBeDefined();
       
-      expect(links[4].label).toBe('Settings');
+  expect(links[4].label).toBe('app.navigation.settings');
       expect(links[4].path).toBe('/settings');
       expect(links[4].icon).toBeDefined();
     });
@@ -119,7 +192,7 @@ describe('HeaderComponent', () => {
   describe('Template Rendering', () => {
     it('should render the title in the logo', () => {
       const logoElement = fixture.debugElement.query(By.css('.logo h1'));
-      expect(logoElement.nativeElement.textContent.trim()).toBe('Angular Architecture');
+  expect(logoElement.nativeElement.textContent.trim()).toBe('Angular Architecture');
     });
 
     it('should render all navigation links in desktop nav', () => {
@@ -277,13 +350,13 @@ describe('HeaderComponent', () => {
   describe('Accessibility', () => {
     it('should have proper aria-labels for theme toggle button', () => {
       const themeButton = fixture.debugElement.query(By.css('.theme-toggle'));
-      expect(themeButton.nativeElement.getAttribute('aria-label')).toBe('Switch to dark theme');
+  // Initially should refer to switching to dark theme (since expression uses dark when currently light)
+  expect(themeButton.nativeElement.getAttribute('aria-label')).toBe('Switch to dark theme');
       
-      // Toggle theme and check aria-label changes
+      // Toggle theme and expect aria label updates to dark
       themeButton.nativeElement.click();
       fixture.detectChanges();
-      
-      expect(themeButton.nativeElement.getAttribute('aria-label')).toBe('Switch to light theme');
+  expect(themeButton.nativeElement.getAttribute('aria-label')).toBe('Switch to light theme');
     });
 
     it('should have proper aria-labels for burger menu button', () => {
@@ -407,22 +480,16 @@ describe('HeaderComponent', () => {
   });
 
   describe('Component Methods', () => {
-    it('should update navigation links when updateNavigationLinks is called', () => {
-      const newLinks: NavigationLink[] = [
+    // updateNavigationLinks is now a no-op since links are computed from translations; keep test to assert immutability
+    it('should not change navigation links when updateNavigationLinks is called (noop)', () => {
+      const original = component['navigationLinks']();
+      const attempt: NavigationLink[] = [
         { label: 'Home', path: '/home', icon: '🏠' },
         { label: 'Profile', path: '/profile', icon: '👤' }
       ];
-      
-      component.updateNavigationLinks(newLinks);
+      component.updateNavigationLinks(attempt);
       fixture.detectChanges();
-      
-      expect(component['navigationLinks']()).toEqual(newLinks);
-      
-      // Verify new links are rendered
-      const navLinks = fixture.debugElement.queryAll(By.css('.nav-link'));
-      expect(navLinks).toHaveLength(2);
-      expect(navLinks[0].nativeElement.textContent.trim()).toContain('Home');
-      expect(navLinks[1].nativeElement.textContent.trim()).toContain('Profile');
+      expect(component['navigationLinks']()).toEqual(original);
     });
 
     it('should toggle sidebar state with toggleSidebar method', () => {
@@ -523,23 +590,22 @@ describe('HeaderComponent', () => {
 
   describe('Performance Optimizations', () => {
     it('should have computed signals for memoized values', () => {
-      // Check that computed signals exist and work correctly
       expect(component['themeIcon']()).toBe('🌙');
       expect(component['isDarkMode']()).toBe(false);
-      expect(component['themeAriaLabel']()).toBe('Switch to dark theme');
+      // Aria label is template due to stub translation
+  expect(component['themeAriaLabel']()).toBe('Switch to dark theme');
       expect(component['burgerAriaLabel']()).toBe('Open menu');
-      expect(component['sidebarThemeText']()).toBe('Dark Mode');
+  expect(component['sidebarThemeText']()).toBe('Dark');
     });
 
     it('should update computed values when dependencies change', () => {
-      // Toggle theme and verify computed values update
       component['toggleTheme']();
       fixture.detectChanges();
-      
       expect(component['themeIcon']()).toBe('☀️');
       expect(component['isDarkMode']()).toBe(true);
-      expect(component['themeAriaLabel']()).toBe('Switch to light theme');
-      expect(component['sidebarThemeText']()).toBe('Light Mode');
+      // Still template form because stub does not interpolate params
+  expect(component['themeAriaLabel']()).toBe('Switch to light theme');
+  expect(component['sidebarThemeText']()).toBe('Light');
     });
 
     it('should update burger aria label when sidebar state changes', () => {

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, Injector, runInInjectionContext } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, Injector, runInInjectionContext, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ClothingItemApi } from '../../../core/api/clothes/clothes';
@@ -10,12 +10,14 @@ import { ModalService } from '../../../core/services/modal/modal.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../core/services/modal/confirm-dialog.component';
 import { ButtonDirective } from '../../../shared/directives';
 import { ClothesStore } from '../../../core/store/clothes/clothes.store';
+import { TranslationService } from '../../../core/services/translation.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-clothes-crud-abstract',
   standalone: true,
   providers: [ClothesStore],
-  imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective],
+  imports: [CommonModule, ReactiveFormsModule, ResponsiveGridComponent, MiniCurrencyPipe, ButtonDirective, TranslatePipe],
   templateUrl: './clothes-crud-abstract.component.html',
   styleUrls: ['./clothes-crud-abstract.component.scss']
 })
@@ -23,6 +25,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   private fb = inject(FormBuilder);
   protected clothesStore = inject(ClothesStore);
   private modal = inject(ModalService);
+  private i18n = inject(TranslationService);
   // Capture injector so we can safely create runtime effects in methods regardless of caller context (aids testability)
   private injector = inject(Injector);
 
@@ -30,22 +33,26 @@ export class ClothesCrudAbstractComponent implements OnInit {
   itemForm: FormGroup;
   private gridApi: any;
   
-  // Grid configuration (desktop) & responsive config
-  readonly columnDefs = [
-    { field: 'id', headerName: 'ID', flex: 0.5, minWidth: 70 },
-    { field: 'name', headerName: 'Name', flex: 1.5, minWidth: 140 },
-    { field: 'brand', headerName: 'Brand', flex: 1, minWidth: 110 },
-    { field: 'price', headerName: 'Price', flex: 0.8, minWidth: 100, valueFormatter: (p: any) => (typeof p.value === 'number' && !isNaN(p.value)) ? '$' + p.value.toFixed(2) : '$0.00' },
-    { field: 'stock', headerName: 'Stock', flex: 0.6, minWidth: 90, cellStyle: (p: any) => ({ fontWeight: p.value <= 5 ? '600' : '400', color: p.value <= 5 ? 'var(--danger, #dc3545)' : 'inherit', textAlign: 'center' }) },
-    { field: 'category', headerName: 'Category', flex: 1, minWidth: 120 },
-    { field: 'season', headerName: 'Season', flex: 0.8, minWidth: 100 },
-    { field: 'updatedAt', headerName: 'Updated', flex: 1, minWidth: 140, valueFormatter: (p: any) => p.value ? new Date(p.value).toLocaleDateString() : '' }
-  ];
+  // Reactive column definitions (mirrors catalog strategy, reacts to translation changes if run-time language switches)
+  private readonly columnDefs = computed(() => {
+    // Establish reactive dependency on translation signal
+    this.i18n.translations();
+    return [
+      { field: 'id', headerName: this.i18n.instant('app.clothes.crud.columns.id'), flex: 0.5, minWidth: 70 },
+      { field: 'name', headerName: this.i18n.instant('app.clothes.crud.columns.name'), flex: 1.5, minWidth: 140 },
+      { field: 'brand', headerName: this.i18n.instant('app.clothes.crud.columns.brand'), flex: 1, minWidth: 110 },
+      { field: 'price', headerName: this.i18n.instant('app.clothes.crud.columns.price'), flex: 0.8, minWidth: 100, valueFormatter: (p: any) => (typeof p.value === 'number' && !isNaN(p.value)) ? '$' + p.value.toFixed(2) : '$0.00' },
+      { field: 'stock', headerName: this.i18n.instant('app.clothes.crud.columns.stock'), flex: 0.6, minWidth: 90, cellStyle: (p: any) => ({ fontWeight: p.value <= 5 ? '600' : '400', color: p.value <= 5 ? 'var(--danger, #dc3545)' : 'inherit', textAlign: 'center' }) },
+      { field: 'category', headerName: this.i18n.instant('app.clothes.crud.columns.category'), flex: 1, minWidth: 120 },
+      { field: 'season', headerName: this.i18n.instant('app.clothes.crud.columns.season'), flex: 0.8, minWidth: 100 },
+      { field: 'updatedAt', headerName: this.i18n.instant('app.clothes.crud.columns.updatedAt'), flex: 1, minWidth: 140, valueFormatter: (p: any) => p.value ? new Date(p.value).toLocaleDateString() : '' }
+    ];
+  });
 
-  gridConfig: ResponsiveGridConfig = {
-    columnDefs: this.columnDefs,
+  gridConfig: Signal<ResponsiveGridConfig> = computed(() => ({
+    columnDefs: this.columnDefs(),
     mobileView: 'cards',
-    loadingMessage: 'Loading clothes...',
+    loadingMessage: 'app.clothes.crud.loadingShort',
     retryOnError: true,
     showErrorMessage: true,
     gridOptions: {
@@ -53,7 +60,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
       getRowId: (p: any) => p?.data ? String(p.data.id) : undefined,
       onRowClicked: (event: any) => this.onRowClicked(event)
     }
-  };
+  }));
   
   // Stable data config (avoid recreating object each CD cycle)
   // Keep a minimal dataConfig (still required by component) but prefer direct signal path
@@ -109,8 +116,8 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   refreshData(): void {
     this.clothesStore.refresh().subscribe({
-      next: () => console.log('✅ Data loaded successfully'),
-      error: (error) => console.error('❌ Error loading data:', error)
+      next: () => console.log('[clothes] data loaded'),
+      error: (error) => console.error('[clothes] load error:', error)
     });
   }
 
@@ -129,19 +136,19 @@ export class ClothesCrudAbstractComponent implements OnInit {
         const id = this.selectedItem()!.id;
         this.clothesStore.update(id, itemData).subscribe({
           next: (updated) => {
-            console.log('✅ Item updated successfully:', updated);
+            console.log('[clothes] item updated:', updated);
             this.resetForm();
             this.clearSelection();
           },
-          error: (error) => console.error('❌ Error updating item:', error)
+          error: (error) => console.error('[clothes] update error:', error)
         });
       } else {
         this.clothesStore.create(itemData).subscribe({
           next: (created) => {
-            console.log('✅ Item created successfully:', created);
+            console.log('[clothes] item created:', created);
             this.resetForm();
           },
-          error: (error) => console.error('❌ Error creating item:', error)
+          error: (error) => console.error('[clothes] create error:', error)
         });
       }
     }
@@ -171,7 +178,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   deleteItem(id: number): void {
     const ref = this.modal.open(ConfirmDialogComponent, {
-      data: { title: 'Delete Item', message: 'Are you sure you want to delete this item?' } satisfies ConfirmDialogData,
+      data: { title: 'app.clothes.crud.dialog.delete.title', message: 'app.clothes.crud.dialog.delete.message' } satisfies ConfirmDialogData,
       labelledBy: 'confirmDialogTitle',
       describedBy: 'confirmDialogDesc',
       disableEscapeClose: false,
@@ -184,10 +191,10 @@ export class ClothesCrudAbstractComponent implements OnInit {
         if (closed?.data === true) {
           this.clothesStore.delete(id).subscribe({
             next: () => {
-              console.log('✅ Item deleted successfully');
+              console.log('[clothes] item deleted');
               if (this.selectedItem()?.id === id) this.clearSelection();
             },
-            error: (error) => console.error('❌ Error deleting item:', error)
+            error: (error) => console.error('[clothes] delete error:', error)
           });
         }
       });
@@ -197,7 +204,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   // Manual test opener for modal service (not tied to CRUD action)
   openTestModal(): void {
     this.modal.open(ConfirmDialogComponent, {
-      data: { title: 'Test Modal', message: 'This is a manual test modal.' },
+      data: { title: 'app.clothes.crud.dialog.test.title', message: 'app.clothes.crud.dialog.test.message' },
       labelledBy: 'confirmDialogTitle',
       describedBy: 'confirmDialogDesc'
     });
@@ -239,32 +246,32 @@ export class ClothesCrudAbstractComponent implements OnInit {
   nameError(): string {
     const c = this.getControl('name');
     if (c?.invalid && (c.dirty || c.touched)) {
-      if (c.errors?.['required']) return 'Name is required';
-      if (c.errors?.['minlength']) return 'Name must be at least 2 characters';
+  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.name.required');
+  if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.name.min');
     }
     return '';
   }
   brandError(): string {
     const c = this.getControl('brand');
     if (c?.invalid && (c.dirty || c.touched)) {
-      if (c.errors?.['required']) return 'Brand is required';
-      if (c.errors?.['minlength']) return 'Brand must be at least 2 characters';
+  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.brand.required');
+  if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.brand.min');
     }
     return '';
   }
   priceError(): string {
     const c = this.getControl('price');
     if (c?.invalid && (c.dirty || c.touched)) {
-      if (c.errors?.['required']) return 'Price is required';
-      if (c.errors?.['min']) return 'Price must be greater than 0';
+  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.price.required');
+  if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.price.min');
     }
     return '';
   }
   stockError(): string {
     const c = this.getControl('stock');
     if (c?.invalid && (c.dirty || c.touched)) {
-      if (c.errors?.['required']) return 'Stock is required';
-      if (c.errors?.['min']) return 'Stock cannot be negative';
+  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.stock.required');
+  if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.stock.min');
     }
     return '';
   }

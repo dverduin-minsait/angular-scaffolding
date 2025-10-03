@@ -1,0 +1,198 @@
+{
+  "common": {
+    "and": "e"
+  },
+  "app": {
+    "title": "Angulinho",
+    "navigation": {
+      "dashboard": "Painel",
+      "clothes": "Roupas",
+      "auth": "Autenticação",
+      "themeDemo": "Demo Tema",
+      "settings": "Configurações"
+    },
+    "actions": {
+      "toggleTheme": "Mudar para tema {{theme}}",
+      "openMenu": "Abrir menu",
+      "closeMenu": "Fechar menu",
+      "changeLanguage": "Mudar idioma",
+      "switchToLight": "Mudar para Claro",
+      "switchToDark": "Mudar para Escuro",
+      "changeTheme": "Alterar tema",
+      "quickActions": "Ações rápidas",
+      "toggleThemePair": "Mudar para {{pair}}",
+      "resetDefaults": "Restaurar padrões",
+      "goToLoginPage": "Ir para a página de login"
+    },
+    "skipLinks": {
+      "main": "Ir para o conteúdo principal",
+      "navigation": "Ir para a navegação"
+    },
+    "breadcrumb": {
+      "home": "Início"
+    },
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "lightWarm": "Claro (Quente)",
+      "darkWarm": "Escuro (Quente)",
+      "lightTheme": "Tema claro",
+      "darkTheme": "Tema escuro",
+      "lightWarmTheme": "Tema claro quente",
+      "darkWarmTheme": "Tema escuro quente"
+    },
+    "status": {
+      "darkMode": "Modo escuro:",
+      "enabled": "Ativado",
+      "disabled": "Desativado",
+      "systemPreference": "Preferência do sistema",
+      "systemPreferenceDescription": "Alterna automaticamente entre temas claro e escuro com base nas configurações do sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Criar conta",
+        "subtitle": "Junte-se a nós e comece sua jornada",
+        "personalInformation": "Informações pessoais",
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "email": "Email",
+        "gender": "Gênero",
+        "preferredLanguage": "Idioma preferido",
+        "additionalObservations": "Observações adicionais",
+        "observationsPlaceholder": "Quaisquer comentários ou notas adicionais (opcional)",
+        "observationsHint": "Campo opcional. Máximo de 500 caracteres.",
+        "password": "Senha",
+        "passwordPlaceholder": "Crie uma senha",
+        "passwordRequirements": "Requisitos da senha:",
+        "passwordReqMin": "Pelo menos 8 caracteres",
+        "passwordReqUpper": "Uma letra maiúscula",
+        "passwordReqLower": "Uma letra minúscula",
+        "passwordReqNumber": "Um número",
+        "passwordStrength": "Força da senha:",
+        "confirmPassword": "Confirmar senha",
+        "confirmPasswordPlaceholder": "Confirme sua senha",
+        "termsTextPrefix": "Eu concordo com os",
+        "termsService": "Termos de serviço",
+        "privacyPolicy": "Política de privacidade",
+        "opensInNewTab": "(abre em nova aba)",
+        "submitCreating": "Criando conta...",
+        "submitCreate": "Criar conta",
+        "signUpWithGoogle": "Inscrever-se com Google",
+        "alreadyHaveAccount": "Já tem uma conta?",
+        "signIn": "Entrar",
+        "passwordStrengthTexts": {
+          "none": "Sem senha",
+          "veryWeak": "Muito fraca",
+          "weak": "Fraca",
+          "good": "Boa",
+          "strong": "Forte"
+        },
+        "errors": {
+          "firstNameRequired": "Nome é obrigatório",
+          "firstNameMin": "Nome deve ter pelo menos 2 caracteres",
+          "lastNameRequired": "Sobrenome é obrigatório",
+          "lastNameMin": "Sobrenome deve ter pelo menos 2 caracteres",
+          "emailRequired": "Email é obrigatório",
+          "emailInvalid": "Informe um email válido",
+          "genderRequired": "Selecione seu gênero",
+          "languageRequired": "Selecione seu idioma preferido",
+          "passwordRequired": "Senha é obrigatória",
+          "passwordWeak": "A senha deve cumprir pelo menos 3 requisitos",
+          "confirmPasswordRequired": "Confirme sua senha",
+          "passwordMismatch": "As senhas não coincidem",
+          "termsRequired": "Você deve aceitar os Termos de serviço e a Política de privacidade"
+        }
+      }
+    },
+    "languages": {
+      "en": "Inglês",
+      "es": "Espanhol",
+      "pt": "Português",
+      "ca": "Catalão",
+      "gl": "Galego"
+    },
+    "clothes": {
+      "catalog": {
+        "title": "Catálogo de Roupas",
+        "loading": "Carregando catálogo de roupas...",
+        "columns": {
+          "name": "Nome do Produto",
+          "brand": "Marca",
+          "price": "Preço",
+          "size": "Tamanho",
+          "color": "Cor",
+          "stock": "Estoque",
+          "category": "Categoria",
+          "season": "Estação"
+        },
+        "mobile": {
+          "colorLabel": "Cor:",
+          "stockLabel": "Estoque:"
+        }
+      },
+      "crud": {
+        "title": "Gerenciador de Roupas",
+        "loading": "Carregando",
+        "loadingShort": "Carregando roupas...",
+        "ready": "Pronto",
+        "items": "Itens",
+        "itemsLoaded": { "aria": "Itens carregados" },
+        "columns": {
+          "id": "ID",
+          "name": "Nome",
+          "brand": "Marca",
+          "price": "Preço",
+          "stock": "Estoque",
+          "category": "Categoria",
+          "season": "Estação",
+          "updatedAt": "Atualizado"
+        },
+        "actions": {
+          "refresh": "Atualizar",
+          "clearSelection": "Limpar seleção",
+          "openTestModal": "Abrir modal de teste"
+        },
+        "columnsPanel": "Colunas",
+        "columnsPanelTitle": "Colunas",
+        "form": {
+          "editTitle": "Editar Item",
+          "addTitle": "Adicionar Novo Item",
+          "basicInfo": "Informações Básicas",
+          "actions": {
+            "update": "Atualizar Item",
+            "create": "Criar Item",
+            "reset": "Redefinir",
+            "cancel": "Cancelar"
+          },
+          "fields": {
+            "name": { "label": "Nome" },
+            "brand": { "label": "Marca" },
+            "price": { "label": "Preço" },
+            "stock": { "label": "Estoque" },
+            "size": { "label": "Tamanho" },
+            "season": { "label": "Estação" },
+            "category": { "label": "Categoria" },
+            "color": { "label": "Cor" },
+            "description": { "label": "Descrição" }
+          },
+          "errors": {
+            "name": { "required": "Nome é obrigatório", "min": "Nome deve ter pelo menos 2 caracteres" },
+            "brand": { "required": "Marca é obrigatória", "min": "Marca deve ter pelo menos 2 caracteres" },
+            "price": { "required": "Preço é obrigatório", "min": "Preço deve ser maior que 0" },
+            "stock": { "required": "Estoque é obrigatório", "min": "Estoque não pode ser negativo" }
+          }
+        },
+        "stats": {
+          "total": { "label": "Total", "aria": "Total de itens" },
+          "available": { "label": "Disponíveis", "aria": "Itens disponíveis" },
+          "lowStock": { "label": "Baixo Estoque", "aria": "Itens com pouco estoque" },
+          "value": { "label": "Valor", "aria": "Valor de inventário" }
+        },
+        "dialog": {
+          "delete": { "title": "Excluir Item", "message": "Tem certeza de que deseja excluir este item?" },
+          "test": { "title": "Modal de Teste", "message": "Este é um modal de teste manual." }
+        }
+      }
+    }
+  }
+}

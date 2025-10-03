@@ -1,11 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
+import { TranslationService } from '../../../core/services/translation.service';
+import { Component as NgComponent } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Router, UrlTree } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ThemeService } from '../../../core/services/theme.service';
 import { AccessibilityTestUtils } from '../../../testing/accessibility-test-utils';
 import { DOCUMENT } from '@angular/common';
 import { signal } from '@angular/core';
+import { TranslateStubPipe, provideStubTranslationService } from '../../../testing/i18n-testing';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 import { of } from 'rxjs';
 
@@ -71,9 +76,23 @@ describe('HeaderComponent Accessibility', () => {
             removeItem: jest.fn(),
             clear: jest.fn()
           }
-        }
+        },
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
       ]
     }).compileComponents();
+
+    @NgComponent({
+      selector: 'app-language-switcher',
+      standalone: true,
+      template: '<!-- stub -->'
+    })
+    class StubLanguageSwitcherComponent {}
+
+    TestBed.overrideComponent(HeaderComponent, {
+      set: {
+        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe]
+      }
+    });
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
@@ -190,11 +209,11 @@ describe('HeaderComponent Accessibility', () => {
 
       // Look for navigation links
       const navLinks = fixture.nativeElement.querySelectorAll('a');
-      const dashboardLink = Array.from(navLinks).find((link: any) => 
-        link.textContent?.includes('Dashboard')
-      );
-      
-      // We expect to find the dashboard link in the navigation
+      const dashboardLink = Array.from(navLinks).find((link: any) => {
+        const txt = link.textContent ?? '';
+        return txt.includes('Dashboard') || txt.includes('app.navigation.dashboard');
+      });
+      // Accept presence even if still showing raw key (translation stub fallback)
       expect(dashboardLink).toBeTruthy();
     });
   });

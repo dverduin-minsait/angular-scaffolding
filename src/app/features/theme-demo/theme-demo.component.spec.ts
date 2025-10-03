@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThemeDemoComponent } from './theme-demo.component';
 import { ThemeService } from '../../core/services/theme.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Mock ThemeService
 const mockThemeService = {
@@ -26,13 +27,34 @@ describe('ThemeDemoComponent', () => {
   let component: ThemeDemoComponent;
   let fixture: ComponentFixture<ThemeDemoComponent>;
 
+  // Minimal translations needed for headings/descriptions referenced in this spec
+  const enTranslations = {
+    app: {
+      themeDemo: {
+        mainHeading: '🎨 Theme System Demo',
+        description: 'This page demonstrates the complete theme system',
+        controlsHeading: '🎛️ Theme Controls',
+        pairDemoHeading: '🎨 Theme Pair Demonstration',
+        paletteHeading: '🎨 Color Palette',
+        interactiveHeading: '🧩 Interactive Components',
+        statusIndicatorsHeading: '📊 Status Indicators',
+        responsiveHeading: '📱 Responsive Design',
+        configurationHeading: '🔧 Theme Configuration'
+      }
+    }
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ThemeDemoComponent],
+      imports: [ThemeDemoComponent, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         { provide: ThemeService, useValue: mockThemeService }
       ]
     }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', enTranslations, true);
+    translate.use('en');
 
     fixture = TestBed.createComponent(ThemeDemoComponent);
     component = fixture.componentInstance;

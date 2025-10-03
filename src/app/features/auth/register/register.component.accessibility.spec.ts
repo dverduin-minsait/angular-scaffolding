@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RegisterComponent } from './register.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AccessibilityTestUtils, accessibilityMatchers } from '../../../testing/accessibility-test-utils';
 
 // Extend Jest matchers
@@ -11,15 +12,66 @@ describe('RegisterComponent - Accessibility', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
 
+  // Minimal English translations needed for this accessibility spec
+  const enTranslations = {
+    app: {
+      actions: { goToLoginPage: 'Go to login page' },
+      auth: {
+        register: {
+          title: 'Create Account',
+          subtitle: 'Join us and start your journey',
+          personalInformation: 'Personal Information',
+          firstName: 'First Name',
+          lastName: 'Last Name',
+          email: 'Email',
+          gender: 'Gender',
+          preferredLanguage: 'Preferred Language',
+          additionalObservations: 'Additional Observations',
+          observationsPlaceholder: 'Add any additional information here (optional)',
+          observationsHint: 'You can provide extra context or notes (max 500 characters).',
+          password: 'Password',
+          passwordPlaceholder: 'Create a password',
+          passwordRequirements: 'Password requirements:',
+          passwordReqMin: 'At least 8 characters',
+          passwordReqUpper: 'Contains uppercase letter',
+          passwordReqLower: 'Contains lowercase letter',
+          passwordReqNumber: 'Contains number',
+          passwordStrength: 'Password strength',
+          confirmPassword: 'Confirm Password',
+          confirmPasswordPlaceholder: 'Confirm your password',
+          termsTextPrefix: 'I agree to the',
+          termsService: 'Terms of Service',
+          opensInNewTab: '(opens in new tab)',
+          privacyPolicy: 'Privacy Policy',
+          submitCreate: 'Create Account',
+          submitCreating: 'Creating Account...',
+          signUpWithGoogle: 'Sign up with Google',
+          alreadyHaveAccount: 'Already have an account?',
+          signIn: 'Sign in',
+          passwordStrengthTexts: {
+            veryWeak: 'Very weak',
+            good: 'Good',
+            strong: 'Strong',
+          }
+        }
+      }
+    },
+    common: { and: 'and' }
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         RegisterComponent,
         ReactiveFormsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        TranslateModule.forRoot({ fallbackLang: 'en' })
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
+
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', enTranslations, true);
+    translate.use('en');
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;

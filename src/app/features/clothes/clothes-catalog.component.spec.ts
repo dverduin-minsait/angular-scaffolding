@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { ClothesCatalogComponent } from './clothes-catalog.component';
+import { TranslateStubPipe, provideStubTranslationService } from '../../testing/i18n-testing';
 import { DeviceService } from '../../core/services/device.service';
 import { ClothesService } from './clothes.service';
 import { PLATFORM_ID } from '@angular/core';
 import { ResponsiveGridComponent } from '../../shared/components/responsive-grid/responsive-grid.component';
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 // Mock ResponsiveGridComponent
 @Component({
@@ -41,16 +43,22 @@ describe('ClothesCatalogComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ClothesCatalogComponent, MockResponsiveGridComponent],
+      imports: [ClothesCatalogComponent, MockResponsiveGridComponent, TranslateStubPipe],
       providers: [
         { provide: DeviceService, useValue: mockDeviceService },
         { provide: PLATFORM_ID, useValue: 'browser' },
-        ClothesService
+        ClothesService,
+        ...provideStubTranslationService({
+          'app.clothes.catalog.title': 'Clothes Catalog',
+          'app.clothes.catalog.mobile.colorLabel': 'Color:',
+          'app.clothes.catalog.mobile.stockLabel': 'Stock:',
+          'app.clothes.catalog.loading': 'Loading clothes catalog...'
+        })
       ]
     })
     .overrideComponent(ClothesCatalogComponent, {
-      remove: { imports: [ResponsiveGridComponent] },
-      add: { imports: [MockResponsiveGridComponent] }
+      remove: { imports: [ResponsiveGridComponent, TranslatePipe] },
+      add: { imports: [MockResponsiveGridComponent, TranslateStubPipe] }
     })
     .compileComponents();
 
@@ -76,19 +84,20 @@ describe('ClothesCatalogComponent', () => {
     });
 
     it('should have correct data config structure', () => {
-      const dataConfig = component.dataConfig;
+      const dataConfig = component.dataConfig();
       expect(dataConfig).toBeDefined();
       expect(dataConfig.dataSource).toEqual([]);
       expect(dataConfig.preloadGrid).toBe(true);
     });
 
     it('should have correct grid config structure', () => {
-      const gridConfig = component.gridConfig;
+      const gridConfig = component.gridConfig();
       expect(gridConfig).toBeDefined();
       expect(gridConfig.columnDefs).toBeDefined();
       expect(gridConfig.mobileView).toBe('cards');
       expect(gridConfig.showLoadingSpinner).toBe(true);
-      expect(gridConfig.loadingMessage).toBe('Loading clothes catalog...');
+  // Component now stores translation key; template / grid is responsible for translating
+  expect(gridConfig.loadingMessage).toBe('app.clothes.catalog.loading');
       expect(gridConfig.showErrorMessage).toBe(true);
       expect(gridConfig.retryOnError).toBe(true);
     });
@@ -145,7 +154,7 @@ describe('ClothesCatalogComponent', () => {
 
   describe('Service Integration', () => {
     it('should get column definitions from ClothesService', () => {
-      const columnDefs = clothesService.getColDefs();
+      const columnDefs = clothesService.colDefs();
       expect(columnDefs).toHaveLength(8);
       expect(columnDefs[0].field).toBe('name');
       expect(columnDefs[1].field).toBe('brand');
@@ -168,7 +177,7 @@ describe('ClothesCatalogComponent', () => {
     it('should render page title', () => {
       fixture.detectChanges();
       const title = fixture.nativeElement.querySelector('h1');
-      expect(title?.textContent?.trim()).toBe('Clothes Catalog');
+      expect(title?.textContent?.trim()).toBe('Clothes Catalog'); // translation default
     });
 
     it('should render responsive grid component', () => {

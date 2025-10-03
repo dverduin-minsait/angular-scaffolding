@@ -1,3 +1,5 @@
+import { computed, inject, Injectable } from "@angular/core";
+import { TranslationService } from "../../core/services/translation.service";
 
 export interface ClothingItem {
   id: number;
@@ -23,7 +25,9 @@ export interface ColDef {
   resizable?: boolean;
 }
 
+@Injectable()
 export class ClothesService {
+  private i18n = inject(TranslationService);
   getData() {
     const mockClothingData: ClothingItem[] = [
       { id: 1, name: 'Classic Cotton T-Shirt', brand: 'BasicWear', price: 25.99, size: 'M', color: 'white', stock: 45, season: 'Spring', category: 'T-Shirts' },
@@ -42,18 +46,20 @@ export class ClothesService {
     return mockClothingData;
   }
 
-  getColDefs(): ColDef[] {
+  public readonly colDefs = computed<ColDef[]>(() =>{
+    const translations =  this.i18n.translations();
+    console.log('ClothesService.colDefs computed ran', translations);
     return [
       { 
         field: 'name', 
-        headerName: 'Product Name',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.name'),
         flex: 2,
         minWidth: 150,
         cellStyle: { fontWeight: '600' }
       },
       { 
         field: 'brand', 
-        headerName: 'Brand',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.brand'),
         flex: 1,
         minWidth: 100,
         cellStyle: (params: any) => ({
@@ -63,7 +69,7 @@ export class ClothesService {
       },
       { 
         field: 'price', 
-        headerName: 'Price',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.price'),
         flex: 1,
         minWidth: 100,
         valueFormatter: (params: any) => '$' + params.value.toFixed(2),
@@ -74,14 +80,14 @@ export class ClothesService {
       },
       { 
         field: 'size', 
-        headerName: 'Size',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.size'),
         flex: 0.7,
         minWidth: 80,
         cellStyle: { textAlign: 'center' }
       },
       { 
         field: 'color', 
-        headerName: 'Color',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.color'),
         flex: 1,
         minWidth: 100,
         cellRenderer: (params: any) => {
@@ -93,7 +99,7 @@ export class ClothesService {
       },
       { 
         field: 'stock', 
-        headerName: 'Stock',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.stock'),
         flex: 0.8,
         minWidth: 80,
         cellStyle: (params: any) => ({
@@ -104,13 +110,13 @@ export class ClothesService {
       },
       { 
         field: 'category', 
-        headerName: 'Category',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.category'),
         flex: 1,
         minWidth: 120
       },
       { 
         field: 'season', 
-        headerName: 'Season',
+        headerName: this.i18n.instant('app.clothes.catalog.columns.season'),
         flex: 1,
         minWidth: 100,
         cellStyle: (params: any) => {
@@ -124,5 +130,5 @@ export class ClothesService {
         }
       }
     ];
-  }
+  });
 }

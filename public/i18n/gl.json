@@ -1,0 +1,198 @@
+{
+  "common": {
+    "and": "e"
+  },
+  "app": {
+    "title": "Anguliño",
+    "navigation": {
+      "dashboard": "Panel",
+      "clothes": "Roupa",
+      "auth": "Autenticación",
+      "themeDemo": "Demo Tema",
+      "settings": "Configuración"
+    },
+    "actions": {
+      "toggleTheme": "Cambiar ao tema {{theme}}",
+      "openMenu": "Abrir menú",
+      "closeMenu": "Pechar menú",
+      "changeLanguage": "Cambiar idioma",
+      "switchToLight": "Cambiar a Claro",
+      "switchToDark": "Cambiar a Escuro",
+      "changeTheme": "Cambiar tema",
+      "quickActions": "Accións rápidas",
+      "toggleThemePair": "Cambiar a {{pair}}",
+      "resetDefaults": "Restablecer valores",
+      "goToLoginPage": "Ir á páxina de inicio de sesión"
+    },
+    "skipLinks": {
+      "main": "Ir ao contido principal",
+      "navigation": "Ir á navegación"
+    },
+    "breadcrumb": {
+      "home": "Inicio"
+    },
+    "themes": {
+      "light": "Claro",
+      "dark": "Escuro",
+      "lightWarm": "Claro (Cálido)",
+      "darkWarm": "Escuro (Cálido)",
+      "lightTheme": "Tema claro",
+      "darkTheme": "Tema escuro",
+      "lightWarmTheme": "Tema claro cálido",
+      "darkWarmTheme": "Tema escuro cálido"
+    },
+    "status": {
+      "darkMode": "Modo escuro:",
+      "enabled": "Activado",
+      "disabled": "Desactivado",
+      "systemPreference": "Preferencia do sistema",
+      "systemPreferenceDescription": "Cambia automaticamente entre temas claro e escuro segundo a configuración do sistema"
+    },
+    "auth": {
+      "register": {
+        "title": "Crear conta",
+        "subtitle": "Únete e comeza a túa viaxe",
+        "personalInformation": "Información persoal",
+        "firstName": "Nome",
+        "lastName": "Apelido",
+        "email": "Correo electrónico",
+        "gender": "Xénero",
+        "preferredLanguage": "Idioma preferido",
+        "additionalObservations": "Observacións adicionais",
+        "observationsPlaceholder": "Calquera comentario ou nota adicional (opcional)",
+        "observationsHint": "Campo opcional. Máximo 500 caracteres.",
+        "password": "Contrasinal",
+        "passwordPlaceholder": "Crea un contrasinal",
+        "passwordRequirements": "Requisitos do contrasinal:",
+        "passwordReqMin": "Polo menos 8 caracteres",
+        "passwordReqUpper": "Unha letra maiúscula",
+        "passwordReqLower": "Unha letra minúscula",
+        "passwordReqNumber": "Un número",
+        "passwordStrength": "Fortaleza do contrasinal:",
+        "confirmPassword": "Confirmar contrasinal",
+        "confirmPasswordPlaceholder": "Confirma o teu contrasinal",
+        "termsTextPrefix": "Acepto os",
+        "termsService": "Termos de servizo",
+        "privacyPolicy": "Política de privacidade",
+        "opensInNewTab": "(ábrese nunha nova lapela)",
+        "submitCreating": "Creando conta...",
+        "submitCreate": "Crear conta",
+        "signUpWithGoogle": "Rexistrarse con Google",
+        "alreadyHaveAccount": "Xa tes unha conta?",
+        "signIn": "Iniciar sesión",
+        "passwordStrengthTexts": {
+          "none": "Sen contrasinal",
+          "veryWeak": "Moi débil",
+          "weak": "Débil",
+          "good": "Boa",
+          "strong": "Forte"
+        },
+        "errors": {
+          "firstNameRequired": "O nome é obrigatorio",
+          "firstNameMin": "O nome debe ter polo menos 2 caracteres",
+          "lastNameRequired": "O apelido é obrigatorio",
+          "lastNameMin": "O apelido debe ter polo menos 2 caracteres",
+          "emailRequired": "O correo é obrigatorio",
+          "emailInvalid": "Introduce un correo válido",
+          "genderRequired": "Selecciona o teu xénero",
+          "languageRequired": "Selecciona o teu idioma preferido",
+          "passwordRequired": "O contrasinal é obrigatorio",
+          "passwordWeak": "O contrasinal debe cumprir polo menos 3 requisitos",
+          "confirmPasswordRequired": "Confirma o teu contrasinal",
+          "passwordMismatch": "Os contrasinais non coinciden",
+          "termsRequired": "Debes aceptar os Termos de servizo e a Política de privacidade"
+        }
+      }
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español",
+      "pt": "Portugués",
+      "ca": "Catalán",
+      "gl": "Galego"
+    },
+    "clothes": {
+      "catalog": {
+        "title": "Catálogo de Roupa",
+        "loading": "Cargando catálogo de roupa...",
+        "columns": {
+          "name": "Nome do produto",
+          "brand": "Marca",
+          "price": "Prezo",
+          "size": "Tamaño",
+          "color": "Cor",
+          "stock": "Stock",
+          "category": "Categoría",
+          "season": "Estación"
+        },
+        "mobile": {
+          "colorLabel": "Cor:",
+          "stockLabel": "Stock:"
+        }
+      },
+      "crud": {
+        "title": "Xestor de Roupa",
+        "loading": "Cargando",
+        "loadingShort": "Cargando roupa...",
+        "ready": "Listo",
+        "items": "Elementos",
+        "itemsLoaded": { "aria": "Elementos cargados" },
+        "columns": {
+          "id": "ID",
+          "name": "Nome",
+          "brand": "Marca",
+          "price": "Prezo",
+          "stock": "Stock",
+          "category": "Categoría",
+          "season": "Estación",
+          "updatedAt": "Actualizado"
+        },
+        "actions": {
+          "refresh": "Actualizar",
+          "clearSelection": "Limpar selección",
+          "openTestModal": "Abrir modal de proba"
+        },
+        "columnsPanel": "Columnas",
+        "columnsPanelTitle": "Columnas",
+        "form": {
+          "editTitle": "Editar Elemento",
+          "addTitle": "Engadir Novo Elemento",
+          "basicInfo": "Información Básica",
+          "actions": {
+            "update": "Actualizar Elemento",
+            "create": "Crear Elemento",
+            "reset": "Restablecer",
+            "cancel": "Cancelar"
+          },
+          "fields": {
+            "name": { "label": "Nome" },
+            "brand": { "label": "Marca" },
+            "price": { "label": "Prezo" },
+            "stock": { "label": "Stock" },
+            "size": { "label": "Tamaño" },
+            "season": { "label": "Estación" },
+            "category": { "label": "Categoría" },
+            "color": { "label": "Cor" },
+            "description": { "label": "Descrición" }
+          },
+          "errors": {
+            "name": { "required": "O nome é obrigatorio", "min": "O nome debe ter polo menos 2 caracteres" },
+            "brand": { "required": "A marca é obrigatoria", "min": "A marca debe ter polo menos 2 caracteres" },
+            "price": { "required": "O prezo é obrigatorio", "min": "O prezo debe ser maior que 0" },
+            "stock": { "required": "O stock é obrigatorio", "min": "O stock non pode ser negativo" }
+          }
+        },
+        "stats": {
+          "total": { "label": "Total", "aria": "Elementos totais" },
+          "available": { "label": "Dispoñibles", "aria": "Elementos dispoñibles" },
+          "lowStock": { "label": "Baixo Stock", "aria": "Elementos con pouco stock" },
+          "value": { "label": "Valor", "aria": "Valor de inventario" }
+        },
+        "dialog": {
+          "delete": { "title": "Eliminar Elemento", "message": "Seguro que queres eliminar este elemento?" },
+          "test": { "title": "Modal de Proba", "message": "Este é un modal de proba manual." }
+        }
+      }
+    }
+  }
+}

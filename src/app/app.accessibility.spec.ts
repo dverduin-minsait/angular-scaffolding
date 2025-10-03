@@ -6,7 +6,11 @@ import { Router, UrlTree } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { LOCAL_STORAGE } from './core/tokens/local.storage.token';
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, CommonModule } from '@angular/common';
+import { TranslationService } from './core/services/translation.service';
+import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
+import { Component as NgComponent } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   template: `
@@ -34,6 +38,14 @@ describe('App Accessibility Integration', () => {
     // Setup DOM body for Angular component rendering
     document.body.innerHTML = '';
     
+    @NgComponent({
+      selector: 'app-language-switcher',
+      standalone: true,
+      template: '<!-- lang switcher stub -->'
+    })
+    class StubLanguageSwitcherComponent {}
+
+    // Provide a lightweight stub translate pipe to satisfy template bindings without pulling full translation stack
     await TestBed.configureTestingModule({
       imports: [TestAppComponent],
       providers: [
@@ -71,9 +83,16 @@ describe('App Accessibility Integration', () => {
         {
           provide: DOCUMENT,
           useValue: document
-        }
+        },
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
       ]
-    }).compileComponents();
+    });
+
+    TestBed.overrideComponent(HeaderComponent, {
+      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe] }
+    });
+
+    await TestBed.compileComponents();
 
     // Create component in a fresh container
     fixture = TestBed.createComponent(TestAppComponent);
@@ -257,6 +276,13 @@ describe('Tabulation Flow Tests', () => {
     // Setup DOM body for Angular component rendering
     document.body.innerHTML = '';
     
+    @NgComponent({
+      selector: 'app-language-switcher',
+      standalone: true,
+      template: '<!-- lang switcher stub -->'
+    })
+    class StubLanguageSwitcherComponent2 {}
+
     await TestBed.configureTestingModule({
       imports: [TestAppComponent],
       providers: [
@@ -294,9 +320,16 @@ describe('Tabulation Flow Tests', () => {
         {
           provide: DOCUMENT,
           useValue: document
-        }
+        },
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
       ]
-    }).compileComponents();
+    });
+
+    TestBed.overrideComponent(HeaderComponent, {
+      set: { imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent2, TranslateStubPipe] }
+    });
+
+    await TestBed.compileComponents();
 
     // Create component in a fresh container
     fixture = TestBed.createComponent(TestAppComponent);

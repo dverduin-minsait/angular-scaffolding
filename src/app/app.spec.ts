@@ -3,6 +3,20 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { App } from './app';
+import { TranslationService } from './core/services/translation.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { HeaderComponent } from './shared/components/header/header.component';
+import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Component as NgComponent } from '@angular/core';
+
+@NgComponent({
+  selector: 'app-language-switcher',
+  standalone: true,
+  template: '<!-- stub language switcher -->'
+})
+class StubLanguageSwitcherComponent {}
 import { LOCAL_STORAGE } from './core/tokens/local.storage.token';
 import { WINDOW_DOCUMENT } from './core/tokens/document.token';
 
@@ -39,7 +53,7 @@ describe('App', () => {
     mockLocalStorage.setItem.mockClear();
     
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         provideZonelessChangeDetection(),
         provideRouter([
@@ -55,9 +69,31 @@ describe('App', () => {
         {
           provide: WINDOW_DOCUMENT,
           useValue: mockDocument
-        }
+        },
+        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to light theme' })
       ]
-    }).compileComponents();
+    });
+
+    // Override HeaderComponent to swap out language switcher and add translate stub pipe
+    TestBed.overrideComponent(HeaderComponent, {
+      set: {
+        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe]
+      }
+    });
+
+    await TestBed.compileComponents();
+
+    // Provide minimal real translations for skip links referenced directly in template
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', {
+      app: {
+        skipLinks: {
+          main: 'Skip to main content',
+          navigation: 'Skip to navigation'
+        }
+      }
+    }, true);
+    translate.use('en');
   });
 
   it('should create the app', () => {

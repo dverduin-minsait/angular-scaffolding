@@ -52,7 +52,8 @@ describe('ThemeService', () => {
       providers: [
         ThemeService,
         { provide: LOCAL_STORAGE, useValue: mockStorage },
-        { provide: DOCUMENT, useValue: mockDocument }
+        { provide: DOCUMENT, useValue: mockDocument },
+        { provide: ThemeService.THEME_STORAGE_DEBOUNCE_MS, useValue: 10 } // speed up debounce for tests
       ]
     });
 
