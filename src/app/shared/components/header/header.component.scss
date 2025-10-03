@@ -40,9 +40,7 @@
       padding: 0;
     }
 
-    .nav-item {
-      margin: 0;
-    }
+    .nav-item { margin: 0; position: relative; }
 
     .nav-link {
       display: flex;
@@ -84,6 +82,42 @@
         align-items: center;
       }
     }
+
+    /* Collapsible groups */
+  .nav-group { display: flex; flex-direction: column; position: relative; }
+    .nav-group-toggle {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      transition: background-color .2s ease, color .2s ease;
+      text-align: left;
+      &:hover { background: var(--hover-bg); }
+      &:focus-visible { outline: 2px solid var(--primary-500); outline-offset:2px; }
+    }
+    .nav-group-toggle .chevron { transition: transform .25s ease; display:inline-block; }
+    .nav-group-toggle .chevron.open { transform: rotate(90deg); }
+  /* Absolute positioned dropdown so opening a group does not push siblings */
+  .nav-sub-list { list-style:none; margin:0; padding:0.25rem 0; max-height:0; overflow:hidden; opacity:0; transform: translateY(4px) scale(.95); transition: max-height .35s cubic-bezier(.4,.0,.2,1), opacity .25s ease, transform .25s ease; position:absolute; top:100%; left:0; background: var(--bg-primary); border:1px solid var(--border-primary); border-radius:.5rem; box-shadow:0 6px 18px -4px rgba(0,0,0,.15); min-width: 13rem; z-index: 10; }
+  .nav-sub-list.open { opacity:1; transform: translateY(0) scale(1); max-height: 800px; overflow: visible; }
+  /* Nested (second-level) submenu should be part of document flow so parent height grows */
+  .nav-sub-list.nested { position: static; background: transparent; border: none; box-shadow: none; padding: 0 0 0 .75rem; min-width: 0; transform: none; }
+  .nav-sub-list.nested { max-height:0; opacity:0; overflow:hidden; transition: max-height .3s ease, opacity .25s ease; }
+  .nav-sub-list.nested.open { max-height:600px; opacity:1; overflow:visible; }
+  /* Ensure nested group toggle spacing inside dropdown */
+  .nav-group-toggle.nested { width:100%; justify-content: flex-start; }
+  .nav-sub-list .nav-sub-item { position:relative; }
+  .nav-link.sub { font-size: .9rem; padding: 0.55rem 0.85rem; border-radius:.35rem; }
+  .nav-link.sub:hover { background: var(--hover-bg); }
+    .nav-group.nested { margin-left:.25rem; }
+    .nav-group-toggle.nested { padding:0.5rem 0.75rem; font-size:.9rem; }
+    .nav-sub-list.nested { padding-left:1rem; }
   }
 
   .header-actions {
@@ -265,9 +299,7 @@
       gap: 0.5rem;
     }
 
-    .sidebar-nav-item {
-      margin: 0;
-    }
+    .sidebar-nav-item { margin:0; }
 
     .sidebar-nav-link {
       display: flex;
@@ -302,6 +334,33 @@
         justify-content: center;
       }
     }
+
+    /* Mobile collapsible groups */
+    .sidebar-group { display:flex; flex-direction:column; }
+    .sidebar-group-toggle {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      font: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.75rem;
+      transition: background-color .2s ease, color .2s ease;
+      text-align:left;
+      &:hover { background: var(--hover-bg); }
+      &:focus-visible { outline: 2px solid var(--primary-500); outline-offset:2px; }
+    }
+    .sidebar-group-toggle .chevron { transition: transform .25s ease; display:inline-block; }
+    .sidebar-group-toggle .chevron.open { transform: rotate(90deg); }
+    .sidebar-sub-list { list-style:none; margin:0; padding:0 0 0 1rem; max-height:0; overflow:hidden; opacity:0; transform:translateY(-4px); transition:max-height .35s ease, opacity .25s ease, transform .25s ease; }
+    .sidebar-sub-list.open { opacity:1; transform:translateY(0); max-height:1000px; }
+    .sidebar-nav-link.sub { font-size:.95rem; padding:0.65rem 0.75rem; }
+    .sidebar-group.nested { margin-left:.25rem; }
+    .sidebar-group-toggle.nested { padding:0.65rem 0.75rem; font-size:.95rem; }
+    .sidebar-sub-list.nested { padding-left:0.75rem; }
   }
 
   .sidebar-footer {

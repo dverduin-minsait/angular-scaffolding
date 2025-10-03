@@ -6,8 +6,20 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Tauler",
-      "clothes": "Roba",
-      "auth": "Autenticació",
+      "clothes": {
+        "_": "Roba",
+        "men": "Home",
+        "women": {
+          "_": "Dona",
+          "dresses": "Vestits",
+          "shoes": "Sabates"
+        }
+      },
+      "auth": {
+        "_": "Autenticació",
+        "login": "Iniciar sessió",
+        "register": "Registrar-se"
+      },
       "themeDemo": "Demo Tema",
       "settings": "Configuració"
     },

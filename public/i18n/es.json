@@ -6,8 +6,20 @@
     "title": "Angulo",
     "navigation": {
       "dashboard": "Panel",
-      "clothes": "Ropa",
-      "auth": "Autenticación",
+      "clothes": {
+        "_": "Ropa",
+        "men": "Hombre",
+        "women": {
+          "_": "Mujer",
+          "dresses": "Vestidos",
+          "shoes": "Zapatos"
+        }
+      },
+      "auth": {
+        "_": "Autenticación",
+        "login": "Iniciar sesión",
+        "register": "Registrarse"
+      },
       "themeDemo": "Demo Tema",
       "settings": "Configuración"
     },
