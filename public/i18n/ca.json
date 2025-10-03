@@ -17,7 +17,12 @@
       "closeMenu": "Tancar menú",
       "changeLanguage": "Canviar idioma",
       "switchToLight": "Canviar a Clar",
-      "switchToDark": "Canviar a Fosc"
+      "switchToDark": "Canviar a Fosc",
+      "changeTheme": "Canviar tema",
+      "quickActions": "Accions ràpides",
+      "toggleThemePair": "Canviar a {{pair}}",
+      "resetDefaults": "Restablir valors",
+      "goToLoginPage": "Anar a la pàgina d'inici de sessió"
     },
     "skipLinks": {
       "main": "Saltar al contingut principal",
@@ -40,7 +45,8 @@
       "darkMode": "Mode fosc:",
       "enabled": "Activat",
       "disabled": "Desactivat",
-      "systemPreference": "Preferència del sistema"
+      "systemPreference": "Preferència del sistema",
+      "systemPreferenceDescription": "Canvia automàticament entre temes clar i fosc segons la configuració del sistema"
     },
     "auth": {
       "register": {
@@ -73,7 +79,29 @@
         "submitCreate": "Crear compte",
         "signUpWithGoogle": "Registrar-se amb Google",
         "alreadyHaveAccount": "Ja tens un compte?",
-        "signIn": "Iniciar sessió"
+        "signIn": "Iniciar sessió",
+        "passwordStrengthTexts": {
+          "none": "Sense contrasenya",
+          "veryWeak": "Molt dèbil",
+          "weak": "Dèbil",
+          "good": "Bona",
+          "strong": "Forta"
+        },
+        "errors": {
+          "firstNameRequired": "El nom és obligatori",
+          "firstNameMin": "El nom ha de tenir almenys 2 caràcters",
+          "lastNameRequired": "El cognom és obligatori",
+          "lastNameMin": "El cognom ha de tenir almenys 2 caràcters",
+          "emailRequired": "El correu és obligatori",
+          "emailInvalid": "Introdueix un correu vàlid",
+          "genderRequired": "Selecciona el teu gènere",
+          "languageRequired": "Selecciona el teu idioma preferit",
+          "passwordRequired": "La contrasenya és obligatòria",
+          "passwordWeak": "La contrasenya ha de complir almenys 3 requisits",
+          "confirmPasswordRequired": "Confirma la teva contrasenya",
+          "passwordMismatch": "Les contrasenyes no coincideixen",
+          "termsRequired": "Has d'acceptar els Termes del servei i la Política de privacitat"
+        }
       }
     },
     "languages": {
@@ -82,6 +110,89 @@
       "pt": "Portuguès",
       "ca": "Català",
       "gl": "Gallec"
+    },
+    "clothes": {
+      "catalog": {
+        "title": "Catàleg de Roba",
+        "loading": "Carregant catàleg de roba...",
+        "columns": {
+          "name": "Nom del producte",
+          "brand": "Marca",
+          "price": "Preu",
+          "size": "Talla",
+          "color": "Color",
+          "stock": "Estoc",
+          "category": "Categoria",
+          "season": "Temporada"
+        },
+        "mobile": {
+          "colorLabel": "Color:",
+          "stockLabel": "Estoc:"
+        }
+      },
+      "crud": {
+        "title": "Gestor de Roba",
+        "loading": "Carregant",
+        "loadingShort": "Carregant roba...",
+        "ready": "Llest",
+        "items": "Elements",
+        "itemsLoaded": { "aria": "Elements carregats" },
+        "columns": {
+          "id": "ID",
+          "name": "Nom",
+          "brand": "Marca",
+          "price": "Preu",
+          "stock": "Estoc",
+          "category": "Categoria",
+          "season": "Temporada",
+          "updatedAt": "Actualitzat"
+        },
+        "actions": {
+          "refresh": "Refrescar",
+          "clearSelection": "Netejar selecció",
+          "openTestModal": "Obrir modal de prova"
+        },
+        "columnsPanel": "Columnes",
+        "columnsPanelTitle": "Columnes",
+        "form": {
+          "editTitle": "Editar Element",
+          "addTitle": "Afegir Nou Element",
+          "basicInfo": "Informació Bàsica",
+          "actions": {
+            "update": "Actualitzar Element",
+            "create": "Crear Element",
+            "reset": "Reiniciar",
+            "cancel": "Cancel·lar"
+          },
+          "fields": {
+            "name": { "label": "Nom" },
+            "brand": { "label": "Marca" },
+            "price": { "label": "Preu" },
+            "stock": { "label": "Estoc" },
+            "size": { "label": "Talla" },
+            "season": { "label": "Temporada" },
+            "category": { "label": "Categoria" },
+            "color": { "label": "Color" },
+            "description": { "label": "Descripció" }
+          },
+          "errors": {
+            "name": { "required": "El nom és obligatori", "min": "El nom ha de tenir almenys 2 caràcters" },
+            "brand": { "required": "La marca és obligatòria", "min": "La marca ha de tenir almenys 2 caràcters" },
+            "price": { "required": "El preu és obligatori", "min": "El preu ha de ser més gran que 0" },
+            "stock": { "required": "L'estoc és obligatori", "min": "L'estoc no pot ser negatiu" }
+          }
+        },
+        "stats": {
+          "total": { "label": "Total", "aria": "Total elements" },
+          "available": { "label": "Disponibles", "aria": "Elements disponibles" },
+          "lowStock": { "label": "Baix Estoc", "aria": "Elements amb poc estoc" },
+          "value": { "label": "Valor", "aria": "Valor d'inventari" }
+        },
+        "dialog": {
+          "delete": { "title": "Eliminar Element", "message": "Segur que vols eliminar aquest element?" },
+          "test": { "title": "Modal de Prova", "message": "Aquest és un modal de prova manual." }
+        }
+      }
     }
   }
 }

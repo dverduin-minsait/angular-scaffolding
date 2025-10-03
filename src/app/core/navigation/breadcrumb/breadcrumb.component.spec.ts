@@ -23,7 +23,7 @@ const routes: Routes = [
 describe('BreadcrumbComponent', () => {
   it('renders breadcrumb trail with aria attributes', async () => {
     const { fixture } = await render(BreadcrumbComponent, {
-      imports: [TranslateModule.forRoot({ defaultLanguage: 'en' })],
+      imports: [TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [provideRouter(routes)],
     });
     // set minimal translations

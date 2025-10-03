@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, effect } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -126,11 +126,11 @@ export class RegisterComponent {
   
   protected readonly passwordStrengthText = computed(() => {
     const score = this.passwordStrengthScore();
-    if (score === 0) return 'No password entered';
-    if (score === 1) return 'Very weak';
-    if (score === 2) return 'Weak';
-    if (score === 3) return 'Good';
-    return 'Strong';
+    if (score === 0) return 'app.auth.register.passwordStrengthTexts.none';
+    if (score === 1) return 'app.auth.register.passwordStrengthTexts.veryWeak';
+    if (score === 2) return 'app.auth.register.passwordStrengthTexts.weak';
+    if (score === 3) return 'app.auth.register.passwordStrengthTexts.good';
+    return 'app.auth.register.passwordStrengthTexts.strong';
   });
   
   // Form validation state computed signals (reactive)
@@ -150,8 +150,8 @@ export class RegisterComponent {
   protected firstNameError(): string {
     const control = this.registerForm.get('firstName');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'First name is required';
-      if (control.errors?.['minlength']) return 'First name must be at least 2 characters';
+      if (control.errors?.['required']) return 'app.auth.register.errors.firstNameRequired';
+      if (control.errors?.['minlength']) return 'app.auth.register.errors.firstNameMin';
     }
     return '';
   }
@@ -159,8 +159,8 @@ export class RegisterComponent {
   protected lastNameError(): string {
     const control = this.registerForm.get('lastName');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Last name is required';
-      if (control.errors?.['minlength']) return 'Last name must be at least 2 characters';
+      if (control.errors?.['required']) return 'app.auth.register.errors.lastNameRequired';
+      if (control.errors?.['minlength']) return 'app.auth.register.errors.lastNameMin';
     }
     return '';
   }
@@ -168,8 +168,8 @@ export class RegisterComponent {
   protected emailError(): string {
     const control = this.registerForm.get('email');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Email is required';
-      if (control.errors?.['email']) return 'Please enter a valid email address';
+      if (control.errors?.['required']) return 'app.auth.register.errors.emailRequired';
+      if (control.errors?.['email']) return 'app.auth.register.errors.emailInvalid';
     }
     return '';
   }
@@ -177,7 +177,7 @@ export class RegisterComponent {
   protected genderError(): string {
     const control = this.registerForm.get('gender');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Please select your gender';
+      if (control.errors?.['required']) return 'app.auth.register.errors.genderRequired';
     }
     return '';
   }
@@ -185,7 +185,7 @@ export class RegisterComponent {
   protected languageError(): string {
     const control = this.registerForm.get('language');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Please select your preferred language';
+      if (control.errors?.['required']) return 'app.auth.register.errors.languageRequired';
     }
     return '';
   }
@@ -193,8 +193,8 @@ export class RegisterComponent {
   protected passwordError(): string {
     const control = this.registerForm.get('password');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Password is required';
-      if (control.errors?.['weakPassword']) return 'Password must meet at least 3 requirements';
+      if (control.errors?.['required']) return 'app.auth.register.errors.passwordRequired';
+      if (control.errors?.['weakPassword']) return 'app.auth.register.errors.passwordWeak';
     }
     return '';
   }
@@ -203,10 +203,10 @@ export class RegisterComponent {
     const control = this.registerForm.get('confirmPassword');
     const formErrors = this.registerForm.errors;
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'Please confirm your password';
+      if (control.errors?.['required']) return 'app.auth.register.errors.confirmPasswordRequired';
     }
     if (formErrors?.['passwordMismatch'] && control?.dirty) {
-      return 'Passwords do not match';
+      return 'app.auth.register.errors.passwordMismatch';
     }
     return '';
   }
@@ -214,7 +214,7 @@ export class RegisterComponent {
   protected termsError(): string {
     const control = this.registerForm.get('agreedToTerms');
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.errors?.['required']) return 'You must agree to the Terms of Service and Privacy Policy';
+      if (control.errors?.['required']) return 'app.auth.register.errors.termsRequired';
     }
     return '';
   }

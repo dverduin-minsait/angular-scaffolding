@@ -18,7 +18,7 @@
             [attr.aria-describedby]="firstNameError() ? 'firstName-error' : null" />
           @if (firstNameError()) {
           <div id="firstName-error" class="form-error" role="alert" aria-live="polite">
-            {{ firstNameError() }}
+            {{ firstNameError() | translate }}
           </div>
           }
         </div>
@@ -30,7 +30,7 @@
             [attr.aria-describedby]="lastNameError() ? 'lastName-error' : null" />
           @if (lastNameError()) {
           <div id="lastName-error" class="form-error" role="alert" aria-live="polite">
-            {{ lastNameError() }}
+            {{ lastNameError() | translate }}
           </div>
           }
         </div>
@@ -43,7 +43,7 @@
           [attr.aria-describedby]="emailError() ? 'email-error' : null" />
         @if (emailError()) {
         <div id="email-error" class="form-error" role="alert" aria-live="polite">
-          {{ emailError() }}
+          {{ emailError() | translate }}
         </div>
         }
       </div>
@@ -64,7 +64,7 @@
           </div>
           @if (genderError()) {
           <div id="gender-error" class="form-error" role="alert" aria-live="polite">
-            {{ genderError() }}
+            {{ genderError() | translate }}
           </div>
           }
         </fieldset>
@@ -83,7 +83,7 @@
         </select>
         @if (languageError()) {
         <div id="language-error" class="form-error" role="alert" aria-live="polite">
-          {{ languageError() }}
+          {{ languageError() | translate }}
         </div>
         }
       </div>
@@ -126,12 +126,14 @@
         </div>
         <div class="password-strength">
           <div class="strength-bar" role="progressbar" [attr.aria-valuenow]="passwordStrengthScore()" aria-valuemin="0"
-            aria-valuemax="4" [attr.aria-label]="('app.auth.register.passwordStrength' | translate) + ' ' + passwordStrengthText()">
+            aria-valuemax="4" [attr.aria-label]="('app.auth.register.passwordStrength' | translate) + ' ' + (passwordStrengthText() | translate)">
             <div class="strength-fill" [attr.data-strength]="passwordStrengthClass()"></div>
           </div>
-          <span class="strength-text" aria-live="polite" aria-atomic="true">{{ passwordStrengthText() }}</span>
+          <span class="strength-text" aria-live="polite" aria-atomic="true">{{ passwordStrengthText() | translate }}</span>
         </div>
-        @if (passwordError()) {<div id="password-error" class="form-error" role="alert" aria-live="polite">{{ passwordError() }}</div>}
+        @if (passwordError()) {
+          <div id="password-error" class="form-error" role="alert" aria-live="polite">{{ passwordError() | translate }}</div>
+        }
       </div>
 
       <div class="form-field">
@@ -142,7 +144,7 @@
           [attr.aria-describedby]="confirmPasswordError() ? 'confirmPassword-error' : null" />
         @if (confirmPasswordError()) {
         <div id="confirmPassword-error" class="form-error" role="alert" aria-live="polite">
-          {{ confirmPasswordError() }}
+          {{ confirmPasswordError() | translate }}
         </div>
         }
       </div>
@@ -158,7 +160,7 @@
         </label>
         @if (termsError()) {
         <div id="terms-error" class="form-error" role="alert" aria-live="polite">
-          {{ termsError() }}
+          {{ termsError() | translate }}
         </div>
         }
       </div>
@@ -173,7 +175,9 @@
         </button>
       </div>
 
-      @if (submitError()) {<div id="submit-error" class="form-error" role="alert" aria-live="assertive">{{ submitError() }}</div>}
+      @if (submitError()) {
+        <div id="submit-error" class="form-error" role="alert" aria-live="assertive">{{ submitError() | translate }}</div>
+      }
     </form>
 
     <footer class="auth-footer">

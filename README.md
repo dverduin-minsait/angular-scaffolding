@@ -54,6 +54,7 @@ Then visit http://localhost:4000 (or the configured port) if your server sets on
 | npm run build:local | Local configuration build |
 | npm run watch | Rebuild on file changes |
 | npm run api | Launch JSON mock API (json-server) |
+| npm run check\:i18n | Validate translation key parity across all locale JSON files |
 
 ## Architecture Snapshot
 * Feature-first organization: `src/app/features/<domain>` (all lazily routed).

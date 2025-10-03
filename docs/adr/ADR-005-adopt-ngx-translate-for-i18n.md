@@ -28,7 +28,7 @@ Angular's built-in i18n (compile-time) is optimized for static translation extra
 Adopt `@ngx-translate/core` + `@ngx-translate/http-loader` as the translation layer. 
 
 Key implementation details:
-- Added `TranslateModule.forRoot({ defaultLanguage: 'en' })` in `app.config.ts`.
+- Added `TranslateModule.forRoot({ fallbackLang: 'en' })` in `app.config.ts`.
 - Added blocking `provideAppInitializer` to resolve preferred language before first paint (SSR-safe guards around `navigator` & `localStorage`).
 - Translation assets stored in `public/i18n/<lang>.json` with top-level `app` namespace; feature-specific keys grouped (e.g. `app.auth.register.*`).
 - UI templates updated to replace hard-coded literals with translation keys (breadcrumb, header, auth register form, theme labels, etc.).

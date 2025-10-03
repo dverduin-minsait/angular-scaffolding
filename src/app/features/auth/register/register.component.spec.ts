@@ -44,7 +44,29 @@ const enTranslations = {
         submitCreating: 'Creating Account...',
         signUpWithGoogle: 'Sign up with Google',
         alreadyHaveAccount: 'Already have an account?',
-        signIn: 'Sign in'
+        signIn: 'Sign in',
+        passwordStrengthTexts: {
+          none: 'No password entered',
+          veryWeak: 'Very weak',
+          weak: 'Weak',
+          good: 'Good',
+          strong: 'Strong'
+        },
+        errors: {
+          firstNameRequired: 'First name is required',
+          firstNameMin: 'First name must be at least 2 characters',
+          lastNameRequired: 'Last name is required',
+          lastNameMin: 'Last name must be at least 2 characters',
+          emailRequired: 'Email is required',
+          emailInvalid: 'Please enter a valid email address',
+          genderRequired: 'Please select your gender',
+          languageRequired: 'Please select your preferred language',
+          passwordRequired: 'Password is required',
+          passwordWeak: 'Password must meet at least 3 requirements',
+          confirmPasswordRequired: 'Please confirm your password',
+          passwordMismatch: 'Passwords do not match',
+          termsRequired: 'You must agree to the Terms of Service and Privacy Policy'
+        }
       }
     },
     breadcrumb: {
@@ -170,7 +192,7 @@ describe('RegisterComponent', () => {
     expect(passwordInput?.getAttribute('type')).toBe('password');
     expect(passwordInput?.getAttribute('placeholder')).toBe('Create a password');
     expect(strengthBar).toBeTruthy();
-    expect(strengthText?.textContent?.trim()).toBe('No password entered');
+  expect(strengthText?.textContent?.trim()).toBe(enTranslations.app.auth.register.passwordStrengthTexts.none);
   });
 
   it('should display password confirmation field', () => {
@@ -495,19 +517,19 @@ describe('RegisterComponent', () => {
     it('should update password strength text reactively', () => {
       const passwordControl = component['registerForm'].get('password');
       
-      expect(component['passwordStrengthText']()).toBe('No password entered');
+  expect(component['passwordStrengthText']()).toBe('app.auth.register.passwordStrengthTexts.none');
       
       passwordControl?.setValue('weak');
       fixture.detectChanges();
-      expect(component['passwordStrengthText']()).toBe('Very weak');
+  expect(component['passwordStrengthText']()).toBe('app.auth.register.passwordStrengthTexts.veryWeak');
       
       passwordControl?.setValue('Weak123');
       fixture.detectChanges();
-      expect(component['passwordStrengthText']()).toBe('Good');
+  expect(component['passwordStrengthText']()).toBe('app.auth.register.passwordStrengthTexts.good');
       
       passwordControl?.setValue('Strong123!');
       fixture.detectChanges();
-      expect(component['passwordStrengthText']()).toBe('Strong');
+  expect(component['passwordStrengthText']()).toBe('app.auth.register.passwordStrengthTexts.strong');
     });
   });
 
@@ -525,7 +547,7 @@ describe('RegisterComponent', () => {
       fixture.detectChanges();
       
   // NOTE: Validation error messages not yet localized in component TS; keep literal expectation for now.
-  expect(component['firstNameError']()).toBe('First name is required');
+  expect(component['firstNameError']()).toBe('app.auth.register.errors.firstNameRequired');
     });
 
     it('should display email error when invalid', () => {
@@ -537,7 +559,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-  expect(component['emailError']()).toBe('Email is required');
+  expect(component['emailError']()).toBe('app.auth.register.errors.emailRequired');
     });
 
     it('should display gender error when not selected', () => {
@@ -549,7 +571,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-  expect(component['genderError']()).toBe('Please select your gender');
+  expect(component['genderError']()).toBe('app.auth.register.errors.genderRequired');
     });
 
     it('should display language error when not selected', () => {
@@ -561,7 +583,7 @@ describe('RegisterComponent', () => {
       component['registerForm'].updateValueAndValidity();
       fixture.detectChanges();
       
-  expect(component['languageError']()).toBe('Please select your preferred language');
+  expect(component['languageError']()).toBe('app.auth.register.errors.languageRequired');
     });
   });
 

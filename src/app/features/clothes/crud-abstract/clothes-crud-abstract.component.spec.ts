@@ -1,4 +1,5 @@
 import { Injectable, signal, WritableSignal, computed } from '@angular/core';
+import { TranslateStubPipe, provideStubTranslationService } from '../../../testing/i18n-testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClothesCrudAbstractComponent } from './clothes-crud-abstract.component';
 import { ClothesApiClient } from '../../../core/api/clothes/clothes.service';
@@ -9,6 +10,7 @@ import { suppressClothesCrudConsole } from '../../../testing/suppress-console';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 import { ClothingItemApi } from '../../../core/api/clothes/clothes';
 import { ClothesStore } from '../../../core/store/clothes/clothes.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 // --- Mock Modal ---
 class MockModalRef<T = any> {
@@ -107,6 +109,16 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
       imports: [ClothesCrudAbstractComponent, HttpClientTestingModule],
       providers: [
         { provide: ModalService, useClass: MockModalService },
+        ...provideStubTranslationService({
+          'app.clothes.crud.form.errors.name.required': 'Name is required',
+          'app.clothes.crud.form.errors.name.min': 'Name must be at least 2 characters',
+          'app.clothes.crud.form.errors.brand.required': 'Brand is required',
+          'app.clothes.crud.form.errors.brand.min': 'Brand must be at least 2 characters',
+          'app.clothes.crud.form.errors.price.required': 'Price is required',
+          'app.clothes.crud.form.errors.price.min': 'Price must be greater than 0',
+          'app.clothes.crud.form.errors.stock.required': 'Stock is required',
+          'app.clothes.crud.form.errors.stock.min': 'Stock cannot be negative'
+        }),
         {
           provide: LOCAL_STORAGE,
           useValue: {
@@ -118,18 +130,13 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
         }
       ]
     })
-    .overrideComponent(ClothesCrudAbstractComponent, {
-      set: {
-        providers: [
-          { provide: ClothesStore, useClass: MockClothesStore }
-        ]
-      }
-    })
-    .compileComponents();
+  .overrideComponent(ClothesCrudAbstractComponent, { add: { imports: [TranslateStubPipe] }, remove: { imports: [TranslatePipe] } })
+  .overrideProvider(ClothesStore, { useValue: new MockClothesStore() })
+      .compileComponents();
 
     fixture = TestBed.createComponent(ClothesCrudAbstractComponent);
     component = fixture.componentInstance;
-    store = component['clothesStore'] as unknown as MockClothesStore;
+  store = TestBed.inject(ClothesStore) as unknown as MockClothesStore;
     modal = TestBed.inject(ModalService) as unknown as MockModalService;
     store.seed([seedItem]);
     fixture.detectChanges();

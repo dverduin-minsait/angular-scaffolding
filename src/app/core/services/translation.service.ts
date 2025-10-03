@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LOCAL_STORAGE, StorageService } from '../tokens/local.storage.token';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { of, firstValueFrom } from 'rxjs';
 
 export type SupportedLang = 'en' | 'es' | 'pt' | 'ca' | 'gl';
 
@@ -17,6 +19,8 @@ export class TranslationService {
   readonly currentLang = computed(() => this.currentLangSignal());
   readonly availableLangs: readonly SupportedLang[] = ['en', 'es', 'pt', 'ca', 'gl'];
 
+  public readonly translations = signal<Record<string, string>>({});
+
   constructor() {
     this.translate?.addLangs(this.availableLangs as string[]);
     const stored = (this.storage.getItem(STORAGE_KEY) as SupportedLang | null);
@@ -29,7 +33,14 @@ export class TranslationService {
     if (lang === this.currentLangSignal()) return;
     if (!this.availableLangs.includes(lang)) return;
     this.currentLangSignal.set(lang);
-    await this.translate?.use(lang);
+    // Ensure we properly await the observable returned by ngx-translate (use returns an Observable)
+    if (this.translate) {
+      console.log(`TranslationService: switching to lang ${lang}`);
+      await firstValueFrom(this.translate.use(lang));
+      // Force load (and await) the 'app' namespace so downstream computeds see updated values
+      const res = await firstValueFrom(this.translate.get('app'));
+      this.translations.set(res);
+    }
     this.storage.setItem(STORAGE_KEY, lang);
     // Update html lang attribute for a11y
     if (typeof document !== 'undefined') {

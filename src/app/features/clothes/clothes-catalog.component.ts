@@ -1,8 +1,9 @@
-import { Component, OnInit, inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, OnInit, inject, PLATFORM_ID, signal, Signal, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DeviceService, GridDataConfig } from '../../core/services';
 import { ResponsiveGridComponent } from '../../shared/components';
 import { ClothesService, ClothingItem } from './clothes.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 // Import the config interface directly
 interface ResponsiveGridConfig {
@@ -23,7 +24,7 @@ interface GridReadyEvent {
 @Component({
   selector: 'app-clothes-catalog',
   standalone: true,
-  imports: [CommonModule, ResponsiveGridComponent],
+  imports: [CommonModule, ResponsiveGridComponent, TranslatePipe],
   providers: [ClothesService],
   templateUrl: './clothes-catalog.component.html',
   styleUrls: ['./clothes-catalog.component.scss']
@@ -37,22 +38,20 @@ export class ClothesCatalogComponent implements OnInit {
   clothingData = signal<ClothingItem[]>([]);
 
   // Grid Data Configuration - reactive to data changes
-  get dataConfig(): GridDataConfig<ClothingItem> {
-    return {
-      dataSource: this.clothingData(),
-      preloadGrid: true
-    };
-  }
+  dataConfig: Signal<GridDataConfig<ClothingItem>> = computed(() => ({
+    dataSource: this.clothingData(),
+    preloadGrid: true
+  }));
 
   // Responsive Grid Configuration
-  gridConfig: ResponsiveGridConfig = {
-    columnDefs: this.clothesService.getColDefs(),
+  gridConfig: Signal<ResponsiveGridConfig> = computed(() => ({
+    columnDefs: this.clothesService.colDefs(),
     mobileView: 'cards',
     showLoadingSpinner: true,
-    loadingMessage: 'Loading clothes catalog...',
+    loadingMessage: 'app.clothes.catalog.loading',
     showErrorMessage: true,
     retryOnError: true
-  };
+  }));
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {

@@ -121,6 +121,11 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       }
     });
 
+    effect(() => {
+      const config = this.config();
+      this.setupDesktopGrid();
+    });
+
     // Effect for direct signal-driven data updates
     effect(() => {
       const directData = this.dataSignal();

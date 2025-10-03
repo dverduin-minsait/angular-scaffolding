@@ -10,7 +10,7 @@ describe('TranslationService', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        TranslateModule.forRoot({ defaultLanguage: 'en' })
+        TranslateModule.forRoot({ fallbackLang: 'en' })
       ],
       providers: [
         provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),

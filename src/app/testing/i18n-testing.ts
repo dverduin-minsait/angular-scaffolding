@@ -39,7 +39,8 @@ function buildTranslationService(map: Record<string, string>): Partial<Translati
     currentLang: () => 'en',
     availableLangs: ['en','es','pt','ca','gl'],
     use: () => Promise.resolve(),
-    instant: (key: string, _params?: Record<string, any>) => map[key] ?? key
+    instant: (key: string, _params?: Record<string, any>) => map[key] ?? key,
+    translations: () => map
   } as any;
 }
 

@@ -47,7 +47,12 @@ describe('RegisterComponent - Accessibility', () => {
           submitCreating: 'Creating Account...',
           signUpWithGoogle: 'Sign up with Google',
           alreadyHaveAccount: 'Already have an account?',
-          signIn: 'Sign in'
+          signIn: 'Sign in',
+          passwordStrengthTexts: {
+            veryWeak: 'Very weak',
+            good: 'Good',
+            strong: 'Strong',
+          }
         }
       }
     },

@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
-    TranslateModule.forRoot({ defaultLanguage: 'en' }).providers!,
+    TranslateModule.forRoot({ fallbackLang: 'en' }).providers!,
     provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     provideClientHydration(
       withEventReplay(),
