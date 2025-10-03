@@ -79,8 +79,13 @@ export class HeaderComponent implements OnDestroy {
   }
 
   // Event listener cleanup
-  private documentClickListener?: (event: Event) => void;
-  private documentKeydownListener?: (event: KeyboardEvent) => void;
+  private documentClickListener?: (event: Event) => void; // sidebar close listener
+  private documentKeydownListener?: (event: KeyboardEvent) => void; // sidebar esc listener
+  private desktopOutsideClickListener?: (event: Event) => void; // desktop dropdown outside click
+  private desktopOutsideFocusListener?: (event: Event) => void; // desktop dropdown focusout
+
+  // Hover timers for intent (desktop top-level groups)
+  private hoverTimers = new Map<string, any>();
 
   // TrackBy id for either groups or leaves
   protected trackById = (_index: number, item: NavigationItem): string => item.id;
@@ -95,9 +100,44 @@ export class HeaderComponent implements OnDestroy {
   protected toggleGroup(id: string): void {
     this.openGroupsSignal.update(current => {
       const next = new Set(current);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) {
+        // Closing group: close all descendants too
+        const descendants = this.getDescendantGroupIds(id);
+        next.delete(id);
+        descendants.forEach(d => next.delete(d));
+      } else {
+        next.add(id);
+      }
       return next;
     });
+  }
+
+  private findGroupById(id: string, items: NavigationItem[] = this.navigationItems()): NavigationGroup | undefined {
+    for (const item of items) {
+      if (this.isGroup(item)) {
+        if (item.id === id) return item;
+        const found = this.findGroupById(id, item.children);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+
+  private getDescendantGroupIds(id: string): string[] {
+    const group = this.findGroupById(id);
+    if (!group) return [];
+    const collected: string[] = [];
+    const walk = (items: NavigationItem[]) => {
+      for (const i of items) {
+        if (this.isGroup(i)) { collected.push(i.id); walk(i.children); }
+      }
+    };
+    walk(group.children);
+    return collected;
+  }
+
+  private getTopLevelGroupIds(): string[] {
+    return this.navigationItems().filter(i => this.isGroup(i)).map(i => i.id);
   }
 
   // Auto-open ancestor groups of the active route for deep linking
@@ -134,7 +174,7 @@ export class HeaderComponent implements OnDestroy {
         this.removeDocumentListeners();
       }
     });
-    // Listen to router events to trigger ancestor opening (no zone, so subscribe minimal & sync)
+  // Listen to router events to trigger ancestor opening (no zone, so subscribe minimal & sync)
     this.router.events.subscribe(() => {
       // Trigger effect manually by updating a dummy signal if needed; simpler: call auto-open logic directly
       const current = this.router.url;
@@ -153,6 +193,16 @@ export class HeaderComponent implements OnDestroy {
             ancestors.forEach(id => next.add(id));
             return next;
         });
+      }
+    });
+
+    // Effect: manage outside listeners for desktop dropdowns (top-level) only when one is open and sidebar is closed
+    effect(() => {
+      const anyTopLevelOpen = this.getTopLevelGroupIds().some(id => this.openGroupsSignal().has(id));
+      if (anyTopLevelOpen && !this.isSidebarOpen()) {
+        this.addDesktopOutsideListeners();
+      } else {
+        this.removeDesktopOutsideListeners();
       }
     });
   }
@@ -193,6 +243,40 @@ export class HeaderComponent implements OnDestroy {
     }
   }
 
+  private addDesktopOutsideListeners(): void {
+    if (!this.desktopOutsideClickListener) {
+      this.desktopOutsideClickListener = this.onDesktopOutsideInteraction.bind(this);
+      document.addEventListener('click', this.desktopOutsideClickListener, true);
+    }
+    if (!this.desktopOutsideFocusListener) {
+      this.desktopOutsideFocusListener = this.onDesktopOutsideInteraction.bind(this);
+      document.addEventListener('focusin', this.desktopOutsideFocusListener, true);
+    }
+  }
+
+  private removeDesktopOutsideListeners(): void {
+    if (this.desktopOutsideClickListener) {
+      document.removeEventListener('click', this.desktopOutsideClickListener, true);
+      this.desktopOutsideClickListener = undefined;
+    }
+    if (this.desktopOutsideFocusListener) {
+      document.removeEventListener('focusin', this.desktopOutsideFocusListener, true);
+      this.desktopOutsideFocusListener = undefined;
+    }
+  }
+
+  private onDesktopOutsideInteraction(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (target.closest('.desktop-nav')) return; // inside desktop nav
+    // Close only top-level groups
+    const topLevel = this.getTopLevelGroupIds();
+    this.openGroupsSignal.update(prev => {
+      const next = new Set(prev);
+      topLevel.forEach(id => next.delete(id));
+      return next;
+    });
+  }
+
   private onDocumentKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.closeSidebar();
@@ -210,10 +294,93 @@ export class HeaderComponent implements OnDestroy {
     this.closeSidebar();
   }
 
+  // Keyboard navigation for menu (desktop + mobile). Attach to container via (keydown)
+  protected onNavKeydown(event: KeyboardEvent): void {
+    const key = event.key;
+    const target = event.target as HTMLElement;
+    const desktop = !!target.closest('.desktop-nav');
+    const groupToggleSelector = desktop ? '.nav-group-toggle' : '.sidebar-group-toggle';
+    const linkSelector = desktop ? '.nav-link' : '.sidebar-nav-link';
+    const focusableSelector = `${groupToggleSelector}, ${linkSelector}`;
+    const isGroupToggle = target.matches(groupToggleSelector);
+
+    const getSiblings = () => {
+      const list = target.closest('ul');
+      if (!list) return [] as HTMLElement[];
+      return Array.from(list.querySelectorAll<HTMLElement>(`:scope > li ${focusableSelector}`));
+    };
+    const siblings = getSiblings();
+    const idx = siblings.indexOf(target);
+    const focus = (el?: HTMLElement) => el?.focus();
+
+    if (['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End','Escape'].includes(key)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (key === 'ArrowDown') { focus(siblings[(idx + 1) % siblings.length]); return; }
+    if (key === 'ArrowUp') { focus(siblings[(idx - 1 + siblings.length) % siblings.length]); return; }
+    if (key === 'Home') { focus(siblings[0]); return; }
+    if (key === 'End') { focus(siblings[siblings.length - 1]); return; }
+    if (key === 'ArrowRight' && isGroupToggle) {
+      const id = target.getAttribute('aria-controls')?.replace(/^grp-|^mside-/, '') ?? '';
+      if (!this.isGroupOpen(id)) { this.toggleGroup(id); return; }
+      const panel = document.getElementById(target.getAttribute('aria-controls')!);
+      const firstChild = panel?.querySelector<HTMLElement>(focusableSelector);
+      focus(firstChild || undefined);
+      return;
+    }
+    if (key === 'ArrowLeft') {
+      if (isGroupToggle) {
+        const id = target.getAttribute('aria-controls')?.replace(/^grp-|^mside-/, '') ?? '';
+        if (this.isGroupOpen(id)) { this.toggleGroup(id); return; }
+      }
+      const parentLi = target.closest('ul')?.closest('li');
+      const parentToggle = parentLi?.querySelector<HTMLElement>(groupToggleSelector);
+      focus(parentToggle || undefined);
+      return;
+    }
+    if (key === 'Escape') {
+      if (isGroupToggle) {
+        const id = target.getAttribute('aria-controls')?.replace(/^grp-|^mside-/, '') ?? '';
+        if (this.isGroupOpen(id)) { this.toggleGroup(id); return; }
+      }
+      if (desktop) {
+        // Close all top-level groups
+        this.openGroupsSignal.update(prev => {
+          const next = new Set(prev);
+          this.getTopLevelGroupIds().forEach(id => next.delete(id));
+          return next;
+        });
+      }
+      return;
+    }
+  }
+
+  // Hover intent only for top-level groups on desktop
+  protected onGroupMouseEnter(id: string, depth: number): void {
+    if (depth !== 0) return;
+    if (!matchMedia || !matchMedia('(pointer:fine)').matches) return;
+    clearTimeout(this.hoverTimers.get(id));
+    const t = setTimeout(() => { if (!this.isGroupOpen(id)) this.toggleGroup(id); }, 120);
+    this.hoverTimers.set(id, t);
+  }
+
+  protected onGroupMouseLeave(id: string, depth: number, event: MouseEvent): void {
+    if (depth !== 0) return;
+    if (!matchMedia || !matchMedia('(pointer:fine)').matches) return;
+    clearTimeout(this.hoverTimers.get(id));
+    const related = event.relatedTarget as HTMLElement | null;
+    if (related && related.closest(`#grp-${id}`)) return; // moving into panel
+    const t = setTimeout(() => { if (this.isGroupOpen(id)) this.toggleGroup(id); }, 300);
+    this.hoverTimers.set(id, t);
+  }
+
   // Backwards compatibility noop (legacy method referenced in tests)
   updateNavigationLinks(_links: any[]): void { /* no-op */ }
 
   ngOnDestroy(): void {
     this.removeDocumentListeners();
+    this.removeDesktopOutsideListeners();
+    this.hoverTimers.forEach(t => clearTimeout(t));
   }
 }

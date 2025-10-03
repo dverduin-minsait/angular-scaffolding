@@ -5,79 +5,39 @@
     </div>
     
     <!-- Desktop Navigation -->
-    <nav id="navigation" class="navigation desktop-nav" role="navigation" aria-label="Main navigation">
+    <nav id="navigation" class="navigation desktop-nav" role="navigation" aria-label="Main navigation" (keydown)="onNavKeydown($event)">
       <ul class="nav-list root">
-        @for (item of navigationItems(); track trackById($index, item)) {
-          <li class="nav-item" [class.is-group]="isGroup(item)">
-            @if (!isGroup(item)) {
-              <a
-                [routerLink]="item.path"
-                routerLinkActive="active"
-                class="nav-link"
-                [attr.aria-label]="item.label | translate"
-                [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null">
-                @if (item.icon) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                {{ item.label | translate }}
-              </a>
-            } @else {
-              <div class="nav-group">
-                <button type="button"
-                        class="nav-group-toggle"
-                        [attr.aria-expanded]="isGroupOpen(item.id)"
-                        [attr.aria-controls]="'grp-'+item.id"
-                        (click)="toggleGroup(item.id)">
-                  <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
-                  @if (item.icon) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                  <span class="label">{{ item.label | translate }}</span>
-                </button>
-                <ul class="nav-sub-list" 
-                    [id]="'grp-'+item.id" 
-                    role="group"
-                    [class.open]="isGroupOpen(item.id)" 
-                    [attr.aria-hidden]="!isGroupOpen(item.id)">
-                  @for (child of item.children; track trackById($index, child)) {
-                    <li class="nav-sub-item" [class.is-group]="isGroup(child)">
-                      @if (!isGroup(child)) {
-                        <a [routerLink]="child.path" routerLinkActive="active" class="nav-link sub"
-                           [attr.aria-label]="child.label | translate" 
-                           [attr.aria-current]="isLinkActive(child.path!) ? 'page' : null">
-                          {{ child.label | translate }}
-                        </a>
-                      } @else {
-                        <!-- Nested group recursion (one more level) -->
-                        <div class="nav-group nested">
-                          <button type="button" class="nav-group-toggle nested"
-                                  [attr.aria-expanded]="isGroupOpen(child.id)"
-                                  [attr.aria-controls]="'grp-'+child.id"
-                                  (click)="toggleGroup(child.id)">
-                            <span class="chevron" [class.open]="isGroupOpen(child.id)" aria-hidden="true">▸</span>
-                            <span class="label">{{ child.label | translate }}</span>
-                          </button>
-                          <ul class="nav-sub-list nested" [id]="'grp-'+child.id" role="group" [class.open]="isGroupOpen(child.id)" [attr.aria-hidden]="!isGroupOpen(child.id)">
-                            @for (leaf of child.children; track trackById($index, leaf)) {
-                              <li class="nav-sub-item leaf">
-                                @if (!isGroup(leaf)) {
-                                  <a [routerLink]="leaf.path" routerLinkActive="active" class="nav-link sub nested"
-                                     [attr.aria-label]="leaf.label | translate"
-                                     [attr.aria-current]="isLinkActive(leaf.path!) ? 'page' : null">{{ leaf.label | translate }}</a>
-                                } @else {
-                                  <!-- Future deeper recursion can be implemented if needed -->
-                                  <span class="nav-recursion-warning" aria-hidden="true">…</span>
-                                }
-                              </li>
-                            }
-                          </ul>
-                        </div>
-                      }
-                    </li>
-                  }
-                </ul>
-              </div>
-            }
-          </li>
-        }
+        <ng-container *ngTemplateOutlet="desktopRecursive; context: { items: navigationItems(), depth: 0 }"></ng-container>
       </ul>
     </nav>
+
+    <ng-template #desktopRecursive let-items="items" let-depth="depth">
+      @for (item of items; track trackById($index, item)) {
+        <li class="nav-item" [class.is-group]="isGroup(item)" [class.depth-{{depth}}]="true">
+          @if (!isGroup(item)) {
+            <a [routerLink]="item.path" routerLinkActive="active" class="nav-link"
+               [attr.aria-label]="item.label | translate" [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null">
+              @if (item.icon && depth === 0) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
+              {{ item.label | translate }}
+            </a>
+          } @else {
+            <div class="nav-group" [class.nested]="depth > 0" (mouseenter)="onGroupMouseEnter(item.id, depth)" (mouseleave)="onGroupMouseLeave(item.id, depth, $event)">
+              <button type="button" class="nav-group-toggle" [class.nested]="depth>0"
+                      [attr.aria-expanded]="isGroupOpen(item.id)" [attr.aria-controls]="'grp-'+item.id"
+                      (click)="toggleGroup(item.id)">
+                <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
+                @if (item.icon && depth === 0) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
+                <span class="label">{{ item.label | translate }}</span>
+              </button>
+              <ul class="nav-sub-list" [class.nested]="depth>0" [id]="'grp-'+item.id" role="group"
+                  [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
+                <ng-container *ngTemplateOutlet="desktopRecursive; context: { items: item.children, depth: depth + 1 }"></ng-container>
+              </ul>
+            </div>
+          }
+        </li>
+      }
+    </ng-template>
     
     <div class="header-actions">
       <label for="lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
@@ -147,65 +107,39 @@
       </button>
     </div>
     
-    <nav class="sidebar-nav" aria-labelledby="sidebar-title">
+    <nav class="sidebar-nav" aria-labelledby="sidebar-title" (keydown)="onNavKeydown($event)">
       <ul class="sidebar-nav-list root">
-        @for (item of navigationItems(); track trackById($index, item)) {
-          <li class="sidebar-nav-item" [class.is-group]="isGroup(item)">
-            @if (!isGroup(item)) {
-              <a [routerLink]="item.path" routerLinkActive="active" class="sidebar-nav-link"
-                 [attr.aria-label]="item.label | translate" [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null"
-                 [attr.tabindex]="isSidebarOpen() ? '0' : '-1'" (click)="closeSidebar()">
-                @if (item.icon) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                {{ item.label | translate }}
-              </a>
-            } @else {
-              <div class="sidebar-group">
-                <button type="button" class="sidebar-group-toggle" (click)="toggleGroup(item.id)"
-                        [attr.aria-expanded]="isGroupOpen(item.id)" [attr.aria-controls]="'mside-'+item.id"
-                        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
-                  <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
-                  @if (item.icon) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                  <span class="label">{{ item.label | translate }}</span>
-                </button>
-                <ul class="sidebar-sub-list" [id]="'mside-'+item.id" role="group" [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
-                  @for (child of item.children; track trackById($index, child)) {
-                    <li class="sidebar-sub-item" [class.is-group]="isGroup(child)">
-                      @if (!isGroup(child)) {
-                        <a [routerLink]="child.path" routerLinkActive="active" class="sidebar-nav-link sub"
-                           [attr.aria-label]="child.label | translate" [attr.aria-current]="isLinkActive(child.path!) ? 'page' : null"
-                           [attr.tabindex]="isSidebarOpen() ? '0' : '-1'" (click)="closeSidebar()">{{ child.label | translate }}</a>
-                      } @else {
-                        <div class="sidebar-group nested">
-                          <button type="button" class="sidebar-group-toggle nested" (click)="toggleGroup(child.id)"
-                                  [attr.aria-expanded]="isGroupOpen(child.id)" [attr.aria-controls]="'mside-'+child.id"
-                                  [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
-                            <span class="chevron" [class.open]="isGroupOpen(child.id)" aria-hidden="true">▸</span>
-                            <span class="label">{{ child.label | translate }}</span>
-                          </button>
-                          <ul class="sidebar-sub-list nested" [id]="'mside-'+child.id" role="group" [class.open]="isGroupOpen(child.id)" [attr.aria-hidden]="!isGroupOpen(child.id)">
-                            @for (leaf of child.children; track trackById($index, leaf)) {
-                              <li class="sidebar-sub-item leaf">
-                                @if (!isGroup(leaf)) {
-                                  <a [routerLink]="leaf.path" routerLinkActive="active" class="sidebar-nav-link sub nested"
-                                     [attr.aria-label]="leaf.label | translate" [attr.aria-current]="isLinkActive(leaf.path!) ? 'page' : null"
-                                     [attr.tabindex]="isSidebarOpen() ? '0' : '-1'" (click)="closeSidebar()">{{ leaf.label | translate }}</a>
-                                } @else {
-                                  <span class="nav-recursion-warning" aria-hidden="true">…</span>
-                                }
-                              </li>
-                            }
-                          </ul>
-                        </div>
-                      }
-                    </li>
-                  }
-                </ul>
-              </div>
-            }
-          </li>
-        }
+        <ng-container *ngTemplateOutlet="mobileRecursive; context: { items: navigationItems(), depth: 0 }"></ng-container>
       </ul>
     </nav>
+
+    <ng-template #mobileRecursive let-items="items" let-depth="depth">
+      @for (item of items; track trackById($index, item)) {
+        <li class="sidebar-nav-item" [class.is-group]="isGroup(item)" [class.depth-{{depth}}]="true">
+          @if (!isGroup(item)) {
+            <a [routerLink]="item.path" routerLinkActive="active" class="sidebar-nav-link" [class.sub]="depth>0"
+               [attr.aria-label]="item.label | translate" [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null"
+               [attr.tabindex]="isSidebarOpen() ? '0' : '-1'" (click)="closeSidebar()">
+              @if (item.icon && depth === 0) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
+              {{ item.label | translate }}
+            </a>
+          } @else {
+            <div class="sidebar-group" [class.nested]="depth>0">
+              <button type="button" class="sidebar-group-toggle" [class.nested]="depth>0" (click)="toggleGroup(item.id)"
+                      [attr.aria-expanded]="isGroupOpen(item.id)" [attr.aria-controls]="'mside-'+item.id"
+                      [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
+                <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
+                @if (item.icon && depth === 0) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
+                <span class="label">{{ item.label | translate }}</span>
+              </button>
+              <ul class="sidebar-sub-list" [class.nested]="depth>0" [id]="'mside-'+item.id" role="group" [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
+                <ng-container *ngTemplateOutlet="mobileRecursive; context: { items: item.children, depth: depth + 1 }"></ng-container>
+              </ul>
+            </div>
+          }
+        </li>
+      }
+    </ng-template>
     
     <div class="sidebar-footer">
       <div class="sidebar-lang">
