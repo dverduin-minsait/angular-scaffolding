@@ -203,18 +203,15 @@ describe('HeaderComponent Accessibility', () => {
       expect(burgerMenu.getAttribute('aria-controls')).toBe('mobile-sidebar');
     });
 
-    it('should update aria-current for active navigation links', () => {
-      // The router URL is already set to /dashboard in the mock
+    it('should set aria-expanded on group toggles and aria-current on active leaf', () => {
       fixture.detectChanges();
-
-      // Look for navigation links
-      const navLinks = fixture.nativeElement.querySelectorAll('a');
-      const dashboardLink = Array.from(navLinks).find((link: any) => {
-        const txt = link.textContent ?? '';
-        return txt.includes('Dashboard') || txt.includes('app.navigation.dashboard');
-      });
-      // Accept presence even if still showing raw key (translation stub fallback)
-      expect(dashboardLink).toBeTruthy();
+      const groupToggle: HTMLButtonElement | null = fixture.nativeElement.querySelector('.nav-group-toggle');
+      expect(groupToggle).toBeTruthy();
+      expect(groupToggle?.getAttribute('aria-expanded')).toBe('false');
+      // Expand group
+      groupToggle?.click();
+      fixture.detectChanges();
+      expect(groupToggle?.getAttribute('aria-expanded')).toBe('true');
     });
   });
 

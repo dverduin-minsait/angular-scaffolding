@@ -6,8 +6,20 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Dashboard",
-      "clothes": "Clothes",
-      "auth": "Authentication",
+      "clothes": {
+        "_": "Clothes",
+        "men": "Men",
+        "women": {
+          "_": "Women",
+          "dresses": "Dresses",
+          "shoes": "Shoes"
+        }
+      },
+      "auth": {
+        "_": "Authentication",
+        "login": "Login",
+        "register": "Register"
+      },
       "themeDemo": "Theme Demo",
       "settings": "Settings"
     },

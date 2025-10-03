@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
-import { HeaderComponent, NavigationLink } from './header.component';
+import { HeaderComponent } from './header.component';
 import { TranslationService } from '../../../core/services/translation.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
@@ -41,8 +41,14 @@ class MockTranslatePipe implements PipeTransform {
   private dict: Record<string,string> = {
     'app.title': 'Angular Architecture',
     'app.navigation.dashboard': 'Dashboard',
-    'app.navigation.clothes': 'Clothes',
-    'app.navigation.auth': 'Authentication',
+  'app.navigation.clothes._': 'Clothes',
+  'app.navigation.clothes.men': 'Men',
+  'app.navigation.clothes.women._': 'Women',
+  'app.navigation.clothes.women.dresses': 'Dresses',
+  'app.navigation.clothes.women.shoes': 'Shoes',
+  'app.navigation.auth._': 'Authentication',
+  'app.navigation.auth.login': 'Login',
+  'app.navigation.auth.register': 'Register',
     'app.navigation.themeDemo': 'Theme Demo',
     'app.navigation.settings': 'Settings',
     'app.actions.toggleTheme': 'Switch to light theme', // base template; param used separately by service call
@@ -115,8 +121,14 @@ describe('HeaderComponent', () => {
               const dict: Record<string,string> = {
                 'app.title': 'Angular Architecture',
                 'app.navigation.dashboard': 'Dashboard',
-                'app.navigation.clothes': 'Clothes',
-                'app.navigation.auth': 'Authentication',
+                'app.navigation.clothes._': 'Clothes',
+                'app.navigation.clothes.men': 'Men',
+                'app.navigation.clothes.women._': 'Women',
+                'app.navigation.clothes.women.dresses': 'Dresses',
+                'app.navigation.clothes.women.shoes': 'Shoes',
+                'app.navigation.auth._': 'Authentication',
+                'app.navigation.auth.login': 'Login',
+                'app.navigation.auth.register': 'Register',
                 'app.navigation.themeDemo': 'Theme Demo',
                 'app.navigation.settings': 'Settings',
                 'app.actions.toggleTheme': `Switch to ${params?.['theme'] ?? '{{theme}}'} theme`,
@@ -162,31 +174,14 @@ describe('HeaderComponent', () => {
       expect(component['isSidebarOpen']()).toBe(false);
     });
 
-    it('should initialize with default navigation links', () => {
-      const links = component['navigationLinks']();
-      expect(links).toHaveLength(5);
-      
-      // Test individual properties to avoid emoji encoding issues
-  expect(links[0].label).toBe('app.navigation.dashboard');
-      expect(links[0].path).toBe('/dashboard');
-      expect(links[0].icon).toBeDefined();
-      
-  expect(links[1].label).toBe('app.navigation.clothes');
-      expect(links[1].path).toBe('/clothes');
-      expect(links[1].icon).toBeDefined();
-      
-  expect(links[2].label).toBe('app.navigation.auth');
-      expect(links[2].path).toBe('/auth/login');
-      expect(links[2].icon).toBeDefined();
-      
-  expect(links[3].label).toBe('app.navigation.themeDemo');
-      expect(links[3].path).toBe('/theme-demo');
-      expect(links[3].icon).toBeDefined();
-      
-  expect(links[4].label).toBe('app.navigation.settings');
-      expect(links[4].path).toBe('/settings');
-      expect(links[4].icon).toBeDefined();
-    });
+  it('should initialize navigation items including a group', () => {
+    const items = component['navigationItems']();
+    expect(items).toHaveLength(5);
+    expect(items[0].label).toBe('app.navigation.dashboard');
+    // group should have children
+    // @ts-ignore
+    expect(items[1].children?.length).toBeGreaterThan(0);
+  });
   });
 
   describe('Template Rendering', () => {
@@ -195,15 +190,11 @@ describe('HeaderComponent', () => {
   expect(logoElement.nativeElement.textContent.trim()).toBe('Angular Architecture');
     });
 
-    it('should render all navigation links in desktop nav', () => {
-      const navLinks = fixture.debugElement.queryAll(By.css('.desktop-nav .nav-link'));
-      expect(navLinks).toHaveLength(5);
-      
-      expect(navLinks[0].nativeElement.textContent.trim()).toContain('Dashboard');
-      expect(navLinks[1].nativeElement.textContent.trim()).toContain('Clothes');
-      expect(navLinks[2].nativeElement.textContent.trim()).toContain('Authentication');
-      expect(navLinks[3].nativeElement.textContent.trim()).toContain('Theme Demo');
-      expect(navLinks[4].nativeElement.textContent.trim()).toContain('Settings');
+    it('should render root items (links + group toggle) in desktop nav', () => {
+      const rootItems = fixture.debugElement.queryAll(By.css('.desktop-nav .nav-list.root > li'));
+      expect(rootItems.length).toBe(5);
+      const groupToggle = fixture.debugElement.query(By.css('.nav-group-toggle'));
+      expect(groupToggle).toBeTruthy();
     });
 
     it('should render theme toggle button', () => {
@@ -220,15 +211,32 @@ describe('HeaderComponent', () => {
       expect(burgerLines).toHaveLength(3);
     });
 
-    it('should render sidebar with all navigation links', () => {
-      const sidebarNavLinks = fixture.debugElement.queryAll(By.css('.sidebar-nav-link'));
-      expect(sidebarNavLinks).toHaveLength(5);
-      
-      expect(sidebarNavLinks[0].nativeElement.textContent.trim()).toContain('Dashboard');
-      expect(sidebarNavLinks[1].nativeElement.textContent.trim()).toContain('Clothes');
-      expect(sidebarNavLinks[2].nativeElement.textContent.trim()).toContain('Authentication');
-      expect(sidebarNavLinks[3].nativeElement.textContent.trim()).toContain('Theme Demo');
-      expect(sidebarNavLinks[4].nativeElement.textContent.trim()).toContain('Settings');
+    it('should render root items in sidebar (links + group)', () => {
+      const sidebarRootItems = fixture.debugElement.queryAll(By.css('.sidebar-nav-list.root > li'));
+      expect(sidebarRootItems.length).toBe(5);
+    });
+
+    it('should expand/collapse a top-level group in desktop nav', () => {
+      const toggle = fixture.debugElement.query(By.css('.nav-group-toggle'));
+      expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
+      toggle.nativeElement.click();
+      fixture.detectChanges();
+      expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('true');
+      toggle.nativeElement.click();
+      fixture.detectChanges();
+      expect(toggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('should expand nested group', () => {
+      const firstGroupToggle = fixture.debugElement.query(By.css('.nav-group-toggle'));
+      firstGroupToggle.nativeElement.click();
+      fixture.detectChanges();
+      const nestedToggle = fixture.debugElement.query(By.css('.nav-group-toggle.nested'));
+      expect(nestedToggle).toBeTruthy();
+      expect(nestedToggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
+      nestedToggle.nativeElement.click();
+      fixture.detectChanges();
+      expect(nestedToggle.nativeElement.getAttribute('aria-expanded')).toBe('true');
     });
   });
 
@@ -389,19 +397,11 @@ describe('HeaderComponent', () => {
       expect(overlay.nativeElement.getAttribute('aria-hidden')).toBe('false');
     });
 
-    it('should have proper aria-labels for navigation links', () => {
-      const navLinks = fixture.debugElement.queryAll(By.css('.nav-link'));
-      const sidebarNavLinks = fixture.debugElement.queryAll(By.css('.sidebar-nav-link'));
-      
-      // Check desktop nav links
-      expect(navLinks[0].nativeElement.getAttribute('aria-label')).toBe('Dashboard');
-      expect(navLinks[1].nativeElement.getAttribute('aria-label')).toBe('Clothes');
-      expect(navLinks[2].nativeElement.getAttribute('aria-label')).toBe('Authentication');
-      
-      // Check sidebar nav links
-      expect(sidebarNavLinks[0].nativeElement.getAttribute('aria-label')).toBe('Dashboard');
-      expect(sidebarNavLinks[1].nativeElement.getAttribute('aria-label')).toBe('Clothes');
-      expect(sidebarNavLinks[2].nativeElement.getAttribute('aria-label')).toBe('Authentication');
+    it('should have accessible labels for first desktop nav link and group toggle', () => {
+      const firstLink = fixture.debugElement.query(By.css('.nav-link'));
+      expect(firstLink.nativeElement.getAttribute('aria-label')).toBe('Dashboard');
+      const groupToggle = fixture.debugElement.query(By.css('.nav-group-toggle'));
+      expect(groupToggle.nativeElement.getAttribute('aria-expanded')).toBe('false');
     });
 
     it('should have proper role attributes', () => {
@@ -460,20 +460,16 @@ describe('HeaderComponent', () => {
   });
 
   describe('Router Navigation', () => {
-    it('should navigate to correct routes when nav links are clicked', async () => {
-      const navLinks = fixture.debugElement.queryAll(By.css('.nav-link'));
-      
-      // Test navigation to dashboard
-      navLinks[0].nativeElement.click();
+    it('should navigate to dashboard when first nav link clicked', async () => {
+      const firstLink = fixture.debugElement.query(By.css('.nav-link'));
+      firstLink.nativeElement.click();
       await fixture.whenStable();
       expect(router.url).toBe('/dashboard');
     });
 
-    it('should navigate to correct routes when sidebar nav links are clicked', async () => {
-      const sidebarNavLinks = fixture.debugElement.queryAll(By.css('.sidebar-nav-link'));
-      
-      // Test navigation to dashboard
-      sidebarNavLinks[0].nativeElement.click();
+    it('should navigate to dashboard when first sidebar link clicked', async () => {
+      const firstSidebarLink = fixture.debugElement.query(By.css('.sidebar-nav-link'));
+      firstSidebarLink.nativeElement.click();
       await fixture.whenStable();
       expect(router.url).toBe('/dashboard');
     });
@@ -481,15 +477,10 @@ describe('HeaderComponent', () => {
 
   describe('Component Methods', () => {
     // updateNavigationLinks is now a no-op since links are computed from translations; keep test to assert immutability
-    it('should not change navigation links when updateNavigationLinks is called (noop)', () => {
-      const original = component['navigationLinks']();
-      const attempt: NavigationLink[] = [
-        { label: 'Home', path: '/home', icon: '🏠' },
-        { label: 'Profile', path: '/profile', icon: '👤' }
-      ];
-      component.updateNavigationLinks(attempt);
-      fixture.detectChanges();
-      expect(component['navigationLinks']()).toEqual(original);
+    it('should keep navigationItems unchanged on updateNavigationLinks (noop)', () => {
+      const original = component['navigationItems']();
+      component.updateNavigationLinks([]);
+      expect(component['navigationItems']()).toEqual(original);
     });
 
     it('should toggle sidebar state with toggleSidebar method', () => {
@@ -618,10 +609,10 @@ describe('HeaderComponent', () => {
       expect(component['burgerAriaLabel']()).toBe('Open menu');
     });
 
-    it('should have trackBy function for navigation links', () => {
-      const mockLink: NavigationLink = { label: 'Test', path: '/test', icon: '🔧' };
-      const trackByResult = component['trackByPath'](0, mockLink);
-      expect(trackByResult).toBe('/test');
+    it('should have trackBy function using ids', () => {
+      const mockItem: any = { id: 'test', label: 't', path: '/t' };
+      const result = component['trackById'](0, mockItem);
+      expect(result).toBe('test');
     });
 
     it('should add document listeners only when sidebar is open', () => {

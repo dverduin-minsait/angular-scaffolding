@@ -6,8 +6,20 @@
     "title": "Angulinho",
     "navigation": {
       "dashboard": "Painel",
-      "clothes": "Roupas",
-      "auth": "Autenticação",
+      "clothes": {
+        "_": "Roupas",
+        "men": "Homem",
+        "women": {
+          "_": "Mulher",
+          "dresses": "Vestidos",
+          "shoes": "Sapatos"
+        }
+      },
+      "auth": {
+        "_": "Autenticação",
+        "login": "Iniciar sessão",
+        "register": "Registrar"
+      },
       "themeDemo": "Demo Tema",
       "settings": "Configurações"
     },
