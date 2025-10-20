@@ -1,0 +1,15 @@
+{
+  "auth": {
+    "refresh": {
+      "message": "No refresh token available",
+      "error": "unauthorized"
+    },
+    "me": {
+      "message": "No session available", 
+      "error": "unauthorized"
+    },
+    "login": {
+      "message": "Login endpoint"
+    }
+  }
+}

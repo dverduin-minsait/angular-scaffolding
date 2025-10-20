@@ -5,167 +5,45 @@
     </div>
     
     <!-- Desktop Navigation -->
-    <nav id="navigation" class="navigation desktop-nav" role="navigation" aria-label="Main navigation" (keydown)="onNavKeydown($event)">
-      <ul class="nav-list root">
-        <ng-container *ngTemplateOutlet="desktopRecursive; context: { items: navigationItems(), depth: 0 }"></ng-container>
-      </ul>
-    </nav>
-
-    <ng-template #desktopRecursive let-items="items" let-depth="depth">
-      @for (item of items; track trackById($index, item)) {
-        <li class="nav-item" [class.is-group]="isGroup(item)" [class.depth-{{depth}}]="true">
-          @if (!isGroup(item)) {
-            <a [routerLink]="item.path" routerLinkActive="active" class="nav-link"
-               [attr.aria-label]="item.label | translate" [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null">
-              @if (item.icon && depth === 0) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-              {{ item.label | translate }}
-            </a>
-          } @else {
-            <div class="nav-group" [class.nested]="depth > 0" (mouseenter)="onGroupMouseEnter(item.id, depth)" (mouseleave)="onGroupMouseLeave(item.id, depth, $event)">
-              <button type="button" class="nav-group-toggle" [class.nested]="depth>0"
-                      [attr.aria-expanded]="isGroupOpen(item.id)" [attr.aria-controls]="'grp-'+item.id"
-                      (click)="toggleGroup(item.id)">
-                <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
-                @if (item.icon && depth === 0) { <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                <span class="label">{{ item.label | translate }}</span>
-              </button>
-              <ul class="nav-sub-list" [class.nested]="depth>0" [id]="'grp-'+item.id" role="group"
-                  [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
-                <ng-container *ngTemplateOutlet="desktopRecursive; context: { items: item.children, depth: depth + 1 }"></ng-container>
-              </ul>
-            </div>
-          }
-        </li>
-      }
-    </ng-template>
+    <app-navbar [items]="navigationItems()" />
     
-    <div class="header-actions">
-      <label for="lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
-      <select id="lang-select"
-              class="lang-select"
-              [value]="i18n.currentLang()"
-              (change)="onLanguageChange($event)"
-              aria-label="{{ 'app.actions.changeLanguage' | translate }}">
-        @for (lang of languages; track lang) {
-          <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
-        }
-      </select>
-      <button 
-        class="theme-toggle"
-        (click)="toggleTheme()"
-        [attr.aria-label]="themeAriaLabel()"
-        [attr.aria-pressed]="isDarkMode()"
-        type="button"
-      >
-        {{ themeIcon() }}
-      </button>
-      
-      <!-- Burger Menu Button -->
-      <button 
-        class="burger-menu"
-        (click)="toggleSidebar()"
-        [attr.aria-label]="burgerAriaLabel()"
-        [attr.aria-expanded]="isSidebarOpen()"
-        [attr.aria-controls]="'mobile-sidebar'"
-        type="button"
-      >
-        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
-        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
-        <span class="burger-line" [class.open]="isSidebarOpen()"></span>
-      </button>
-    </div>
+    <!-- Header Actions (Language, Theme, Burger Menu) -->
+    <app-header-actions 
+      [sidebarOpen]="isSidebarOpen()"
+      (sidebarToggle)="toggleSidebar()" />
   </div>
 </header>
 
 <!-- Mobile Sidebar -->
-<div class="sidebar-overlay" 
-     [class.open]="isSidebarOpen()" 
-     (click)="closeSidebar()"
-     [attr.aria-hidden]="!isSidebarOpen()"
-     [attr.inert]="!isSidebarOpen() || null">
-</div>
-
-<aside id="mobile-sidebar"
-       class="sidebar" 
-       [class.open]="isSidebarOpen()"
-       [attr.aria-hidden]="!isSidebarOpen()"
-       [attr.inert]="!isSidebarOpen() || null"
-       role="navigation"
-       aria-label="Mobile navigation"
-       [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
-  <div class="sidebar-content">
-    <div class="sidebar-header">
-  <h2 id="sidebar-title">{{ title() | translate }}</h2>
-      <button 
-        class="close-button"
-        (click)="closeSidebar()"
-        [attr.aria-label]="'app.actions.closeMenu' | translate"
-        type="button"
-        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
-      >
-        ✕
-      </button>
-    </div>
-    
-    <nav class="sidebar-nav" aria-labelledby="sidebar-title" (keydown)="onNavKeydown($event)">
-      <ul class="sidebar-nav-list root">
-        <ng-container *ngTemplateOutlet="mobileRecursive; context: { items: navigationItems(), depth: 0 }"></ng-container>
-      </ul>
-    </nav>
-
-    <ng-template #mobileRecursive let-items="items" let-depth="depth">
-      @for (item of items; track trackById($index, item)) {
-        <li class="sidebar-nav-item" [class.is-group]="isGroup(item)" [class.depth-{{depth}}]="true">
-          @if (!isGroup(item)) {
-            <a [routerLink]="item.path" routerLinkActive="active" class="sidebar-nav-link" [class.sub]="depth>0"
-               [attr.aria-label]="item.label | translate" [attr.aria-current]="isLinkActive(item.path!) ? 'page' : null"
-               [attr.tabindex]="isSidebarOpen() ? '0' : '-1'" (click)="closeSidebar()">
-              @if (item.icon && depth === 0) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-              {{ item.label | translate }}
-            </a>
-          } @else {
-            <div class="sidebar-group" [class.nested]="depth>0">
-              <button type="button" class="sidebar-group-toggle" [class.nested]="depth>0" (click)="toggleGroup(item.id)"
-                      [attr.aria-expanded]="isGroupOpen(item.id)" [attr.aria-controls]="'mside-'+item.id"
-                      [attr.tabindex]="isSidebarOpen() ? '0' : '-1'">
-                <span class="chevron" [class.open]="isGroupOpen(item.id)" aria-hidden="true">▸</span>
-                @if (item.icon && depth === 0) { <span class="sidebar-nav-icon" aria-hidden="true">{{ item.icon }}</span> }
-                <span class="label">{{ item.label | translate }}</span>
-              </button>
-              <ul class="sidebar-sub-list" [class.nested]="depth>0" [id]="'mside-'+item.id" role="group" [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
-                <ng-container *ngTemplateOutlet="mobileRecursive; context: { items: item.children, depth: depth + 1 }"></ng-container>
-              </ul>
-            </div>
-          }
-        </li>
+<app-sidebar 
+  [isOpen]="isSidebarOpen()"
+  [items]="navigationItems()"
+  [title]="title()"
+  (close)="closeSidebar()">
+  
+  <!-- Sidebar Footer Actions -->
+  <div class="sidebar-lang">
+    <label for="sidebar-lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
+    <select id="sidebar-lang-select"
+            class="lang-select"
+            [value]="i18n.currentLang()"
+            (change)="onLanguageChange($event)"
+            [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+            aria-label="{{ 'app.actions.changeLanguage' | translate }}">
+      @for (lang of i18n.availableLangs; track lang) {
+        <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
       }
-    </ng-template>
-    
-    <div class="sidebar-footer">
-      <div class="sidebar-lang">
-        <label for="sidebar-lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
-        <select id="sidebar-lang-select"
-                class="lang-select"
-                [value]="i18n.currentLang()"
-                (change)="onLanguageChange($event)"
-                [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
-                aria-label="{{ 'app.actions.changeLanguage' | translate }}">
-          @for (lang of languages; track lang) {
-            <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
-          }
-        </select>
-      </div>
-      <button 
-        class="sidebar-theme-toggle"
-        (click)="toggleTheme()"
-        [attr.aria-label]="themeAriaLabel()"
-        [attr.aria-pressed]="isDarkMode()"
-        [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
-        type="button"
-      >
-        {{ themeIcon() }}
-        <span>{{ ('app.themes.' + (isDarkMode() ? 'light' : 'dark')) | translate }}</span>
-      </button>
-    </div>
+    </select>
   </div>
-</aside>
+  <button 
+    class="sidebar-theme-toggle"
+    (click)="themeService.toggleTheme()"
+    [attr.aria-label]="'app.actions.toggleTheme' | translate"
+    [attr.aria-pressed]="themeService.isDarkMode()"
+    [attr.tabindex]="isSidebarOpen() ? '0' : '-1'"
+    type="button"
+  >
+    {{ themeService.getThemeIcon() }}
+    <span>{{ ('app.themes.' + (themeService.isDarkMode() ? 'light' : 'dark')) | translate }}</span>
+  </button>
+</app-sidebar>

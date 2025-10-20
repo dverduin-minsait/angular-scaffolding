@@ -1,0 +1,142 @@
+// Optimized header actions styles without full theme import
+
+// Shared styling for language selects
+%lang-select-shared {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-secondary, var(--bg-primary));
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.5rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+  min-width: 4.5rem;
+  height: 2.5rem;
+  position: relative;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%),
+    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%);
+  background-position: right 0.75rem top 55%, right 0.5rem top 55%;
+  background-size: 8px 8px, 8px 8px;
+  background-repeat: no-repeat;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover { 
+    background-color: var(--hover-bg); 
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-500) 40%, transparent);
+  }
+  
+  &:disabled { 
+    opacity: .6; 
+    cursor: not-allowed; 
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .lang-select { 
+    @extend %lang-select-shared; 
+  }
+
+  .theme-toggle,
+  .burger-menu {
+    /* Inline ghost button styles to avoid theme import */
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    padding: 0;
+
+    &:hover {
+      background-color: var(--hover-bg);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-500);
+      outline-offset: 2px;
+    }
+  }
+
+  .theme-toggle {
+    font-size: 1.25rem;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .burger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+
+    .burger-line {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: var(--text-primary);
+      transition: all 0.3s ease;
+      transform-origin: center;
+
+      &.line-1.open { 
+        transform: rotate(45deg) translate(6px, 6px); 
+      }
+      
+      &.line-2.open { 
+        opacity: 0; 
+      }
+      
+      &.line-3.open { 
+        transform: rotate(-45deg) translate(6px, -6px); 
+      }
+    }
+
+    &:hover .burger-line {
+      background-color: var(--primary-500);
+    }
+  }
+}
+
+// Responsive behavior
+@media (max-width: 768px) {
+  .header-actions .burger-menu {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions {
+    gap: 0.5rem;
+
+    .theme-toggle,
+    .burger-menu {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .theme-toggle {
+      font-size: 1rem;
+    }
+
+    .burger-menu .burger-line {
+      width: 16px;
+    }
+  }
+}

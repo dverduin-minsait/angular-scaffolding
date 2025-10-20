@@ -15,20 +15,30 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     data: { breadcrumb: 'Dashboard' },
-    loadChildren: () =>
-      import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+    canMatch: [() => import('./core/auth/guards/auth.guard').then(m => m.authGuard)],
+    loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
   },
   {
     path: 'theme-demo',
     data: { breadcrumb: 'Theme Demo' },
-    loadChildren: () =>
-      import('./features/theme-demo/theme-demo.routes').then(m => m.THEME_DEMO_ROUTES)
+    canMatch: [
+      () => import('./core/auth/guards/auth.guard').then(m => m.authGuard)
+    ],
+    loadChildren: () => import('./features/theme-demo/theme-demo.routes').then(m => m.THEME_DEMO_ROUTES)
+  },
+  {
+    path: 'forbidden',
+    data: { breadcrumb: 'Forbidden' },
+    loadComponent: () => import('./shared/components/forbidden/forbidden.component').then(c => c.ForbiddenComponent)
   },
   {
     path: 'clothes',
     data: { breadcrumb: 'Clothes' },
-    loadChildren: () =>
-      import('./features/clothes/clothes.routes').then(m => m.CLOTHES_ROUTES)
+    canMatch: [
+      () => import('./core/auth/guards/auth.guard').then(m => m.authGuard),
+      () => import('./core/auth/guards/permission.guard').then(m => m.permissionGuard(['clothes.view']))
+    ],
+    loadChildren: () => import('./features/clothes/clothes.routes').then(m => m.CLOTHES_ROUTES)
   },
   {
     path: '**',

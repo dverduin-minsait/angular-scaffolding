@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
+import { Navbar } from './navbar/navbar';
+import { HeaderActions } from './header-actions/header-actions';
+import { Sidebar } from './sidebar/sidebar';
 import { TranslationService } from '../../../core/services/translation.service';
 import { Component as NgComponent } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -10,9 +13,11 @@ import { ThemeService } from '../../../core/services/theme.service';
 import { AccessibilityTestUtils } from '../../../testing/accessibility-test-utils';
 import { DOCUMENT } from '@angular/common';
 import { signal } from '@angular/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateStubPipe, provideStubTranslationService } from '../../../testing/i18n-testing';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 import { of } from 'rxjs';
+import type { NavigationItem } from './navigation.types';
 
 describe('HeaderComponent Accessibility', () => {
   let component: HeaderComponent;
@@ -62,7 +67,16 @@ describe('HeaderComponent Accessibility', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent],
+      imports: [
+        HeaderComponent,
+        Navbar,
+        HeaderActions,
+        Sidebar,
+        CommonModule,
+        RouterLink,
+        RouterLinkActive,
+        TranslateModule.forRoot({ fallbackLang: 'en' })
+      ],
       providers: [
         { provide: ThemeService, useValue: mockThemeService },
         { provide: Router, useValue: mockRouter },
@@ -77,22 +91,14 @@ describe('HeaderComponent Accessibility', () => {
             clear: jest.fn()
           }
         },
-        ...provideStubTranslationService({ 'app.actions.toggleTheme': 'Switch to dark theme' })
+        ...provideStubTranslationService({ 
+          'app.actions.toggleTheme': 'Switch to dark theme',
+          'app.title': 'Angular Architecture',
+          'app.navigation.dashboard': 'Dashboard',
+          'app.navigation.clothes._': 'Clothes'
+        })
       ]
     }).compileComponents();
-
-    @NgComponent({
-      selector: 'app-language-switcher',
-      standalone: true,
-      template: '<!-- stub -->'
-    })
-    class StubLanguageSwitcherComponent {}
-
-    TestBed.overrideComponent(HeaderComponent, {
-      set: {
-        imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe]
-      }
-    });
 
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;

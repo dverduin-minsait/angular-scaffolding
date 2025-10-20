@@ -9,6 +9,7 @@
       "clothes": {
         "_": "Roba",
         "men": "Home",
+        "crud": "CRUD Roba",
         "women": {
           "_": "Dona",
           "dresses": "Vestits",

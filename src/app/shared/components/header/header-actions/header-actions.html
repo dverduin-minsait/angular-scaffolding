@@ -1,0 +1,36 @@
+<div class="header-actions">
+  <label for="lang-select" class="visually-hidden">{{ 'app.actions.changeLanguage' | translate }}</label>
+  <select id="lang-select"
+          class="lang-select"
+          [value]="i18n.currentLang()"
+          (change)="onLanguageChange($event)"
+          aria-label="{{ 'app.actions.changeLanguage' | translate }}">
+    @for (lang of languages; track lang) {
+      <option [value]="lang">{{ ('app.languages.' + lang) | translate }}</option>
+    }
+  </select>
+  
+  <button 
+    class="theme-toggle"
+    (click)="toggleTheme()"
+    [attr.aria-label]="themeAriaLabel()"
+    [attr.aria-pressed]="isDarkMode()"
+    type="button"
+  >
+    {{ themeIcon() }}
+  </button>
+  
+  <!-- Burger Menu Button -->
+  <button 
+    class="burger-menu"
+    (click)="toggleSidebar()"
+    [attr.aria-label]="burgerAriaLabel()"
+    [attr.aria-expanded]="sidebarOpen()"
+    [attr.aria-controls]="'mobile-sidebar'"
+    type="button"
+  >
+    <span class="burger-line" [class.open]="sidebarOpen()"></span>
+    <span class="burger-line" [class.open]="sidebarOpen()"></span>
+    <span class="burger-line" [class.open]="sidebarOpen()"></span>
+  </button>
+</div>
