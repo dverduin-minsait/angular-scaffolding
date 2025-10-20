@@ -1,8 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from '../../../shared/directives/button.directive';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -113,6 +114,8 @@ export class LoginComponent {
   protected readonly submitError = signal('');
   protected readonly emailError = signal('');
   protected readonly passwordError = signal('');
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   protected onSubmit(): void {
     this.clearErrors();
@@ -122,12 +125,17 @@ export class LoginComponent {
     }
     
     this.isSubmitting.set(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      // Simulate success or error
-    }, 1000);
+    const creds = { username: this.formData().email, password: this.formData().password };
+    this.auth.login(creds)
+      .then(() => {
+        const params = new URLSearchParams(location.search);
+        const returnUrl = params.get('returnUrl') || '/dashboard';
+        this.router.navigateByUrl(returnUrl);
+      })
+      .catch(err => {
+        this.submitError.set(err?.message || 'Login failed');
+      })
+      .finally(() => this.isSubmitting.set(false));
   }
   
   protected signInWithGoogle(): void {

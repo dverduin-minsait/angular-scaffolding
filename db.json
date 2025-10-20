@@ -223,5 +223,59 @@
       "createdAt": "2025-09-26T11:11:37.745Z",
       "id": 18
     }
+  ],
+  "users": [
+    {
+      "id": "admin",
+      "username": "admin",
+      "password": "Password123!",
+      "displayName": "Admin User",
+      "email": "admin@example.com",
+      "roles": ["admin"],
+      "permissions": [
+        "dashboard.view",
+        "clothes.read",
+        "clothes.write",
+        "clothes.delete",
+        "users.manage"
+      ]
+    },
+    {
+      "id": "viewer",
+      "username": "viewer",
+      "password": "Password123!",
+      "displayName": "View Only User",
+      "email": "viewer@example.com",
+      "roles": ["user"],
+      "permissions": [
+        "dashboard.view",
+        "clothes.read"
+      ]
+    },
+    {
+      "id": "editor",
+      "username": "editor",
+      "password": "Password123!",
+      "displayName": "Content Editor",
+      "email": "editor@example.com",
+      "roles": ["editor"],
+      "permissions": [
+        "dashboard.view",
+        "clothes.read",
+        "clothes.write"
+      ]
+    }
+  ],
+  "roles": [
+    { "id": 1, "name": "admin", "permissions": ["dashboard.view", "clothes.read", "clothes.write", "clothes.delete", "users.manage"] },
+    { "id": 2, "name": "user", "permissions": ["dashboard.view", "clothes.read"] },
+    { "id": 3, "name": "editor", "permissions": ["dashboard.view", "clothes.read", "clothes.write"] }
+  ],
+  "permissionsCatalog": [
+    { "key": "dashboard.view", "description": "Access dashboard widgets" },
+    { "key": "clothes.read", "description": "List and view clothes" },
+    { "key": "clothes.write", "description": "Create or update clothes" },
+    { "key": "clothes.delete", "description": "Delete clothes" },
+    { "key": "users.manage", "description": "Manage platform users" }
   ]
 }

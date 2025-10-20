@@ -1,13 +1,14 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { SplashComponent } from './shared/components/splash/splash.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreadcrumbComponent } from './core/navigation/breadcrumb';
 import { localStorageProvider } from './core/tokens/local.storage.token';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, BreadcrumbComponent, TranslatePipe],
+  imports: [RouterOutlet, HeaderComponent, BreadcrumbComponent, TranslatePipe, SplashComponent],
   providers: [
     localStorageProvider
   ],
