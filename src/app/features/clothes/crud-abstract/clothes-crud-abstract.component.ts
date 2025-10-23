@@ -71,7 +71,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   // Form for adding/editing items
   itemForm: FormGroup;
   private gridApi: AgGridApi | null = null;
-  
+
   // Reactive column definitions (mirrors catalog strategy, reacts to translation changes if run-time language switches)
   private readonly columnDefs = computed(() => {
     // Establish reactive dependency on translation signal
@@ -99,14 +99,14 @@ export class ClothesCrudAbstractComponent implements OnInit {
       onRowClicked: (event: AgGridRowClickedEvent) => this.onRowClicked(event)
     }
   }));
-  
+
   // Stable data config (avoid recreating object each CD cycle)
   // Keep a minimal dataConfig (still required by component) but prefer direct signal path
   dataConfig: GridDataConfig<ClothingItemApi> = {
     dataSource: [],
     preloadGrid: true
   };
-  
+
   // Local state signals
   selectedItem = signal<ClothingItemApi | null>(null);
   isEditing = computed(() => this.selectedItem() !== null);
@@ -126,7 +126,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
     const vis = this.columnVisibility();
     if (!this.gridApi) return;
     Object.entries(vis).forEach(([field, visible]) => {
-      if(!this.gridApi) return;
+      if (!this.gridApi) return;
       const col = this.gridApi.getColumn(field);
       if (col && col.isVisible && col.isVisible() !== visible) {
         this.gridApi.setColumnVisible(field, visible);
@@ -135,20 +135,18 @@ export class ClothesCrudAbstractComponent implements OnInit {
   });
 
   constructor() {
-    /* eslint-disable @typescript-eslint/unbound-method */
     this.itemForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      brand: ['', [Validators.required, Validators.minLength(2)]],
-      price: [0, [Validators.required, Validators.min(0.01)]],
+      name: ['', [void Validators.required, Validators.minLength(2)]],
+      brand: ['', [void Validators.required, Validators.minLength(2)]],
+      price: [0, [void Validators.required, Validators.min(0.01)]],
       size: [''],
       color: [''],
-      stock: [0, [Validators.required, Validators.min(0)]],
+      stock: [0, [void Validators.required, Validators.min(0)]],
       season: [''],
       category: [''],
       description: [''],
       imageUrl: ['']
     });
-    /* eslint-enable @typescript-eslint/unbound-method */
   }
 
   ngOnInit(): void {
@@ -165,7 +163,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   onSubmit(): void {
     if (this.itemForm.valid) {
       const formData = this.itemForm.value as ClothingFormData;
-      
+
       const now = new Date().toISOString();
       const itemData: Partial<ClothingItemApi> = {
         ...formData,
@@ -202,7 +200,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   editItem(item: ClothingItemApi): void {
     this.selectItem(item);
-    
+
     this.itemForm.patchValue({
       name: item.name,
       brand: item.brand,
@@ -287,32 +285,32 @@ export class ClothesCrudAbstractComponent implements OnInit {
   nameError(): string {
     const c = this.getControl('name');
     if (c?.invalid && (c.dirty || c.touched)) {
-  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.name.required');
-  if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.name.min');
+      if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.name.required');
+      if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.name.min');
     }
     return '';
   }
   brandError(): string {
     const c = this.getControl('brand');
     if (c?.invalid && (c.dirty || c.touched)) {
-  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.brand.required');
-  if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.brand.min');
+      if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.brand.required');
+      if (c.errors?.['minlength']) return this.i18n.instant('app.clothes.crud.form.errors.brand.min');
     }
     return '';
   }
   priceError(): string {
     const c = this.getControl('price');
     if (c?.invalid && (c.dirty || c.touched)) {
-  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.price.required');
-  if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.price.min');
+      if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.price.required');
+      if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.price.min');
     }
     return '';
   }
   stockError(): string {
     const c = this.getControl('stock');
     if (c?.invalid && (c.dirty || c.touched)) {
-  if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.stock.required');
-  if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.stock.min');
+      if (c.errors?.['required']) return this.i18n.instant('app.clothes.crud.form.errors.stock.required');
+      if (c.errors?.['min']) return this.i18n.instant('app.clothes.crud.form.errors.stock.min');
     }
     return '';
   }

@@ -21,7 +21,9 @@
         "login": "Iniciar sessão",
         "register": "Registrar"
       },
+      "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
+      "theme-demo": "Demo Tema",
       "settings": "Configurações"
     },
     "actions": {
@@ -123,6 +125,197 @@
       "pt": "Português",
       "ca": "Catalão",
       "gl": "Galego"
+    },
+    "crud": {
+      "loading": "Carregando",
+      "ready": "Pronto",
+      "items": "Itens",
+      "itemsLoaded": {
+        "aria": "Número de itens carregados"
+      },
+      "filters": {
+        "title": "Filtros",
+        "clear": "Limpar Filtros"
+      },
+      "actions": {
+        "create": "Criar",
+        "refresh": "Atualizar",
+        "clearSelection": "Limpar Seleção",
+        "edit": "Editar",
+        "delete": "Excluir",
+        "cancel": "Cancelar"
+      },
+      "columns": {
+        "toggle": "Alternar Colunas"
+      },
+      "card": {
+        "aria": "Cartão de item"
+      },
+      "dialog": {
+        "delete": {
+          "title": "Excluir {{entity}}",
+          "message": "Tem certeza de que deseja excluir este {{entity}}?"
+        }
+      }
+    },
+    "demoBooks": {
+      "title": "Demo CRUD - Livros",
+      "description": "Este componente demonstra o Sistema CRUD Genérico com projeção de conteúdo.",
+      "filter": {
+        "title": "Filtrar Livros",
+        "fields": {
+          "title": {
+            "label": "Título",
+            "placeholder": "Pesquisar por título..."
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Pesquisar por autor..."
+          },
+          "category": {
+            "label": "Categoria",
+            "options": {
+              "all": "Todas as Categorias",
+              "programming": "Programação",
+              "philosophy": "Filosofia",
+              "science": "Ciência",
+              "fiction": "Ficção",
+              "nonFiction": "Não Ficção",
+              "biography": "Biografia"
+            }
+          },
+          "availability": {
+            "label": "Disponibilidade",
+            "options": {
+              "all": "Todos",
+              "inStock": "Em Stock",
+              "outOfStock": "Esgotado"
+            }
+          },
+          "priceRange": {
+            "minPrice": {
+              "label": "Preço Min (€)",
+              "placeholder": "0.00"
+            },
+            "maxPrice": {
+              "label": "Preço Máx (€)",
+              "placeholder": "100.00"
+            }
+          }
+        },
+        "actions": {
+          "apply": "Aplicar Filtros",
+          "clear": "Limpar Filtros"
+        }
+      },
+      "form": {
+        "title": {
+          "create": "Criar Livro",
+          "edit": "Editar Livro"
+        },
+        "fields": {
+          "title": {
+            "label": "Título do Livro",
+            "placeholder": "Introduza o título do livro",
+            "required": true
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Introduza o nome do autor",
+            "required": true
+          },
+          "isbn": {
+            "label": "ISBN",
+            "placeholder": "978-0000000000",
+            "required": true
+          },
+          "category": {
+            "label": "Categoria",
+            "placeholder": "Selecionar Categoria",
+            "required": true
+          },
+          "price": {
+            "label": "Preço (€)",
+            "placeholder": "0.00",
+            "required": true
+          },
+          "rating": {
+            "label": "Avaliação (1-5)",
+            "placeholder": "5.0",
+            "required": true
+          },
+          "publishedDate": {
+            "label": "Data de Publicação",
+            "required": true
+          },
+          "description": {
+            "label": "Descrição",
+            "placeholder": "Descrição do livro (opcional)",
+            "hint": "Descrição opcional do livro"
+          },
+          "inStock": {
+            "label": "Em Stock"
+          }
+        },
+        "actions": {
+          "create": "Criar Livro",
+          "update": "Atualizar Livro",
+          "cancel": "Cancelar"
+        },
+        "errors": {
+          "title": {
+            "required": "O título é obrigatório",
+            "minLength": "O título deve ter pelo menos 2 caracteres"
+          },
+          "author": {
+            "required": "O autor é obrigatório",
+            "minLength": "O autor deve ter pelo menos 2 caracteres"
+          },
+          "isbn": {
+            "required": "O ISBN é obrigatório",
+            "pattern": "Por favor introduza um formato de ISBN válido"
+          },
+          "category": {
+            "required": "A categoria é obrigatória"
+          },
+          "price": {
+            "required": "Um preço válido é obrigatório",
+            "min": "O preço deve ser maior que 0"
+          },
+          "rating": {
+            "required": "Uma avaliação entre 1-5 é obrigatória",
+            "min": "A avaliação deve ser pelo menos 1",
+            "max": "A avaliação não pode exceder 5"
+          },
+          "publishedDate": {
+            "required": "A data de publicação é obrigatória"
+          }
+        }
+      },
+      "stats": {
+        "title": "Estatísticas Demo",
+        "totalBooks": "Total de Livros",
+        "inStock": "Em Stock",
+        "highRated": "Bem Avaliados (4.0+)",
+        "programmingBooks": "Livros de Programação"
+      },
+      "grid": {
+        "columns": {
+          "title": "Título",
+          "author": "Autor",
+          "category": "Categoria",
+          "price": "Preço",
+          "rating": "Avaliação",
+          "stock": "Stock",
+          "published": "Publicado"
+        },
+        "formatters": {
+          "price": "{0}€",
+          "rating": "⭐ {0}",
+          "inStock": "✅ Em Stock",
+          "outOfStock": "❌ Esgotado"
+        }
+      }
     },
     "clothes": {
       "catalog": {

@@ -41,6 +41,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/clothes/clothes.routes').then(m => m.CLOTHES_ROUTES)
   },
   {
+    path: 'demo-books',
+    data: { breadcrumb: 'CRUD Demo' },
+    canMatch: [() => import('./core/auth/guards/auth.guard').then(m => m.authGuard)],
+    loadChildren: () => import('./features/demo-books/demo-books.routes').then(m => m.DEMO_BOOKS_ROUTES)
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }

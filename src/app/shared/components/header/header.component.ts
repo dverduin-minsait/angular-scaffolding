@@ -39,6 +39,7 @@ export class HeaderComponent {
         }
       ]
     },
+    { id: 'demo-books', label: 'app.navigation.demo-books', path: '/demo-books', icon: '📚' },
     { id: 'auth', label: 'app.navigation.auth._', icon: '🔐', children: [
       { id: 'login', label: 'app.navigation.auth.login', path: '/auth/login' },
       { id: 'register', label: 'app.navigation.auth.register', path: '/auth/register' }
