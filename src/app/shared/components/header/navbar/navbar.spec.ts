@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
 
 import { Navbar } from './navbar';
 import { NavigationItem, NavigationGroup, NavigationLeaf } from '../navigation.types';
@@ -438,7 +437,7 @@ describe('Navbar', () => {
       component['toggleGroup']('clothes');
       fixture.detectChanges();
       
-      const clothesGroup = fixture.debugElement.query(By.css('.nav-group'));
+      const _clothesGroup = fixture.debugElement.query(By.css('.nav-group'));
       
       // Mock relatedTarget as part of the panel
       const mockRelatedTarget = {

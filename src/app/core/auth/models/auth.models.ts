@@ -34,8 +34,8 @@ export interface RefreshResponse {
   user?: UserProfile;  // optionally returned again (allow server optimization)
 }
 
-export interface MeResponse extends UserProfile {
-  // optionally include permissions/roles inline
+export type MeResponse = UserProfile & {
+  // optionally include permissions/roles inline  
 }
 
 export type Permission = string;

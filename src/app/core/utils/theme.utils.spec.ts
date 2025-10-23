@@ -31,7 +31,7 @@ describe('ThemeUtils', () => {
     });
 
     it('should handle undefined theme gracefully', () => {
-      const undefinedTheme = undefined as any;
+      const undefinedTheme = undefined as unknown as Theme;
       const result = ThemeUtils.getThemeDisplayName(undefinedTheme);
       expect(result).toBe(undefined);
     });
@@ -72,7 +72,7 @@ describe('ThemeUtils', () => {
     });
 
     it('should handle undefined theme gracefully', () => {
-      const undefinedTheme = undefined as any;
+      const undefinedTheme = undefined as unknown as Theme;
       const result = ThemeUtils.getThemeIcon(undefinedTheme);
       expect(result).toBe('🎨');
     });

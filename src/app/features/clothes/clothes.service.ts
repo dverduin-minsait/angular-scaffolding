@@ -17,9 +17,9 @@ export interface ColDef {
   headerName?: string;
   flex?: number;
   minWidth?: number;
-  cellStyle?: any;
-  valueFormatter?: (params: any) => string;
-  cellRenderer?: (params: any) => string;
+  cellStyle?: unknown;
+  valueFormatter?: (params: unknown) => string;
+  cellRenderer?: (params: unknown) => string;
   sortable?: boolean;
   filter?: boolean;
   resizable?: boolean;
@@ -27,8 +27,8 @@ export interface ColDef {
 
 @Injectable()
 export class ClothesService {
-  private i18n = inject(TranslationService);
-  getData() {
+  private readonly i18n = inject(TranslationService);
+  getData(): ClothingItem[] {
     const mockClothingData: ClothingItem[] = [
       { id: 1, name: 'Classic Cotton T-Shirt', brand: 'BasicWear', price: 25.99, size: 'M', color: 'white', stock: 45, season: 'Spring', category: 'T-Shirts' },
       { id: 2, name: 'Denim Jacket', brand: 'UrbanStyle', price: 89.99, size: 'L', color: 'blue', stock: 12, season: 'Fall', category: 'Jackets' },
@@ -62,7 +62,7 @@ export class ClothesService {
         headerName: this.i18n.instant('app.clothes.catalog.columns.brand'),
         flex: 1,
         minWidth: 100,
-        cellStyle: (params: any) => ({
+        cellStyle: (_params: unknown) => ({
           backgroundColor: 'var(--ag-header-background-color, #f0f8ff)',
           color: 'var(--ag-foreground-color, #0066cc)'
         })
@@ -72,7 +72,10 @@ export class ClothesService {
         headerName: this.i18n.instant('app.clothes.catalog.columns.price'),
         flex: 1,
         minWidth: 100,
-        valueFormatter: (params: any) => '$' + params.value.toFixed(2),
+        valueFormatter: (params: unknown) => {
+          const value = (params as {value: number}).value;
+          return '$' + value.toFixed(2);
+        },
         cellStyle: { 
           fontWeight: '700',
           color: '#28a745'
@@ -90,10 +93,11 @@ export class ClothesService {
         headerName: this.i18n.instant('app.clothes.catalog.columns.color'),
         flex: 1,
         minWidth: 100,
-        cellRenderer: (params: any) => {
+        cellRenderer: (params: unknown) => {
+          const value = (params as {value: string}).value;
           return `<div style="display: flex; align-items: center; gap: 6px;">
-            <div style="width: 16px; height: 16px; background-color: ${params.value}; border-radius: 50%; border: 1px solid #ccc;"></div>
-            <span>${params.value}</span>
+            <div style="width: 16px; height: 16px; background-color: ${value}; border-radius: 50%; border: 1px solid #ccc;"></div>
+            <span>${value}</span>
           </div>`;
         }
       },
@@ -102,11 +106,14 @@ export class ClothesService {
         headerName: this.i18n.instant('app.clothes.catalog.columns.stock'),
         flex: 0.8,
         minWidth: 80,
-        cellStyle: (params: any) => ({
-          textAlign: 'center',
-          color: params.value < 10 ? '#dc3545' : 'var(--ag-foreground-color, #333)',
-          fontWeight: params.value < 10 ? '700' : 'normal'
-        })
+        cellStyle: (params: unknown) => {
+          const value = (params as {value: number}).value;
+          return {
+            textAlign: 'center',
+            color: value < 10 ? '#dc3545' : 'var(--ag-foreground-color, #333)',
+            fontWeight: value < 10 ? '700' : 'normal'
+          };
+        }
       },
       { 
         field: 'category', 
@@ -119,14 +126,15 @@ export class ClothesService {
         headerName: this.i18n.instant('app.clothes.catalog.columns.season'),
         flex: 1,
         minWidth: 100,
-        cellStyle: (params: any) => {
-          const seasonColors: Record<string, any> = {
+        cellStyle: (params: unknown) => {
+          const value = (params as {value: string}).value;
+          const seasonColors: Record<string, {backgroundColor: string, color: string}> = {
             'Spring': { backgroundColor: '#d4edda', color: '#155724' },
             'Summer': { backgroundColor: '#fff3cd', color: '#856404' },
             'Fall': { backgroundColor: '#f8d7da', color: '#721c24' },
             'Winter': { backgroundColor: '#d1ecf1', color: '#0c5460' }
           };
-          return seasonColors[params.value] || {};
+          return seasonColors[value] || {};
         }
       }
     ];

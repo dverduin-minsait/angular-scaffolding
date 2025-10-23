@@ -79,9 +79,10 @@ describe('GridLoaderService', () => {
 
     it('should update injected theme CSS via effect when currentTheme signal changes', () => {
       // Ensure initial style injection by calling internal helper if not yet created
-      let initialStyle = document.querySelector('style[data-ag-grid-theme]') as HTMLStyleElement | null;
+      let initialStyle = document.querySelector('style[data-ag-grid-theme]');
       if (!initialStyle) {
-        (service as any).updateGridThemeCSS('light-theme', 1);
+        const serviceWithPrivate = service as unknown as { updateGridThemeCSS: (theme: string, version: number) => void };
+        serviceWithPrivate.updateGridThemeCSS('light-theme', 1);
         initialStyle = document.querySelector('style[data-ag-grid-theme]');
       }
       expect(initialStyle).toBeTruthy();
@@ -92,7 +93,7 @@ describe('GridLoaderService', () => {
       mockThemeService.getCurrentThemePair.mockReturnValue(2);
       mockThemeService.currentTheme.set('dark-theme');
 
-      const updatedStyle = document.querySelector('style[data-ag-grid-theme]') as HTMLStyleElement | null;
+      const updatedStyle = document.querySelector('style[data-ag-grid-theme]');
       expect(updatedStyle).toBeTruthy();
       const updatedContent = updatedStyle!.textContent || '';
       expect(updatedContent.length).toBeGreaterThan(0);

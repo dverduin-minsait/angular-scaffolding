@@ -1,7 +1,7 @@
-import { Component, inject, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ThemeService } from '../../../../core/services/theme.service';
+import { ThemeService } from '../../../../core/services';
 import { TranslationService, SupportedLang } from '../../../../core/services/translation.service';
 
 @Component({
@@ -42,7 +42,7 @@ export class HeaderActions {
   protected onLanguageChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value as SupportedLang;
     // Fire and forget; underlying service handles persistence & html lang
-    this.i18n.use(value);
+    void this.i18n.use(value);
   }
 
   protected toggleTheme(): void {

@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject, signal, computed, effect } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, signal, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface DeviceInfo {
@@ -15,10 +15,10 @@ export interface DeviceInfo {
 export class DeviceService {
   private readonly MOBILE_BREAKPOINT = 768;
   private readonly TABLET_BREAKPOINT = 1024;
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
   
   // Signal-based device info
-  private deviceInfoSignal = signal<DeviceInfo>(this.getDeviceInfo());
+  private readonly deviceInfoSignal = signal<DeviceInfo>(this.getDeviceInfo());
   
   // Public computed signals
   public deviceInfo = this.deviceInfoSignal.asReadonly();

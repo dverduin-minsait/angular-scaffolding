@@ -6,12 +6,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { signal } from '@angular/core';
 
 describe('ThemeControlsComponent Accessibility', () => {
-  let component: ThemeControlsComponent;
+  let _component: ThemeControlsComponent;
   let fixture: ComponentFixture<ThemeControlsComponent>;
   let mockThemeService: {
-    currentTheme: any;
-    isDarkMode: any;
-    useSystemPreference: any;
+    currentTheme: unknown;
+    isDarkMode: unknown;
+    useSystemPreference: unknown;
     setTheme: jest.Mock;
     toggleTheme: jest.Mock;
     setUseSystemPreference: jest.Mock;
@@ -73,7 +73,7 @@ describe('ThemeControlsComponent Accessibility', () => {
     translate.use('en');
 
     fixture = TestBed.createComponent(ThemeControlsComponent);
-    component = fixture.componentInstance;
+    _component = fixture.componentInstance;
     fixture.detectChanges();
   });
 

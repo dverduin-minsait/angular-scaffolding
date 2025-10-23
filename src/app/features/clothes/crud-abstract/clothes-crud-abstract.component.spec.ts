@@ -14,7 +14,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 // --- Mock Modal ---
 class MockModalRef<T = any> {
-  #closed: WritableSignal<{ data: T | undefined } | null> = signal(null);
+  readonly #closed: WritableSignal<{ data: T | undefined } | null> = signal(null);
   closed = this.#closed.asReadonly();
   close(data?: T) { this.#closed.set({ data }); }
 }
@@ -26,10 +26,10 @@ class MockModalService {
 // --- Injectable Mock Clothes API (mimics signals surface used by template) ---
 @Injectable()
 class MockClothesStore {
-  private _items = signal<ClothingItemApi[]>([]);
-  private _selected = signal<ClothingItemApi | null>(null);
-  private _loading = signal({ isLoading: false, operation: undefined as any });
-  private _error = signal<any>(null);
+  private readonly _items = signal<ClothingItemApi[]>([]);
+  private readonly _selected = signal<ClothingItemApi | null>(null);
+  private readonly _loading = signal({ isLoading: false, operation: undefined as any });
+  private readonly _error = signal<any>(null);
 
   // Expose like BaseApiService (signals invoked as functions)
   items = this._items.asReadonly();

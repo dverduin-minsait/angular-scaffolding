@@ -1,4 +1,4 @@
-import { InjectionToken, Pipe, PipeTransform, Inject, inject } from '@angular/core';
+import { InjectionToken, Pipe, PipeTransform, inject, signal } from '@angular/core';
 import { TranslationService } from '../core/services/translation.service';
 
 /** Default stub translation map used in unit tests. */
@@ -30,11 +30,10 @@ export const STUB_TRANSLATIONS = new InjectionToken<Record<string, string>>('STU
  */
 @Pipe({ name: 'translate', standalone: true })
 export class TranslateStubPipe implements PipeTransform {
-  private readonly map: Record<string,string>;
-  constructor(@Inject(STUB_TRANSLATIONS) provided?: Record<string,string>) {
-    this.map = provided ?? DEFAULT_TEST_TRANSLATIONS;
-  }
-  transform(value: string, _params?: any): string {
+  private readonly map: Record<string,string> =
+    inject<Record<string,string>>(STUB_TRANSLATIONS, { optional: true }) ?? DEFAULT_TEST_TRANSLATIONS;
+
+  transform(value: string, _params?: Record<string, unknown>): string {
     return this.map[value] ?? value;
   }
 }
@@ -42,19 +41,19 @@ export class TranslateStubPipe implements PipeTransform {
 /** Factory to build a light stub for TranslationService. */
 function buildTranslationService(map: Record<string, string>): Partial<TranslationService> {
   return {
-    currentLang: () => 'en',
+    currentLang: signal('en' as const),
     availableLangs: ['en','es','pt','ca','gl'],
     use: () => Promise.resolve(),
-    instant: (key: string, _params?: Record<string, any>) => map[key] ?? key,
-    translations: () => map
-  } as any;
+    instant: (key: string, _params?: Record<string, unknown>) => map[key] ?? key,
+    translations: signal(map)
+  };
 }
 
 /**
  * Provide a merged translations map (default + overrides) and a mocked TranslationService.
  * Usage: providers: [...provideStubTranslationService({ 'app.title': 'My Title' })]
  */
-export function provideStubTranslationService(overrides?: Record<string,string>) {
+export function provideStubTranslationService(overrides?: Record<string,string>): { provide: unknown; useValue?: unknown; useFactory?: () => Partial<TranslationService> }[] {
   const merged = { ...DEFAULT_TEST_TRANSLATIONS, ...(overrides || {}) };
   return [
     { provide: STUB_TRANSLATIONS, useValue: merged },

@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, computed, ChangeDetectionStrategy, OnDestroy, effect } from '@angular/core';
+import { Component, inject, input, signal, ChangeDetectionStrategy, OnDestroy, effect } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ export class Navbar implements OnDestroy {
   private readonly openGroupsSignal = signal<Set<string>>(new Set());
   
   // Hover timers for intent (desktop top-level groups)
-  private hoverTimers = new Map<string, any>();
+  private readonly hoverTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   // Desktop outside listeners for dropdown closing
   private desktopOutsideClickListener?: (event: Event) => void;
@@ -52,7 +52,7 @@ export class Navbar implements OnDestroy {
     this.router.events.subscribe(() => {
       const current = this.router.url;
       const ancestors: string[] = [];
-      const visit = (items: NavigationItem[], lineage: string[]) => {
+      const visit = (items: NavigationItem[], lineage: string[]): void => {
         for (const item of items) {
           if (this.isGroup(item)) visit(item.children, [...lineage, item.id]);
           else if (item.path === current) ancestors.push(...lineage);
@@ -99,7 +99,7 @@ export class Navbar implements OnDestroy {
     const group = this.findGroupById(id);
     if (!group) return [];
     const collected: string[] = [];
-    const walk = (items: NavigationItem[]) => {
+    const walk = (items: NavigationItem[]): void => {
       for (const i of items) {
         if (this.isGroup(i)) { collected.push(i.id); walk(i.children); }
       }
@@ -121,14 +121,14 @@ export class Navbar implements OnDestroy {
     const focusableSelector = `${groupToggleSelector}, ${linkSelector}`;
     const isGroupToggle = target.matches(groupToggleSelector);
 
-    const getSiblings = () => {
+    const getSiblings = (): HTMLElement[] => {
       const list = target.closest('ul');
       if (!list) return [] as HTMLElement[];
       return Array.from(list.querySelectorAll<HTMLElement>(`:scope > li ${focusableSelector}`));
     };
     const siblings = getSiblings();
     const idx = siblings.indexOf(target);
-    const focus = (el?: HTMLElement) => el?.focus();
+    const focus = (el?: HTMLElement): void => el?.focus();
 
     if (['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End','Escape'].includes(key)) {
       event.preventDefault();
@@ -175,7 +175,8 @@ export class Navbar implements OnDestroy {
   protected onGroupMouseEnter(id: string, depth: number): void {
     if (depth !== 0) return;
     if (!matchMedia || !matchMedia('(pointer:fine)').matches) return;
-    clearTimeout(this.hoverTimers.get(id));
+    const existingTimer = this.hoverTimers.get(id);
+    if (existingTimer) clearTimeout(existingTimer);
     const t = setTimeout(() => { if (!this.isGroupOpen(id)) this.toggleGroup(id); }, 120);
     this.hoverTimers.set(id, t);
   }
@@ -183,7 +184,8 @@ export class Navbar implements OnDestroy {
   protected onGroupMouseLeave(id: string, depth: number, event: MouseEvent): void {
     if (depth !== 0) return;
     if (!matchMedia || !matchMedia('(pointer:fine)').matches) return;
-    clearTimeout(this.hoverTimers.get(id));
+    const existingTimer = this.hoverTimers.get(id);
+    if (existingTimer) clearTimeout(existingTimer);
     const related = event.relatedTarget as HTMLElement | null;
     if (related && related.closest(`#grp-${id}`)) return; // moving into panel
     const t = setTimeout(() => { if (this.isGroupOpen(id)) this.toggleGroup(id); }, 300);
@@ -192,7 +194,7 @@ export class Navbar implements OnDestroy {
 
   ngOnDestroy(): void {
     this.removeDesktopOutsideListeners();
-    this.hoverTimers.forEach(t => clearTimeout(t));
+    this.hoverTimers.forEach(timer => clearTimeout(timer));
   }
 
   private addDesktopOutsideListeners(): void {

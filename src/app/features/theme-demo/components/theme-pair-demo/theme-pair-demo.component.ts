@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService, Theme } from '../../../../core/services/theme.service';
+import { ThemeService, Theme } from '../../../../core/services';
 
 @Component({
   selector: 'app-theme-pair-demo',

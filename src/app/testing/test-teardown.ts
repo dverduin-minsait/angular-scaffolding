@@ -7,10 +7,10 @@ import { ComponentFixture } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
 export interface DestroyFixtureOptions<T> {
-  component?: any; // Component instance that may implement ngOnDestroy
+  component?: unknown; // Component instance that may implement ngOnDestroy
   fixture?: ComponentFixture<T> | null;
   /** Subjects to complete so observers release references */
-  subjects?: Array<Subject<any> | { complete?: () => void; closed?: boolean }>;
+  subjects?: Array<Subject<unknown> | { complete?: () => void; closed?: boolean }>;
   /** Optional extra custom teardown callbacks */
   extraTeardowns?: Array<() => void>;
   /** Clear all Jest mocks after teardown (default true) */
@@ -23,7 +23,7 @@ export interface DestroyFixtureOptions<T> {
   maxFlushIterations?: number;
 }
 
-export function destroyFixtureWithTimers<T = any>(options: DestroyFixtureOptions<T>) {
+export function destroyFixtureWithTimers<T = unknown>(options: DestroyFixtureOptions<T>): void {
   const {
     component,
     fixture,
@@ -38,7 +38,8 @@ export function destroyFixtureWithTimers<T = any>(options: DestroyFixtureOptions
   try {
     // Invoke component destroy first so its own cleanup runs before we clear timers
     try {
-      component?.ngOnDestroy?.();
+      const componentWithDestroy = component as { ngOnDestroy?: () => void } | undefined;
+      componentWithDestroy?.ngOnDestroy?.();
     } catch { /* swallow to continue global cleanup */ }
 
     // Destroy fixture (idempotent) so Angular test harness releases resources
@@ -49,8 +50,9 @@ export function destroyFixtureWithTimers<T = any>(options: DestroyFixtureOptions
     // Complete provided subjects
     for (const subj of subjects) {
       try {
-        if (subj && (subj as any).complete && !(subj as any).closed) {
-          (subj as any).complete();
+        const subject = subj as { complete?: () => void; closed?: boolean };
+        if (subject && subject.complete && !subject.closed) {
+          subject.complete();
         }
       } catch { /* ignore subject completion errors */ }
     }
@@ -61,10 +63,11 @@ export function destroyFixtureWithTimers<T = any>(options: DestroyFixtureOptions
     }
 
     // Only attempt to flush pending timers if Jest fake timers are active
-    if (flushFakeTimers && (jest as any).isFakeTimers?.()) {
+    const jestWithTimers = jest as { isFakeTimers?: () => boolean; getTimerCount?: () => number };
+    if (flushFakeTimers && jestWithTimers.isFakeTimers?.()) {
       try {
         let iterations = 0;
-        while (iterations < maxFlushIterations && (jest as any).getTimerCount?.() > 0) {
+        while (iterations < maxFlushIterations && (jestWithTimers.getTimerCount?.() ?? 0) > 0) {
           jest.runOnlyPendingTimers();
           iterations++;
         }
@@ -83,6 +86,6 @@ export function destroyFixtureWithTimers<T = any>(options: DestroyFixtureOptions
 /**
  * Convenience wrapper when you only have component & fixture.
  */
-export function basicDestroy<T>(component: any, fixture: ComponentFixture<T> | null) {
+export function basicDestroy<T>(component: unknown, fixture: ComponentFixture<T> | null): void {
   destroyFixtureWithTimers({ component, fixture });
 }

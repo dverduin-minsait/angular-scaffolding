@@ -7,7 +7,6 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { LOCAL_STORAGE } from './core/tokens/local.storage.token';
 import { DOCUMENT, CommonModule } from '@angular/common';
-import { TranslationService } from './core/services/translation.service';
 import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
 import { Component as NgComponent } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -31,7 +30,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 class TestAppComponent {}
 
 describe('App Accessibility Integration', () => {
-  let component: TestAppComponent;
+  let _component: TestAppComponent;
   let fixture: ComponentFixture<TestAppComponent>;
 
   beforeEach(async () => {
@@ -46,7 +45,7 @@ describe('App Accessibility Integration', () => {
     class StubLanguageSwitcherComponent {}
 
     // Provide a lightweight stub translate pipe to satisfy template bindings without pulling full translation stack
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [TestAppComponent],
       providers: [
         {
@@ -96,7 +95,7 @@ describe('App Accessibility Integration', () => {
 
     // Create component in a fresh container
     fixture = TestBed.createComponent(TestAppComponent);
-    component = fixture.componentInstance;
+    _component = fixture.componentInstance;
     
     // Append to document body for proper DOM testing
     document.body.appendChild(fixture.nativeElement);

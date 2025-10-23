@@ -1,8 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LOCAL_STORAGE, StorageService } from '../tokens/local.storage.token';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { of, firstValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 export type SupportedLang = 'en' | 'es' | 'pt' | 'ca' | 'gl';
 
@@ -26,10 +25,15 @@ export class TranslationService {
     const stored = (this.storage.getItem(STORAGE_KEY) as SupportedLang | null);
     const browser = (this.translate?.getBrowserLang() as SupportedLang | undefined);
     const initial = stored && this.availableLangs.includes(stored) ? stored : (browser && this.availableLangs.includes(browser) ? browser : DEFAULT_LANG);
-    this.use(initial);
+    // Initialize language asynchronously
+    void this.initializeLanguage(initial);
   }
 
-  async use(lang: SupportedLang) {
+  private async initializeLanguage(lang: SupportedLang): Promise<void> {
+    await this.use(lang);
+  }
+
+  async use(lang: SupportedLang): Promise<void> {
     if (lang === this.currentLangSignal()) return;
     if (!this.availableLangs.includes(lang)) return;
     this.currentLangSignal.set(lang);
@@ -38,7 +42,7 @@ export class TranslationService {
       console.log(`TranslationService: switching to lang ${lang}`);
       await firstValueFrom(this.translate.use(lang));
       // Force load (and await) the 'app' namespace so downstream computeds see updated values
-      const res = await firstValueFrom(this.translate.get('app'));
+      const res = await firstValueFrom(this.translate.get('app')) as Record<string, string>;
       this.translations.set(res);
     }
     this.storage.setItem(STORAGE_KEY, lang);
@@ -48,7 +52,7 @@ export class TranslationService {
     }
   }
 
-  instant(key: string, interpolateParams?: Record<string, any>): string {
-    return this.translate?.instant(key, interpolateParams) ?? key;
+  instant(key: string, interpolateParams?: Record<string, unknown>): string {
+    return this.translate?.instant(key, interpolateParams) as string ?? key;
   }
 }

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, combineLatest, tap, switchMap, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, combineLatest, switchMap, of } from 'rxjs';
 import { GridLoaderService } from './grid-loader.service';
 
-export interface GridDataConfig<T = any> {
+export interface GridDataConfig<T = unknown> {
   /**
    * Data source - can be Observable, Promise, or static data
    */
@@ -24,7 +24,7 @@ export interface GridDataConfig<T = any> {
 })
 export class GridDataService {
   
-  constructor(private gridLoader: GridLoaderService) {}
+  private readonly gridLoader = inject(GridLoaderService);
 
   /**
    * Smart data loading that coordinates with grid loading
@@ -85,6 +85,6 @@ export class GridDataService {
     }
     
     // Assume it's an Observable
-    return source as Observable<T[]>;
+    return source;
   }
 }

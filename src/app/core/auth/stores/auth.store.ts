@@ -1,6 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { AuthSessionMeta, AuthStateSnapshot, UserProfile } from '../models/auth.models';
-import { ENVIRONMENT } from '../../../../environments/environment';
 
 // Central reactive auth store using Angular signals.
 // Tokens are kept ONLY in memory (Option B) and refresh token lives in HttpOnly cookie (handled by backend/IIS SSO).
@@ -19,35 +18,35 @@ export class AuthStore {
   readonly isAuthenticated = computed(() => this._status() === 'authenticated');
   readonly displayName = computed(() => this._user()?.displayName || this._user()?.username || '');
 
-  hasRole = (role: string) => !!this._user()?.roles.includes(role);
-  hasAnyRole = (roles: string[]) => roles.some(r => this.hasRole(r));
-  hasPermission = (perm: string) => !!this._user()?.permissions.includes(perm);
-  hasAllPermissions = (perms: string[]) => perms.every(p => this.hasPermission(p));
-  hasAnyPermission = (perms: string[]) => perms.some(p => this.hasPermission(p));
+  hasRole = (role: string): boolean => !!this._user()?.roles.includes(role);
+  hasAnyRole = (roles: string[]): boolean => roles.some(r => this.hasRole(r));
+  hasPermission = (perm: string): boolean => !!this._user()?.permissions.includes(perm);
+  hasAllPermissions = (perms: string[]): boolean => perms.every(p => this.hasPermission(p));
+  hasAnyPermission = (perms: string[]): boolean => perms.some(p => this.hasPermission(p));
 
   constructor() {}
 
-  setUnknown() {
+  setUnknown(): void {
     this._status.set('unknown');
     this._user.set(null);
     this._accessToken.set(null);
     this._meta.set(undefined);
   }
 
-  setUnauthenticated() {
+  setUnauthenticated(): void {
     this._status.set('unauthenticated');
     this._user.set(null);
     this._accessToken.set(null);
     this._meta.set(undefined);
   }
 
-  setRefreshing() {
+  setRefreshing(): void {
     if (this._status() === 'authenticated') {
       this._status.set('refreshing');
     }
   }
 
-  setAuthenticated(user: UserProfile, token: string, expiresInSeconds: number) {
+  setAuthenticated(user: UserProfile, token: string, expiresInSeconds: number): void {
     const now = Date.now();
     const meta: AuthSessionMeta = {
       accessTokenExpiresAt: now + (expiresInSeconds * 1000),
@@ -59,14 +58,14 @@ export class AuthStore {
     this._status.set('authenticated');
   }
 
-  patchUser(user: Partial<UserProfile>) {
+  patchUser(user: Partial<UserProfile>): void {
     const current = this._user();
     if (current) {
       this._user.set({ ...current, ...user });
     }
   }
 
-  clear() {
+  clear(): void {
     this.setUnauthenticated();
   }
 

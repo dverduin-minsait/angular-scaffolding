@@ -112,23 +112,24 @@ export class EntityStore<T extends { id: ID }, ID = string | number> {
     this._error.set(null);
     this._lastUpdated.set(null);
   }
-  setSelected(entity: T | null) { this._selected.set(entity); }
+  setSelected(entity: T | null): void { this._selected.set(entity); }
 
-  private upsert(entity: T | null) {
+  private upsert(entity: T | null): void {
     if (!entity) return;
     this._items.update(list => {
       const idx = list.findIndex(i => i.id === entity.id);
       return idx === -1 ? [...list, entity] : list.map(i => i.id === entity.id ? entity : i);
     });
   }
-  private setLoading(isLoading: boolean, operation?: LoadingState['operation']) {
+  private setLoading(isLoading: boolean, operation?: LoadingState['operation']): void {
     this._loading.set({ isLoading, operation });
   }
-  private clearError() { this._error.set(null); }
-  private captureError(err: any) {
+  private clearError(): void { this._error.set(null); }
+  private captureError(err: unknown): Observable<never> {
+    const error = err as { message?: string; code?: string };
     this._error.set({
-      message: err?.message || 'Unknown error',
-      code: err?.code,
+      message: error?.message || 'Unknown error',
+      code: error?.code,
       details: err,
       timestamp: Date.now()
     });

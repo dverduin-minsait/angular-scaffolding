@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService } from '../../../../core/services/theme.service';
+import { ThemeService } from '../../../../core/services';
 
 @Component({
   selector: 'app-theme-status',

@@ -2,8 +2,8 @@ import { Component, OnInit, signal, computed, inject, Injector, runInInjectionCo
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ClothingItemApi } from '../../../core/api/clothes/clothes';
-import { ResponsiveGridComponent, ResponsiveGridConfig } from '../../../shared/components/responsive-grid/responsive-grid.component';
-import { GridDataConfig } from '../../../core/services/grid-data.service';
+import { ResponsiveGridComponent, ResponsiveGridConfig } from '../../../shared/components';
+import { GridDataConfig } from '../../../core/services';
 import { MiniCurrencyPipe } from '../../../shared/pipes/mini-currency.pipe';
 import { effect } from '@angular/core';
 import { ModalService } from '../../../core/services/modal/modal.service';
@@ -12,6 +12,45 @@ import { ButtonDirective } from '../../../shared/directives';
 import { ClothesStore } from '../../../core/store/clothes/clothes.store';
 import { TranslationService } from '../../../core/services/translation.service';
 import { TranslatePipe } from '@ngx-translate/core';
+
+// AG Grid interface definitions for type safety
+interface AgGridValueFormatterParams {
+  value: unknown;
+}
+
+interface AgGridCellStyleParams {
+  value: unknown;
+}
+
+interface AgGridRowData {
+  data?: ClothingItemApi;
+}
+
+interface AgGridReadyParams {
+  api: AgGridApi; // AG Grid API instance
+}
+
+interface AgGridApi {
+  getColumn(field: string): AgGridColumn | null;
+  setColumnVisible(field: string, visible: boolean): void;
+}
+
+interface AgGridColumn {
+  isVisible(): boolean;
+}
+
+interface AgGridRowClickedEvent {
+  data?: ClothingItemApi;
+}
+
+interface ClothingFormData {
+  name: string;
+  brand: string;
+  price: number;
+  stock: number;
+  category: string;
+  season: string;
+}
 
 @Component({
   selector: 'app-clothes-crud-abstract',
@@ -22,16 +61,16 @@ import { TranslatePipe } from '@ngx-translate/core';
   styleUrls: ['./clothes-crud-abstract.component.scss']
 })
 export class ClothesCrudAbstractComponent implements OnInit {
-  private fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
   protected clothesStore = inject(ClothesStore);
-  private modal = inject(ModalService);
-  private i18n = inject(TranslationService);
+  private readonly modal = inject(ModalService);
+  private readonly i18n = inject(TranslationService);
   // Capture injector so we can safely create runtime effects in methods regardless of caller context (aids testability)
-  private injector = inject(Injector);
+  private readonly injector = inject(Injector);
 
   // Form for adding/editing items
   itemForm: FormGroup;
-  private gridApi: any;
+  private gridApi: AgGridApi | null = null;
   
   // Reactive column definitions (mirrors catalog strategy, reacts to translation changes if run-time language switches)
   private readonly columnDefs = computed(() => {
@@ -41,11 +80,11 @@ export class ClothesCrudAbstractComponent implements OnInit {
       { field: 'id', headerName: this.i18n.instant('app.clothes.crud.columns.id'), flex: 0.5, minWidth: 70 },
       { field: 'name', headerName: this.i18n.instant('app.clothes.crud.columns.name'), flex: 1.5, minWidth: 140 },
       { field: 'brand', headerName: this.i18n.instant('app.clothes.crud.columns.brand'), flex: 1, minWidth: 110 },
-      { field: 'price', headerName: this.i18n.instant('app.clothes.crud.columns.price'), flex: 0.8, minWidth: 100, valueFormatter: (p: any) => (typeof p.value === 'number' && !isNaN(p.value)) ? '$' + p.value.toFixed(2) : '$0.00' },
-      { field: 'stock', headerName: this.i18n.instant('app.clothes.crud.columns.stock'), flex: 0.6, minWidth: 90, cellStyle: (p: any) => ({ fontWeight: p.value <= 5 ? '600' : '400', color: p.value <= 5 ? 'var(--danger, #dc3545)' : 'inherit', textAlign: 'center' }) },
+      { field: 'price', headerName: this.i18n.instant('app.clothes.crud.columns.price'), flex: 0.8, minWidth: 100, valueFormatter: (p: AgGridValueFormatterParams) => (typeof p.value === 'number' && !isNaN(p.value)) ? '$' + p.value.toFixed(2) : '$0.00' },
+      { field: 'stock', headerName: this.i18n.instant('app.clothes.crud.columns.stock'), flex: 0.6, minWidth: 90, cellStyle: (p: AgGridCellStyleParams) => ({ fontWeight: (p.value as number) <= 5 ? '600' : '400', color: (p.value as number) <= 5 ? 'var(--danger, #dc3545)' : 'inherit', textAlign: 'center' }) },
       { field: 'category', headerName: this.i18n.instant('app.clothes.crud.columns.category'), flex: 1, minWidth: 120 },
       { field: 'season', headerName: this.i18n.instant('app.clothes.crud.columns.season'), flex: 0.8, minWidth: 100 },
-      { field: 'updatedAt', headerName: this.i18n.instant('app.clothes.crud.columns.updatedAt'), flex: 1, minWidth: 140, valueFormatter: (p: any) => p.value ? new Date(p.value).toLocaleDateString() : '' }
+      { field: 'updatedAt', headerName: this.i18n.instant('app.clothes.crud.columns.updatedAt'), flex: 1, minWidth: 140, valueFormatter: (p: AgGridValueFormatterParams) => p.value ? new Date(p.value as string).toLocaleDateString() : '' }
     ];
   });
 
@@ -56,9 +95,8 @@ export class ClothesCrudAbstractComponent implements OnInit {
     retryOnError: true,
     showErrorMessage: true,
     gridOptions: {
-      suppressPropertyNamesCheck: true,
-      getRowId: (p: any) => p?.data ? String(p.data.id) : undefined,
-      onRowClicked: (event: any) => this.onRowClicked(event)
+      getRowId: (p: AgGridRowData) => p?.data ? String(p.data.id) : undefined,
+      onRowClicked: (event: AgGridRowClickedEvent) => this.onRowClicked(event)
     }
   }));
   
@@ -84,10 +122,11 @@ export class ClothesCrudAbstractComponent implements OnInit {
     updatedAt: true
   });
 
-  private columnVisibilityEffect = effect(() => {
+  private readonly columnVisibilityEffect = effect(() => {
     const vis = this.columnVisibility();
     if (!this.gridApi) return;
     Object.entries(vis).forEach(([field, visible]) => {
+      if(!this.gridApi) return;
       const col = this.gridApi.getColumn(field);
       if (col && col.isVisible && col.isVisible() !== visible) {
         this.gridApi.setColumnVisible(field, visible);
@@ -96,6 +135,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
   });
 
   constructor() {
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.itemForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       brand: ['', [Validators.required, Validators.minLength(2)]],
@@ -108,9 +148,10 @@ export class ClothesCrudAbstractComponent implements OnInit {
       description: [''],
       imageUrl: ['']
     });
+    /* eslint-enable @typescript-eslint/unbound-method */
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.refreshData();
   }
 
@@ -123,10 +164,10 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   onSubmit(): void {
     if (this.itemForm.valid) {
-      const formData = this.itemForm.value;
+      const formData = this.itemForm.value as ClothingFormData;
       
       const now = new Date().toISOString();
-      const itemData = {
+      const itemData: Partial<ClothingItemApi> = {
         ...formData,
         updatedAt: now,
         ...(this.isEditing() ? {} : { createdAt: now })
@@ -276,13 +317,13 @@ export class ClothesCrudAbstractComponent implements OnInit {
     return '';
   }
 
-  onGridReady(params: any) {
+  onGridReady(params: AgGridReadyParams): void {
     this.gridApi = params.api;
   }
 
-  onRowClicked(event: any) {
+  onRowClicked(event: AgGridRowClickedEvent): void {
     if (event?.data) {
-      this.editItem(event.data as ClothingItemApi);
+      this.editItem(event.data);
     }
   }
 
@@ -292,7 +333,7 @@ export class ClothesCrudAbstractComponent implements OnInit {
     return '$0.00';
   };
 
-  toggleColumn(field: string) {
+  toggleColumn(field: string): void {
     this.columnVisibility.update(v => ({ ...v, [field]: !v[field] }));
   }
 

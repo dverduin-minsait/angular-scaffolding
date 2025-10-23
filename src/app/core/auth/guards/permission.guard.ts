@@ -12,7 +12,7 @@ export function permissionGuard(required: string | string[]): CanMatchFn {
     const user = store.user();
     const status = store.status();
 
-    // eslint-disable-next-line no-console
+     
     console.log('[PermissionGuard] evaluating', { 
       required: requiredList, 
       status, 
@@ -22,33 +22,33 @@ export function permissionGuard(required: string | string[]): CanMatchFn {
 
     // First check: must be authenticated
     if (status !== 'authenticated' || !store.isAuthenticated()) {
-      // eslint-disable-next-line no-console
+       
       console.log('[PermissionGuard] not authenticated (status:', status, ') -> redirect login');
-      router.navigate(['/auth/login']);
+      void router.navigate(['/auth/login']);
       return false;
     }
     
     // Second check: user must exist
     if (!user) {
-      // eslint-disable-next-line no-console
+       
       console.log('[PermissionGuard] user null after auth -> redirect login');
-      router.navigate(['/auth/login']);
+      void router.navigate(['/auth/login']);
       return false;
     }
     
     // Third check: user must have required permissions
     const hasAllPermissions = requiredList.every(p => user.permissions.includes(p));
     if (!hasAllPermissions) {
-      // eslint-disable-next-line no-console
+       
       console.log('[PermissionGuard] missing permissions -> forbidden', { 
         required: requiredList, 
         userPerms: user.permissions 
       });
-      router.navigate(['/forbidden']);
+      void router.navigate(['/forbidden']);
       return false;
     }
     
-    // eslint-disable-next-line no-console
+     
     console.log('[PermissionGuard] permission check passed');
     return true;
   };

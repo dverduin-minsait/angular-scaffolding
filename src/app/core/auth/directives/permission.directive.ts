@@ -26,7 +26,7 @@ export class HasPermissionDirective {
     });
   }
 
-  private render() {
+  private render(): void {
     this.vcr.clear();
     if (this.shouldShow()) {
       this.vcr.createEmbeddedView(this.tpl);

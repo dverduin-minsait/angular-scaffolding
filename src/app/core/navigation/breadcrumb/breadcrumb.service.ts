@@ -51,7 +51,7 @@ export class BreadcrumbService {
     return acc.map((b, idx, arr) => ({ ...b, isLast: idx === arr.length - 1 }));
   }
 
-  private walk(node: ActivatedRouteSnapshot | null, acc: BreadcrumbItem[], parentUrl: string) {
+  private walk(node: ActivatedRouteSnapshot | null, acc: BreadcrumbItem[], parentUrl: string): void {
     if (!node) return;
 
     const pathSegment = node.url.map(u => u.path).join('/');

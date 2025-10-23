@@ -13,7 +13,7 @@ export const LOCAL_STORAGE = new InjectionToken<StorageService>('LOCAL_STORAGE')
 
 export const localStorageProvider: Provider = {
   provide: LOCAL_STORAGE,
-  useFactory: (platformId: Object) => {
+  useFactory: (platformId: object) => {
     if (isPlatformBrowser(platformId)) {
       return {
         getItem: (key: string) => localStorage.getItem(key),

@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal, computed, ChangeDetectionStrategy, OnDestroy, effect } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy, OnDestroy, effect } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -20,7 +20,7 @@ export class Sidebar implements OnDestroy {
   readonly isOpen = input.required<boolean>();
   readonly items = input.required<NavigationItem[]>();
   readonly title = input<string>('');
-  readonly close = output<void>();
+  readonly sidebarClose = output<void>();
 
   // Group state management
   private readonly openGroupsSignal = signal<Set<string>>(new Set());
@@ -51,7 +51,7 @@ export class Sidebar implements OnDestroy {
     this.router.events.subscribe(() => {
       const current = this.router.url;
       const ancestors: string[] = [];
-      const visit = (items: NavigationItem[], lineage: string[]) => {
+      const visit = (items: NavigationItem[], lineage: string[]): void => {
         for (const item of items) {
           if (this.isGroup(item)) visit(item.children, [...lineage, item.id]);
           else if (item.path === current) ancestors.push(...lineage);
@@ -84,7 +84,7 @@ export class Sidebar implements OnDestroy {
   }
 
   protected closeSidebar(): void {
-    this.close.emit();
+    this.sidebarClose.emit();
   }
 
   protected onLinkClick(): void {
@@ -107,7 +107,7 @@ export class Sidebar implements OnDestroy {
     const group = this.findGroupById(id);
     if (!group) return [];
     const collected: string[] = [];
-    const walk = (items: NavigationItem[]) => {
+    const walk = (items: NavigationItem[]): void => {
       for (const i of items) {
         if (this.isGroup(i)) { collected.push(i.id); walk(i.children); }
       }
@@ -125,14 +125,14 @@ export class Sidebar implements OnDestroy {
     const focusableSelector = `${groupToggleSelector}, ${linkSelector}`;
     const isGroupToggle = target.matches(groupToggleSelector);
 
-    const getSiblings = () => {
+    const getSiblings = (): HTMLElement[] => {
       const list = target.closest('ul');
       if (!list) return [] as HTMLElement[];
       return Array.from(list.querySelectorAll<HTMLElement>(`:scope > li ${focusableSelector}`));
     };
     const siblings = getSiblings();
     const idx = siblings.indexOf(target);
-    const focus = (el?: HTMLElement) => el?.focus();
+    const focus = (el?: HTMLElement): void => el?.focus();
 
     if (['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End','Escape'].includes(key)) {
       event.preventDefault();

@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom';
 import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless';
 import { accessibilityMatchers } from './app/testing/accessibility-test-utils';
+import { toHaveNoViolations } from 'jest-axe';
 
 setupZonelessTestEnv();
 
-// Extend Jest with custom accessibility matchers
+// Extend Jest with custom accessibility matchers and axe-core
 expect.extend(accessibilityMatchers);
+expect.extend(toHaveNoViolations as never);
 
 // Suppress noisy jsdom CSS parse errors (e.g., from @layer rules Angular CDK injects)
 // We only filter the specific, known benign pattern to avoid masking real issues.
@@ -19,8 +21,8 @@ const SUPPRESSED_ERROR_PATTERNS = [
 const shouldSuppress = ((process.env as Record<string, string | undefined>)["SUPPRESS_CSS_PARSE_LOGS"] ?? 'true') !== 'false';
 
 if (shouldSuppress) {
-	// eslint-disable-next-line no-console
-	console.error = (...args: any[]) => {
+	 
+	console.error = (...args: unknown[]) => {
 		const first = args[0];
 		const message = first instanceof Error ? first.message : String(first);
 		if (SUPPRESSED_ERROR_PATTERNS.some(r => r.test(message))) {

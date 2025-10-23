@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ButtonDirective } from '../../../shared/directives/button.directive';
+import { ButtonDirective } from '../../../shared/directives';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 export interface ConfirmDialogData {
@@ -28,8 +28,8 @@ export interface ConfirmDialogData {
 })
 export class ConfirmDialogComponent {
   data = inject<ConfirmDialogData>(DIALOG_DATA);
-  private ref = inject<DialogRef<boolean>>(DialogRef as any);
+  private readonly ref = inject(DialogRef) as DialogRef<boolean>;
 
-  onConfirm() { this.ref.close(true); }
-  onCancel() { this.ref.close(false); }
+  onConfirm(): void { this.ref.close(true); }
+  onCancel(): void { this.ref.close(false); }
 }

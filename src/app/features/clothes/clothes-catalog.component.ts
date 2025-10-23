@@ -1,25 +1,9 @@
 import { Component, OnInit, inject, PLATFORM_ID, signal, Signal, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DeviceService, GridDataConfig } from '../../core/services';
-import { ResponsiveGridComponent } from '../../shared/components';
+import { ResponsiveGridComponent, ResponsiveGridConfig } from '../../shared/components';
 import { ClothesService, ClothingItem } from './clothes.service';
 import { TranslatePipe } from '@ngx-translate/core';
-
-// Import the config interface directly
-interface ResponsiveGridConfig {
-  gridOptions?: any;
-  columnDefs?: any[];
-  mobileView?: 'table' | 'list' | 'cards';
-  showLoadingSpinner?: boolean;
-  loadingMessage?: string;
-  showErrorMessage?: boolean;
-  retryOnError?: boolean;
-}
-
-// Type definitions for grid configuration
-interface GridReadyEvent {
-  api: any;
-}
 
 @Component({
   selector: 'app-clothes-catalog',
@@ -30,9 +14,9 @@ interface GridReadyEvent {
   styleUrls: ['./clothes-catalog.component.scss']
 })
 export class ClothesCatalogComponent implements OnInit {
-  private platformId = inject(PLATFORM_ID);
+  private readonly platformId = inject(PLATFORM_ID);
   protected deviceService = inject(DeviceService);
-  private clothesService = inject(ClothesService);
+  private readonly clothesService = inject(ClothesService);
 
   // Signals for state management  
   clothingData = signal<ClothingItem[]>([]);
@@ -53,13 +37,13 @@ export class ClothesCatalogComponent implements OnInit {
     retryOnError: true
   }));
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.loadClothingData();
     }
   }
 
-  private loadClothingData() {
+  private loadClothingData(): void {
     // Simulate async data loading (as it would come from an API)
     setTimeout(() => {
       const data = this.clothesService.getData();

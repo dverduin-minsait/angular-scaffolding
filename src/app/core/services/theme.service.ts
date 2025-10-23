@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { ThemeUtils } from '../utils/theme.utils';
 
-export type Theme = 'light' | 'dark' | 'light2' | 'dark2' | 'system' | string;
+export type Theme = 'light' | 'dark' | 'light2' | 'dark2' | 'system';
 
 export interface CustomTheme {
   name: string;
@@ -44,12 +44,12 @@ export class ThemeService {
   private readonly storage = inject(LOCAL_STORAGE);
   
   // Theme state signals
-  private _currentTheme = signal<Theme>('system');
-  private _isDarkMode = signal<boolean>(false);
-  private _autoSwitch = signal<boolean>(false);
-  private _useSystemPreference = signal<boolean>(true);
-  private _customThemes = signal<CustomTheme[]>([]);
-  private _highContrast = signal<boolean>(false);
+  private readonly _currentTheme = signal<Theme>('system');
+  private readonly _isDarkMode = signal<boolean>(false);
+  private readonly _autoSwitch = signal<boolean>(false);
+  private readonly _useSystemPreference = signal<boolean>(true);
+  private readonly _customThemes = signal<CustomTheme[]>([]);
+  private readonly _highContrast = signal<boolean>(false);
   
   // Public readonly signals
   readonly currentTheme = this._currentTheme.asReadonly();
@@ -151,7 +151,7 @@ export class ThemeService {
           if (this.storage?.getItem(STORAGE_KEYS.HIGH_CONTRAST) === null) {
             this._highContrast.set(highContrastQuery.matches);
           }
-        } catch (error) {
+        } catch {
           // Ignore storage errors and use default
         }
         
@@ -161,7 +161,7 @@ export class ThemeService {
             if (this.storage?.getItem(STORAGE_KEYS.HIGH_CONTRAST) === null) {
               this._highContrast.set(e.matches);
             }
-          } catch (error) {
+          } catch {
             // Ignore storage errors
           }
         });
@@ -235,7 +235,7 @@ export class ThemeService {
         console.warn('Failed to save theme to localStorage:', error);
       }
       this._storageWriteTimeout = null;
-    }, this.STORAGE_WRITE_DEBOUNCE_MS) as any;
+    }, this.STORAGE_WRITE_DEBOUNCE_MS) as unknown as number;
   }
   
   /**
@@ -282,7 +282,7 @@ export class ThemeService {
     try {
       const stored = this.storage?.getItem(STORAGE_KEYS.CUSTOM_THEMES);
       if (stored) {
-        return JSON.parse(stored);
+        return JSON.parse(stored) as CustomTheme[];
       }
     } catch (error) {
       console.warn('Failed to load custom themes from localStorage:', error);
@@ -424,7 +424,7 @@ export class ThemeService {
       clearInterval(this._autoSwitchInterval);
     }
     
-    const updateThemeByTime = () => {
+    const updateThemeByTime = (): void => {
       const hour = new Date().getHours();
       const isDayTime = hour >= AUTO_SWITCH_CONFIG.DAY_START_HOUR && hour < AUTO_SWITCH_CONFIG.DAY_END_HOUR;
       
@@ -443,7 +443,7 @@ export class ThemeService {
     updateThemeByTime();
     
     // Update every hour and store the interval ID
-    this._autoSwitchInterval = setInterval(updateThemeByTime, AUTO_SWITCH_CONFIG.CHECK_INTERVAL_MS) as any;
+    this._autoSwitchInterval = setInterval(updateThemeByTime, AUTO_SWITCH_CONFIG.CHECK_INTERVAL_MS) as unknown as number;
   }
   
   /**

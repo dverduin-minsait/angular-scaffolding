@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, finalize, throwError, tap, map, of } from 'rxjs';
+import { Observable, catchError, finalize, throwError, tap, map } from 'rxjs';
 
 // =============================================================================
 // EXAMPLE 2: FUNCTIONAL COMPOSITION APPROACH
@@ -22,7 +22,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
   message: string;
   code: string;
-  details?: any;
+  details?: unknown;
   timestamp: number;
 }
 
@@ -62,6 +62,7 @@ export interface ApiConfig {
 /**
  * Creates a signal store for API state management
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createApiStore<T>() {
   // Private signals
   const _items = signal<T[]>([]);
@@ -83,17 +84,17 @@ export function createApiStore<T>() {
   const isReady = computed(() => !loading().isLoading && error() === null);
 
   // State mutation functions
-  const setItems = (newItems: T[]) => {
+  const setItems = (newItems: T[]): void => {
     _items.set(newItems);
     _lastUpdated.set(Date.now());
   };
 
-  const addItem = (item: T) => {
+  const addItem = (item: T): void => {
     _items.update(items => [...items, item]);
     _lastUpdated.set(Date.now());
   };
 
-  const updateItem = (updatedItem: T, idKey: keyof T = 'id' as keyof T) => {
+  const updateItem = (updatedItem: T, idKey: keyof T = 'id' as keyof T): void => {
     _items.update(items =>
       items.map(item =>
         item[idKey] === updatedItem[idKey] ? updatedItem : item
@@ -105,7 +106,7 @@ export function createApiStore<T>() {
     _lastUpdated.set(Date.now());
   };
 
-  const removeItem = (id: any, idKey: keyof T = 'id' as keyof T) => {
+  const removeItem = (id: T[keyof T], idKey: keyof T = 'id' as keyof T): void => {
     _items.update(items => items.filter(item => item[idKey] !== id));
     if (_selectedItem()?.[idKey] === id) {
       _selectedItem.set(null);
@@ -113,23 +114,23 @@ export function createApiStore<T>() {
     _lastUpdated.set(Date.now());
   };
 
-  const setSelectedItem = (item: T | null) => {
+  const setSelectedItem = (item: T | null): void => {
     _selectedItem.set(item);
   };
 
-  const setLoading = (isLoading: boolean, operation?: LoadingState['operation']) => {
+  const setLoading = (isLoading: boolean, operation?: LoadingState['operation']): void => {
     _loading.set({ isLoading, operation });
   };
 
-  const setError = (error: ApiError | null) => {
+  const setError = (error: ApiError | null): void => {
     _error.set(error);
   };
 
-  const clearError = () => {
+  const clearError = (): void => {
     _error.set(null);
   };
 
-  const clear = () => {
+  const clear = (): void => {
     _items.set([]);
     _selectedItem.set(null);
     _error.set(null);
@@ -164,10 +165,11 @@ export function createApiStore<T>() {
  */
 export function createErrorHandler<T>(store: ReturnType<typeof createApiStore<T>>) {
   return (error: HttpErrorResponse): Observable<never> => {
+    const errorBody = error.error as unknown;
     const apiError: ApiError = {
-      message: error.error?.message || error.message || 'An unexpected error occurred',
-      code: error.error?.code || error.status?.toString() || 'UNKNOWN',
-      details: error.error,
+      message: (errorBody as { message?: string })?.message || error.message || 'An unexpected error occurred',
+      code: (errorBody as { code?: string })?.code || error.status?.toString() || 'UNKNOWN',
+      details: errorBody,
       timestamp: Date.now()
     };
 
@@ -290,7 +292,7 @@ export function createDelete<T>(
     return http.delete<ApiResponse<void>>(`${config.baseUrl}/${config.resourceName}/${id}`)
       .pipe(
         tap(() => {
-          store.removeItem(id, idKey);
+          store.removeItem(id as T[keyof T], idKey);
         }),
         map(() => void 0),
         catchError(createErrorHandler(store)),
@@ -302,6 +304,7 @@ export function createDelete<T>(
 /**
  * Factory function to create a complete API service using functional composition
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createApiService<T>(config: ApiConfig) {
   const http = inject(HttpClient);
   const store = createApiStore<T>();
@@ -314,7 +317,7 @@ export function createApiService<T>(config: ApiConfig) {
   const remove = createDelete(http, config, store);
 
   // Utility functions
-  const refresh = () => getAll();
+  const refresh = (): Observable<T[]> => getAll();
   
   return {
     // State (readonly signals)
@@ -357,7 +360,7 @@ export interface ClothingItemApi {
 })
 export class ClothesFunctionalApiService {
   // Create the base API service using composition
-  private api = createApiService<ClothingItemApi>({
+  private readonly api = createApiService<ClothingItemApi>({
     baseUrl: 'http://localhost:3000',
     resourceName: 'clothes'
   });
@@ -401,7 +404,7 @@ export class ClothesFunctionalApiService {
   });
 
   // Custom methods using the composable approach
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   getByCategory(category: string): Observable<ClothingItemApi[]> {
     this.api.setLoading(true, 'read');
@@ -443,6 +446,7 @@ export const clothesApiConfig: ApiConfig = {
 };
 
 // Export individual composable functions for direct use
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useClothesApi() {
   const http = inject(HttpClient);
   const store = createApiStore<ClothingItemApi>();

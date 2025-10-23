@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { App } from './app';
-import { TranslationService } from './core/services/translation.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/components/header/header.component';
@@ -52,7 +51,7 @@ describe('App', () => {
     mockLocalStorage.getItem.mockClear();
     mockLocalStorage.setItem.mockClear();
     
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [App, TranslateModule.forRoot({ fallbackLang: 'en' })],
       providers: [
         provideZonelessChangeDetection(),

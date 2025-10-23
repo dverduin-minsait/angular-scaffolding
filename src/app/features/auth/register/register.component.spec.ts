@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { RegisterComponent } from './register.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 

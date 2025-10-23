@@ -1,0 +1,67 @@
+import { Component, signal, computed, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+/**
+ * <%= classify(name) %>Component
+ * 
+ * @description <%= description || 'Component description' %>
+ * @author Generated via template
+ * @since <%= new Date().toISOString().split('T')[0] %>
+ */
+@Component({
+  selector: 'app-<%= dasherize(name) %>',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="<%= dasherize(name) %>">
+      <h2>{{ title() }}</h2>
+      <p>{{ description() }}</p>
+      
+      <button 
+        type="button"
+        aria-label="<%= classify(name) %> action"
+        (click)="handleAction()"
+        [disabled]="isLoading()">
+        {{ buttonText() }}
+      </button>
+      
+      @if (isLoading()) {
+        <div role="status" aria-live="polite">
+          Loading...
+        </div>
+      }
+    </div>
+  `,
+  styleUrl: './<%= dasherize(name) %>.component.scss'
+})
+export class <%= classify(name) %>Component {
+  // Public readonly signals for template
+  readonly title = signal('<%= classify(name) %> Component');
+  readonly description = signal('This is a generated component following project conventions.');
+  
+  // Private signals for internal state
+  private readonly _isLoading = signal(false);
+  private readonly _actionCount = signal(0);
+  
+  // Computed signals with descriptive names
+  readonly isLoading = this._isLoading.asReadonly();
+  readonly buttonText = computed(() => 
+    this._isLoading() ? 'Processing...' : `Action (${this._actionCount()})`
+  );
+
+  /**
+   * Handles the primary action for this component
+   * @description Updates loading state and increments action counter
+   */
+  handleAction(): void {
+    if (this._isLoading()) return;
+    
+    this._isLoading.set(true);
+    this._actionCount.update(count => count + 1);
+    
+    // Simulate async operation
+    setTimeout(() => {
+      this._isLoading.set(false);
+    }, 1000);
+  }
+}

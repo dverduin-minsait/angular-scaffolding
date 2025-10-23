@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
 import { ConfigPanelComponent } from './config-panel.component';
 import { ThemeService, ThemeConfig } from '../../../../core/services/theme.service';
 

@@ -32,7 +32,7 @@ describe('BreadcrumbService', () => {
   let service: BreadcrumbService;
   let router: Router;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideRouter(routes)]
     });

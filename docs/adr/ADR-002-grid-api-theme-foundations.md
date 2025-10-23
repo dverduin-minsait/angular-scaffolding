@@ -81,6 +81,23 @@ Responsibilities:
 - Number of duplicated HTTP patterns should approach zero
 - Theming switch latency: near-instant (no flash longer than a frame)
 
+## Bundle Size Analysis (Updated October 2025)
+**AG Grid Community Impact:**
+- **Bundle Size**: 1102.73kB uncompressed (ag-grid-community v34.2.0)
+- **Transfer Size**: 245kB gzipped (77% compression ratio)
+- **Loading Strategy**: Lazy-loaded via GridLoaderService (does not impact initial bundle)
+- **Trigger**: Only loads when user navigates to grid-enabled features
+- **Performance**: Acceptable for enterprise data grid functionality
+
+**Findings:**
+- ✅ **Properly lazy-loaded** - zero impact on initial bundle (59kB)
+- ✅ **Expected size** - normal for full-featured enterprise grid library
+- ✅ **Good compression** - 77% size reduction with gzip
+- ✅ **Justified footprint** - provides sorting, filtering, editing, export, themes
+- ✅ **Well-architected** - dynamic import pattern working as designed
+
+**Verdict**: Bundle size is acceptable and expected for AG Grid Community. The lazy loading strategy ensures no performance impact on application startup.
+
 ## Migration / Rollout
 1. Introduce Theme Service scaffolding + tokens file
 2. Implement GridWrapper for first feature adopting AG Grid

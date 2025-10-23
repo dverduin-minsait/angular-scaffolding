@@ -4,11 +4,13 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jest",
-      "@testing-library/jest-dom"
+      "@testing-library/jest-dom",
+      "jest-axe"
     ]
   },
   "include": [
     "src/**/*.ts",
-    "src/setup-jest.ts"
+    "src/setup-jest.ts",
+    "src/jest-axe.d.ts"
   ]
 }
