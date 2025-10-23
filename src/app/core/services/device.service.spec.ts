@@ -1,11 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { DeviceService } from './device.service';
 import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 
 describe('DeviceService', () => {
-  function setWidth(width: number) {
-    // @ts-ignore
+  function setWidth(width: number): void {
     window.innerWidth = width;
     window.dispatchEvent(new Event('resize'));
   }

@@ -1,0 +1,96 @@
+import { TestBed } from '@angular/core/testing';
+import { render, screen, fireEvent } from '@testing-library/angular';
+import { axeAccessibilityTest } from '../../../testing/axe-testing';
+import { <%= classify(name) %>Component } from './<%= dasherize(name) %>.component';
+
+/**
+ * Test Suite for <%= classify(name) %>Component
+ * Follows project testing conventions with accessibility testing
+ */
+describe('<%= classify(name) %>Component', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [<%= classify(name) %>Component]
+    }).compileComponents();
+  });
+
+  it('should create component successfully', async () => {
+    const { fixture } = await render(<%= classify(name) %>Component);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should render component title and description', async () => {
+    await render(<%= classify(name) %>Component);
+    
+    expect(screen.getByText('<%= classify(name) %> Component')).toBeInTheDocument();
+    expect(screen.getByText(/This is a generated component/)).toBeInTheDocument();
+  });
+
+  it('should handle action button click', async () => {
+    await render(<%= classify(name) %>Component);
+    
+    const button = screen.getByRole('button', { name: /<%= classify(name) %> action/ });
+    expect(button).toBeInTheDocument();
+    expect(button).not.toBeDisabled();
+    
+    // Initial state
+    expect(button.textContent?.trim()).toBe('Action (0)');
+    
+    // Click action
+    fireEvent.click(button);
+    
+    // Should show loading state
+    expect(screen.getByRole('status')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(button).toBeDisabled();
+    expect(button.textContent?.trim()).toBe('Processing...');
+  });
+
+  it('should increment action counter', async () => {
+    const { fixture } = await render(<%= classify(name) %>Component);
+    
+    const button = screen.getByRole('button', { name: /<%= classify(name) %> action/ });
+    
+    // Wait for any initial loading to complete
+    await new Promise(resolve => setTimeout(resolve, 1100));
+    fixture.detectChanges();
+    
+    // Click multiple times (after loading states complete)
+    fireEvent.click(button);
+    await new Promise(resolve => setTimeout(resolve, 1100));
+    fixture.detectChanges();
+    
+    expect(button.textContent?.trim()).toBe('Action (1)');
+  });
+
+  it('should meet WCAG AA accessibility standards', async () => {
+    const { container } = await render(<%= classify(name) %>Component);
+    await axeAccessibilityTest(container);
+  });
+
+  it('should have proper ARIA attributes', async () => {
+    await render(<%= classify(name) %>Component);
+    
+    const button = screen.getByRole('button');
+    expect(button).toHaveAttribute('aria-label', '<%= classify(name) %> action');
+    
+    // Check for loading status accessibility
+    fireEvent.click(button);
+    const status = screen.getByRole('status');
+    expect(status).toHaveAttribute('aria-live', 'polite');
+  });
+
+  it('should handle keyboard navigation', async () => {
+    await render(<%= classify(name) %>Component);
+    
+    const button = screen.getByRole('button');
+    
+    // Tab to button
+    button.focus();
+    expect(button).toHaveFocus();
+    
+    // Enter or Space should trigger action
+    fireEvent.keyDown(button, { key: 'Enter' });
+    expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+});

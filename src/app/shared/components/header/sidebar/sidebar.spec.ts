@@ -1,15 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
 
 import { Sidebar } from './sidebar';
 import { NavigationItem } from '../navigation.types';
-import { provideStubTranslationService } from '../../../../testing/i18n-testing';
 import { WINDOW_DOCUMENT } from '../../../../core/tokens/document.token';
 
 // Mock components for routing tests
@@ -303,7 +301,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when close button is clicked', () => {
-      const spy = jest.spyOn(component['close'], 'emit');
+      const spy = jest.spyOn(component['sidebarClose'], 'emit');
       const closeButton = fixture.debugElement.query(By.css('.close-button'));
       
       closeButton.nativeElement.click();
@@ -312,7 +310,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when overlay is clicked', () => {
-      const spy = jest.spyOn(component['close'], 'emit');
+      const spy = jest.spyOn(component['sidebarClose'], 'emit');
       const overlay = fixture.debugElement.query(By.css('.sidebar-overlay'));
       
       overlay.nativeElement.click();
@@ -321,7 +319,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when navigation link is clicked', () => {
-      const spy = jest.spyOn(component['close'], 'emit');
+      const spy = jest.spyOn(component['sidebarClose'], 'emit');
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
       dashboardLink.nativeElement.click();
@@ -394,7 +392,7 @@ describe('Sidebar', () => {
     });
 
     it('should handle ArrowDown navigation', () => {
-      const nav = fixture.debugElement.query(By.css('.sidebar-nav'));
+      const _nav = fixture.debugElement.query(By.css('.sidebar-nav'));
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       const clothesToggle = fixture.debugElement.query(By.css('button[aria-controls="mside-clothes"]'));
       

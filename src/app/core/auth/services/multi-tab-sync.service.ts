@@ -11,7 +11,7 @@ export class MultiTabSyncService {
   private readonly auth = inject(AuthService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly destroyRef = inject(DestroyRef);
-  private channel: BroadcastChannel | null = null;
+  private readonly channel: BroadcastChannel | null = null;
   private lastStatus = this.store.status();
   private lastUserId = this.store.user()?.id;
 
@@ -23,22 +23,22 @@ export class MultiTabSyncService {
 
     if (typeof BroadcastChannel !== 'undefined') {
       this.channel = new BroadcastChannel('app-auth-channel');
-      const handler = (ev: MessageEvent) => this.onMessage(ev.data);
+      const handler = (ev: MessageEvent): void => void this.onMessage(ev.data);
       this.channel.addEventListener('message', handler);
       // Cleanup channel
-      this.destroyRef.onDestroy(() => {
+      this.destroyRef.onDestroy((): void => {
         try { this.channel?.removeEventListener('message', handler); } catch {}
         try { this.channel?.close(); } catch {}
       });
     } else if (typeof window !== 'undefined') {
       // Fallback using storage events (older browsers)
-      storageListener = (e: StorageEvent) => {
+      storageListener = (e: StorageEvent): void => {
         if (e.key === 'app-auth-event' && e.newValue) {
-          try { this.onMessage(JSON.parse(e.newValue)); } catch { /* ignore */ }
+          try { void this.onMessage(JSON.parse(e.newValue)); } catch { /* ignore */ }
         }
       };
       window.addEventListener('storage', storageListener);
-      this.destroyRef.onDestroy(() => {
+      this.destroyRef.onDestroy((): void => {
         if (storageListener) window.removeEventListener('storage', storageListener);
       });
     }
@@ -55,7 +55,7 @@ export class MultiTabSyncService {
     });
   }
 
-  private broadcast(payload: unknown) {
+  private broadcast(payload: unknown): void {
     if (!isPlatformBrowser(this.platformId)) return;
     if (this.channel) {
       this.channel.postMessage(payload);
@@ -64,9 +64,10 @@ export class MultiTabSyncService {
     }
   }
 
-  private async onMessage(msg: any) {
+  private async onMessage(msg: unknown): Promise<void> {
     if (!msg || typeof msg !== 'object') return;
-    switch (msg.type) {
+    const message = msg as { type?: string };
+    switch (message.type) {
       case 'authenticated':
         // If we're unauthenticated try to refresh silently to align
         if (!this.store.isAuthenticated()) {

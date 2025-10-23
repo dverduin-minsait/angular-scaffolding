@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { AuthStore } from '../../../core/auth/stores/auth.store';
+import { AuthStore } from '../../../core/auth';
 
 @Component({
   selector: 'app-splash',

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ButtonDirective } from '../../../shared/directives/button.directive';
+import { ButtonDirective } from '../../../shared/directives';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -17,8 +17,8 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   
   // Custom validators
-  private passwordStrengthValidator = (control: AbstractControl): ValidationErrors | null => {
-    const password = control.value || '';
+  private readonly passwordStrengthValidator = (control: AbstractControl): ValidationErrors | null => {
+    const password = (control.value as string) || '';
     const hasMinLength = password.length >= 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -33,9 +33,9 @@ export class RegisterComponent {
     return null;
   };
   
-  private passwordMatchValidator = (form: AbstractControl): ValidationErrors | null => {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
+  private readonly passwordMatchValidator = (form: AbstractControl): ValidationErrors | null => {
+    const password = form.get('password')?.value as string;
+    const confirmPassword = form.get('confirmPassword')?.value as string;
     
     if (password && confirmPassword && password !== confirmPassword) {
       return { passwordMismatch: true };
@@ -68,19 +68,19 @@ export class RegisterComponent {
   ];
 
   // Reactive form with built-in validators
+  /* eslint-disable @typescript-eslint/unbound-method */
   protected readonly registerForm: FormGroup = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    gender: ['', Validators.required],
-    language: ['', Validators.required],
+    gender: ['', [Validators.required]],
+    language: ['', [Validators.required]],
     observations: [''], // Optional field - no validators
-    password: ['', [Validators.required, this.passwordStrengthValidator]],
-    confirmPassword: ['', Validators.required],
-    agreedToTerms: [false, Validators.requiredTrue]
-  }, { 
-    validators: this.passwordMatchValidator 
-  });
+    password: ['', [Validators.required, this.passwordStrengthValidator.bind(this)]],
+    confirmPassword: ['', [Validators.required]],
+    agreedToTerms: [false, [Validators.requiredTrue]]
+  }, { validators: [this.passwordMatchValidator.bind(this)] });
+  /* eslint-enable @typescript-eslint/unbound-method */
   
   // UI state signals
   protected readonly isSubmitting = signal(false);
@@ -97,9 +97,10 @@ export class RegisterComponent {
   });
   
   // Computed signals based on reactive form values
-  protected readonly currentPassword = computed(() => 
-    this.formValues()?.password || ''
-  );
+  protected readonly currentPassword = computed(() => {
+    const values = this.formValues() as { password?: string } | null;
+    return values?.password || '';
+  });
   
   protected readonly hasMinLength = computed(() => this.currentPassword().length >= 8);
   protected readonly hasUpperCase = computed(() => /[A-Z]/.test(this.currentPassword()));
@@ -252,7 +253,9 @@ export class RegisterComponent {
     const radioGroup = target.closest('.radio-options');
     if (!radioGroup) return;
 
-    const radioButtons = Array.from(radioGroup.querySelectorAll('input[type="radio"]')) as HTMLInputElement[];
+    const radioButtons: HTMLInputElement[] = [
+      ...radioGroup.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+    ];
     const currentIndex = radioButtons.indexOf(target);
     
     let nextIndex: number;

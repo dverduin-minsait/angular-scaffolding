@@ -31,38 +31,39 @@ export abstract class AbstractApiClient<T, ID = string | number> implements Crud
 
   getAll(): Observable<T[]> {
     return this.http.get<T[]>(`${this.baseUrl}/${this.resourceName}`).pipe(
-      catchError(e => this.handleError(e))
+      catchError((e: HttpErrorResponse) => this.handleError(e))
     );
   }
 
   getById(id: ID): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${this.resourceName}/${id}`).pipe(
-      catchError(e => this.handleError(e))
+    return this.http.get<T>(`${this.baseUrl}/${this.resourceName}/${String(id)}`).pipe(
+      catchError((e: HttpErrorResponse) => this.handleError(e))
     );
   }
 
   create(payload: Partial<T>): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}/${this.resourceName}`, payload).pipe(
-      catchError(e => this.handleError(e))
+      catchError((e: HttpErrorResponse) => this.handleError(e))
     );
   }
 
   update(id: ID, payload: Partial<T>): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${this.resourceName}/${id}`, payload).pipe(
-      catchError(e => this.handleError(e))
+    return this.http.put<T>(`${this.baseUrl}/${this.resourceName}/${String(id)}`, payload).pipe(
+      catchError((e: HttpErrorResponse) => this.handleError(e))
     );
   }
 
   delete(id: ID): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${this.resourceName}/${id}`).pipe(
-      catchError(e => this.handleError(e))
+    return this.http.delete<void>(`${this.baseUrl}/${this.resourceName}/${String(id)}`).pipe(
+      catchError((e: HttpErrorResponse) => this.handleError(e))
     );
   }
 
   protected handleError(error: HttpErrorResponse): Observable<never> {
+    const errorResponse = error.error as { message?: string; code?: string } | undefined;
     const apiError: ApiError = {
-      message: error.error?.message || error.message || 'Unexpected error',
-      code: error.error?.code || (error.status ? String(error.status) : 'UNKNOWN'),
+      message: errorResponse?.message || error.message || 'Unexpected error',
+      code: errorResponse?.code || (error.status ? String(error.status) : 'UNKNOWN'),
       details: error.error,
       timestamp: Date.now()
     };
@@ -71,5 +72,5 @@ export abstract class AbstractApiClient<T, ID = string | number> implements Crud
 }
 
 // Backwards compatibility re-export (deprecated). Remove once all usages migrated.
-// eslint-disable-next-line @typescript-eslint/naming-convention
+ 
 export const BaseApiService = AbstractApiClient;

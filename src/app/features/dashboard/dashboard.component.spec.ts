@@ -122,16 +122,20 @@ describe('DashboardComponent', () => {
 
   it('should use signals for reactive data', () => {
     // Access the component's protected properties through type assertion
-    const componentAny = component as any;
+    const componentWithSignals = component as unknown as {
+      title: () => string;
+      description: () => string;
+      stats: () => Array<{ label: string; value: string }>;
+    };
     
-    expect(componentAny.title).toBeDefined();
-    expect(componentAny.description).toBeDefined();
-    expect(componentAny.stats).toBeDefined();
+    expect(componentWithSignals.title).toBeDefined();
+    expect(componentWithSignals.description).toBeDefined();
+    expect(componentWithSignals.stats).toBeDefined();
     
     // Verify signals return expected values
-    expect(componentAny.title()).toBe('Dashboard');
-    expect(componentAny.description()).toBe('Welcome to your Angular 20 Architecture Blueprint dashboard!');
-    expect(componentAny.stats()).toHaveLength(4);
+    expect(componentWithSignals.title()).toBe('Dashboard');
+    expect(componentWithSignals.description()).toBe('Welcome to your Angular 20 Architecture Blueprint dashboard!');
+    expect(componentWithSignals.stats()).toHaveLength(4);
   });
 
   it('should be a presentation component without user interactions', () => {

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, effect, input, InputSignal } from '@angular/core';
+import { Directive, ElementRef, effect, input, InputSignal, inject } from '@angular/core';
 
 /**
  * Semantic button directive applying standardized classes for variants & sizes.
@@ -10,12 +10,13 @@ import { Directive, ElementRef, effect, input, InputSignal } from '@angular/core
   standalone: true
 })
 export class ButtonDirective {
-  private host!: HTMLElement;
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly host: HTMLElement;
 
   variant: InputSignal<'primary' | 'secondary' | 'ghost' | 'danger'> = input<'primary' | 'secondary' | 'ghost' | 'danger'>('primary');
   size: InputSignal<'sm' | 'md' | 'lg'> = input<'sm' | 'md' | 'lg'>('md');
 
-  constructor(private elementRef: ElementRef<HTMLElement>) {
+  constructor() {
     this.host = this.elementRef.nativeElement as HTMLElement;
     this.host.classList.add('btn');
 
@@ -27,7 +28,7 @@ export class ButtonDirective {
       const size = this.size();
 
       // Maps for alias classes expected by legacy/tests
-      const variantAlias = (v: string) => `btn-${v}`; // primary -> btn-primary
+      const variantAlias = (v: string): string => `btn-${v}`; // primary -> btn-primary
       const sizeAliasMap: Record<string,string> = { sm: 'btn-small', md: 'btn-medium', lg: 'btn-large' };
 
       // Remove previously applied variant classes

@@ -30,7 +30,7 @@ describe('ColorPaletteComponent', () => {
     component = fixture.componentInstance;
 
     // Mock getComputedStyle
-    global.getComputedStyle = jest.fn(() => mockGetComputedStyle as any);
+    global.getComputedStyle = jest.fn(() => mockGetComputedStyle as unknown as CSSStyleDeclaration);
   });
 
   beforeEach(() => {
@@ -134,7 +134,7 @@ describe('ColorPaletteComponent', () => {
     const mockGetComputedStyleEmpty = {
       getPropertyValue: jest.fn(() => '')
     };
-    global.getComputedStyle = jest.fn(() => mockGetComputedStyleEmpty as any);
+    global.getComputedStyle = jest.fn(() => mockGetComputedStyleEmpty as unknown as CSSStyleDeclaration);
 
     const computed = component['getComputedColor']('undefined-color');
     expect(computed).toBe('Not defined');
@@ -148,7 +148,7 @@ describe('ColorPaletteComponent', () => {
     
     // Check that color swatches have background-color property set
     // Angular sets style properties directly, so we check the CSS property
-    colorSwatches.forEach((swatch, index) => {
+    colorSwatches.forEach((swatch, _index) => {
       const element = swatch as HTMLElement;
       // Since styles are set by Angular directly, we just verify the elements exist
       // and have the expected classes

@@ -43,7 +43,7 @@ src/app/
 
 ### Architectural principles
 1. **Feature-first**: `src/app/features/<domain>` contains entry points + UI for that domain
-2. **Core stability**: `src/app/core` for cross-cutting infrastructure (tokens, BaseApiService)
+2. **Core stability**: `src/app/core` for cross-cutting infrastructure (tokens, AbstractApiClient)
 3. **Shared purity**: Only generic stateless UI. No business rules
 4. **Injection tokens**: In `core/tokens` for dependency inversion
 5. **Lazy loading**: All feature routes are lazy (mandatory)
@@ -123,10 +123,10 @@ export class MyComponentComponent {
 ### Create a service
 ```typescript
 import { Injectable, signal } from '@angular/core';
-import { BaseApiService } from '../core/api/base-api.service';
+import { AbstractApiClient } from '../core/api/abstract-api.service';
 
 @Injectable({ providedIn: 'root' })
-export class MyService extends BaseApiService {
+export class MyService extends AbstractApiClient {
   private readonly _state = signal(initialState);
   readonly state = this._state.asReadonly();
   
@@ -195,7 +195,7 @@ describe('MyComponent', () => {
 
 ### DO ✅
 - **Signals + computed**: For reactive UI state
-- **BaseApiService**: Extend for HTTP, don't duplicate logic
+- **AbstractApiClient**: Extend for HTTP, don't duplicate logic
 - **`isPlatformBrowser`**: For browser-specific code in SSR
 - **`takeUntilDestroyed()`**: If you MUST subscribe manually
 - **Semantic HTML**: `<button>`, `<nav>`, `<main>`, aria-labels

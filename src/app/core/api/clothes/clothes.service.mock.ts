@@ -4,22 +4,22 @@ import { CrudDataSource } from "../abstract-api.service";
 import { ClothingItemApi } from "./clothes";
 
 export class ClothesApiMock implements CrudDataSource<ClothingItemApi, number> {
-  private mockUtil = ApiMockUtil<ClothingItemApi>([clotheItemMock]);
+  private readonly mockUtil = ApiMockUtil<ClothingItemApi>([clotheItemMock]);
   
-  getAll() {
+  getAll(): Observable<ClothingItemApi[]> {
     return this.mockUtil.getAll();
   }
-  getById(id: number) {
+  getById(id: number): Observable<ClothingItemApi | null> {
     return this.mockUtil.getById(id);
   }
-  create(payload: Partial<ClothingItemApi>) {
+  create(payload: Partial<ClothingItemApi>): Observable<ClothingItemApi> {
     return this.mockUtil.create(payload);
   }
   update(id: number, payload: Partial<ClothingItemApi>): Observable<ClothingItemApi> {
     return this.mockUtil.update(id, payload) as Observable<ClothingItemApi>;
   }
-  delete(id: number) {
-    return this.mockUtil.delete(id) as Observable<void>;
+  delete(id: number): Observable<void> {
+    return this.mockUtil.delete(id);
   }
 }
 

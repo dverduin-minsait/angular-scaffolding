@@ -49,9 +49,11 @@ describe('RegisterComponent - Accessibility', () => {
           alreadyHaveAccount: 'Already have an account?',
           signIn: 'Sign in',
           passwordStrengthTexts: {
+            none: 'No password entered',
             veryWeak: 'Very weak',
+            weak: 'Weak',
             good: 'Good',
-            strong: 'Strong',
+            strong: 'Strong'
           }
         }
       }
@@ -246,7 +248,7 @@ describe('RegisterComponent - Accessibility', () => {
   });
 
   describe('Keyboard Navigation', () => {
-    it('should support proper tab order', async () => {
+    it('should support proper tab order', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       const focusableElements = compiled.querySelectorAll(
         'input, select, textarea, button, a[href]'
@@ -263,7 +265,7 @@ describe('RegisterComponent - Accessibility', () => {
 
     it('should support radio button keyboard navigation', () => {
       const compiled = fixture.nativeElement as HTMLElement;
-      const radioGroup = compiled.querySelector('[role="radiogroup"]') as HTMLElement;
+      const _radioGroup = compiled.querySelector('[role="radiogroup"]') as HTMLElement;
       const maleRadio = compiled.querySelector('#gender-male') as HTMLInputElement;
       const femaleRadio = compiled.querySelector('#gender-female') as HTMLInputElement;
       
@@ -315,7 +317,7 @@ describe('RegisterComponent - Accessibility', () => {
 
   describe('Screen Reader Compatibility', () => {
     it('should have proper live regions', () => {
-      const compiled = fixture.nativeElement as HTMLElement;
+      const _compiled = fixture.nativeElement as HTMLElement;
       
       // Test password strength live region
       const strengthTest = AccessibilityTestUtils.testLiveRegion(fixture, '.strength-text');
@@ -382,9 +384,9 @@ describe('RegisterComponent - Accessibility', () => {
       const touchElements = compiled.querySelectorAll('button, input, select, textarea, a');
       
       touchElements.forEach(element => {
-        const styles = window.getComputedStyle(element);
+        const _styles = window.getComputedStyle(element);
         // Touch targets should be at least 44x44px
-        const minSize = 44;
+        const _minSize = 44;
         
         // This is a simplified check - real tests would measure computed dimensions
         expect(element.tagName).toBeTruthy();

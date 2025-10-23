@@ -1,4 +1,5 @@
-import { Injectable, Injector, effect, inject, runInInjectionContext, DestroyRef } from '@angular/core';
+import { Injectable, Injector, effect, inject, runInInjectionContext, DestroyRef, PLATFORM_ID, EffectRef } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { AuthStore } from '../stores/auth.store';
@@ -15,6 +16,7 @@ export class AuthService {
   private readonly store = inject(AuthStore);
   private readonly injector = inject(Injector);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   private refreshInFlight: Promise<void> | null = null;
 
@@ -23,14 +25,22 @@ export class AuthService {
 
   /** Attempt silent init of session (used at app start). */
   async initializeSession(): Promise<void> {
-    // eslint-disable-next-line no-console
+     
     console.log('[AuthService] initializeSession starting');
+    
+    // Skip auth initialization during SSR - set unauthenticated state
+    if (!isPlatformBrowser(this.platformId)) {
+       
+      console.log('[AuthService] SSR detected - skipping auth initialization');
+      this.store.setUnauthenticated();
+      return;
+    }
     
     try {
       // Call /auth/refresh to get an access token if refresh cookie valid.
       const refreshResp = await this.tryRefresh();
       if (refreshResp) {
-        // eslint-disable-next-line no-console
+         
         console.log('[AuthService] initializeSession completed via refresh');
         return; // store already updated in tryRefresh
       }
@@ -38,16 +48,16 @@ export class AuthService {
       // If refresh not available maybe we can call /auth/me for IIS integrated user (SSO) returning implicit session
       const me = await this.tryMeImplicit();
       if (me) {
-        // eslint-disable-next-line no-console
+         
         console.log('[AuthService] initializeSession completed via SSO');
         return; // store updated
       }
 
-      // eslint-disable-next-line no-console
+       
       console.log('[AuthService] initializeSession failed - setting unauthenticated');
       this.store.setUnauthenticated();
     } catch (e) {
-      // eslint-disable-next-line no-console
+       
       console.log('[AuthService] initializeSession error', e);
       this.store.setUnauthenticated();
     }
@@ -122,7 +132,7 @@ export class AuthService {
     const resp = await this.performRefresh();
     if (!resp) return false;
     // Optionally fetch /me if user not included
-    let user = resp.user as UserProfile | undefined;
+    let user = resp.user;
     if (!user) {
       const me = await this.fetchMeSafe();
       if (me) user = me;
@@ -146,9 +156,9 @@ export class AuthService {
   }
 
   /** Schedules a proactive refresh shortly before expiry. Call once at bootstrap. */
-  scheduleProactiveRefresh() {
-    let pendingTimer: any;
-    const setupEffect = () => effect(() => {
+  scheduleProactiveRefresh(): void {
+    let pendingTimer: ReturnType<typeof setTimeout> | null = null;
+    const setupEffect = (): EffectRef => effect(() => {
       if (pendingTimer) {
         clearTimeout(pendingTimer);
         pendingTimer = null;
@@ -159,7 +169,7 @@ export class AuthService {
       const lead = 45_000;
       const delay = Math.max(5_000, ms - lead);
       pendingTimer = setTimeout(() => {
-        this.refreshAccessToken();
+        void this.refreshAccessToken();
       }, delay);
     });
     runInInjectionContext(this.injector, setupEffect);

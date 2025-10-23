@@ -10,6 +10,18 @@ import { AccessibilityTestUtils } from '../../../testing/accessibility-test-util
 @Component({ template: '<p>Mock Dashboard</p>' })
 class MockDashboardComponent { }
 
+// Helper function for type-safe DOM queries
+function getCompiledElement(fixture: ComponentFixture<ForbiddenComponent>): HTMLElement {
+  return fixture.nativeElement as HTMLElement;
+}
+
+function queryElement<T extends HTMLElement = HTMLElement>(
+  fixture: ComponentFixture<ForbiddenComponent>, 
+  selector: string
+): T | null {
+  return getCompiledElement(fixture).querySelector(selector);
+}
+
 describe('ForbiddenComponent Accessibility', () => {
   let component: ForbiddenComponent;
   let fixture: ComponentFixture<ForbiddenComponent>;
@@ -32,9 +44,10 @@ describe('ForbiddenComponent Accessibility', () => {
 
   describe('WCAG 2.1 AA Compliance', () => {
     it('should have accessible semantic structure', () => {
-      const section = fixture.nativeElement.querySelector('section');
-      const heading = fixture.nativeElement.querySelector('h1');
-      const link = fixture.nativeElement.querySelector('a[routerLink]');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const section = compiled.querySelector('section') as HTMLElement;
+      const heading = compiled.querySelector('h1') as HTMLElement;
+      const link = compiled.querySelector('a[routerLink]') as HTMLElement;
 
       expect(section).toBeTruthy();
       expect(heading).toBeTruthy();
@@ -43,8 +56,9 @@ describe('ForbiddenComponent Accessibility', () => {
     });
 
     it('should meet ARIA requirements', () => {
-      const section = fixture.nativeElement.querySelector('section');
-      const heading = fixture.nativeElement.querySelector('#forbidden-title');
+      const compiled = fixture.nativeElement as HTMLElement;
+      const section = compiled.querySelector('section') as HTMLElement;
+      const heading = compiled.querySelector('#forbidden-title') as HTMLElement;
 
       expect(section.getAttribute('aria-labelledby')).toBe('forbidden-title');
       expect(heading.id).toBe('forbidden-title');
@@ -60,18 +74,18 @@ describe('ForbiddenComponent Accessibility', () => {
     });
 
     it('should support screen readers', () => {
-      const heading = fixture.nativeElement.querySelector('h1');
-      const section = fixture.nativeElement.querySelector('section');
-      const link = fixture.nativeElement.querySelector('a');
+      const heading = queryElement(fixture, 'h1');
+      const section = queryElement(fixture, 'section');
+      const link = queryElement(fixture, 'a');
 
       // Heading should announce the error state
-      expect(heading.textContent.trim()).toBe('Access Denied');
+      expect(heading?.textContent?.trim()).toBe('Access Denied');
       
       // Section should be properly labeled
-      expect(section.getAttribute('aria-labelledby')).toBe(heading.id);
+      expect(section?.getAttribute('aria-labelledby')).toBe(heading?.id);
       
       // Link should have descriptive text
-      expect(link.textContent.trim()).toBe('Return to dashboard');
+      expect(link?.textContent?.trim()).toBe('Return to dashboard');
     });
   });
 

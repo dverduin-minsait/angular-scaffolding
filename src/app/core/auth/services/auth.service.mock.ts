@@ -60,8 +60,8 @@ export class AuthServiceMock {
   }
 
   /** Mock session initialization - instantly authenticates with default user */
-  async initializeSession(): Promise<void> {
-    // eslint-disable-next-line no-console
+  initializeSession(): Promise<void> {
+     
     console.log('[AuthServiceMock] initializeSession starting');
     
     const mockUser = this.getDefaultUser();
@@ -69,47 +69,50 @@ export class AuthServiceMock {
     
     this.store.setAuthenticated(mockUser, mockToken, 3600); // 1 hour
     
-    // eslint-disable-next-line no-console
+     
     console.log('[AuthServiceMock] Mock authentication completed', { 
       user: mockUser.username, 
       permissions: mockUser.permissions 
     });
+    return Promise.resolve();
   }
 
   /** Mock login - validates against predefined users */
-  async login(credentials: LoginCredentials): Promise<void> {
-    // eslint-disable-next-line no-console
+  login(credentials: LoginCredentials): Promise<void> {
+     
     console.log('[AuthServiceMock] Mock login attempt', { username: credentials.username });
     
     const result = this.simulateLogin(credentials.username, credentials.password);
     if (result.success && result.user && result.token) {
       this.store.setAuthenticated(result.user, result.token, 3600);
-      // eslint-disable-next-line no-console
+       
       console.log('[AuthServiceMock] Mock login successful', { user: result.user.username });
+      return Promise.resolve();
     } else {
-      // eslint-disable-next-line no-console
+       
       console.log('[AuthServiceMock] Mock login failed - invalid credentials');
       throw new Error('Invalid credentials');
     }
   }
 
   /** Mock logout - just clears the store */
-  async logout(): Promise<void> {
-    // eslint-disable-next-line no-console
+  logout(): Promise<void> {
+     
     console.log('[AuthServiceMock] Mock logout');
     this.store.clear();
+    return Promise.resolve();
   }
 
   /** Mock refresh - returns current state */
-  async refreshAccessToken(): Promise<boolean> {
-    // eslint-disable-next-line no-console
+  refreshAccessToken(): Promise<boolean> {
+     
     console.log('[AuthServiceMock] Mock refresh token');
-    return this.store.isAuthenticated();
+    return Promise.resolve(this.store.isAuthenticated());
   }
 
   /** Mock proactive refresh scheduling - no-op in mock */
   scheduleProactiveRefresh(): void {
-    // eslint-disable-next-line no-console
+     
     console.log('[AuthServiceMock] Mock proactive refresh scheduled (no-op)');
   }
 }

@@ -11,24 +11,24 @@ let refreshInFlight = false;
 const refreshSubject = new Subject<boolean>();
 
 // Test helper to reset internal state (not used in production code paths)
-export function __resetAuthInterceptorTestState() {
+export function __resetAuthInterceptorTestState(): void {
   refreshInFlight = false;
-  // Complete current subject subscribers then replace with a new subject
-  (refreshSubject as any).observers?.forEach((o: any) => {});
+  // Reset the refresh state for testing
 }
 
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
   const store = inject(AuthStore);
   const service = inject(AuthService);
 
-  const withAuth = (r: HttpRequest<unknown>) => {
+  const withAuth = (r: HttpRequest<unknown>): HttpRequest<unknown> => {
     const t = store.accessToken();
     return t ? r.clone({ setHeaders: { Authorization: `Bearer ${t}` } }) : r;
   };
 
   return next(withAuth(req)).pipe(
-    catchError(err => {
-      if (err.status !== 401) return throwError(() => err);
+    catchError((err: unknown) => {
+      const httpError = err as { status?: number };
+      if (httpError.status !== 401) return throwError(() => err);
 
       // If not authenticated no point refreshing
       if (!store.isAuthenticated()) {

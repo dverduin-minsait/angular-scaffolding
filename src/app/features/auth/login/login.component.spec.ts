@@ -6,7 +6,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 class AuthServiceMock {
-  login() { return Promise.resolve(); }
+  login(): Promise<void> { return Promise.resolve(); }
 }
 
 describe('LoginComponent', () => {

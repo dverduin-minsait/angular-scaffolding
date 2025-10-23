@@ -43,7 +43,7 @@ export const appConfig: ApplicationConfig = {
     }),
     // Initialize multi-tab sync (constructor side-effects)
     provideAppInitializer(() => {
-      const sync = inject(MultiTabSyncService);
+      const _sync = inject(MultiTabSyncService);
       return Promise.resolve();
     }),
     ...ENVIRONMENT.PROVIDERS,
@@ -85,6 +85,6 @@ function safeLocalStorageGet(key: string): string | undefined {
 
 function detectBrowserLang(supported: string[]): string | undefined {
   if (typeof navigator === 'undefined') return undefined; // SSR guard
-  const candidates = [navigator.language, ...(navigator.languages || [])].filter(Boolean) as string[];
+  const candidates = [navigator.language, ...(navigator.languages || [])].filter(Boolean);
   return candidates.map(l => l.slice(0, 2)).find(l => supported.includes(l));
 }

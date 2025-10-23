@@ -1,9 +1,9 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonDirective } from '../../../shared/directives/button.directive';
+import { ButtonDirective } from '../../../shared/directives';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../core/auth/services/auth.service';
+import { AuthService } from '../../../core/auth';
 
 @Component({
   selector: 'app-login',
@@ -126,13 +126,13 @@ export class LoginComponent {
     
     this.isSubmitting.set(true);
     const creds = { username: this.formData().email, password: this.formData().password };
-    this.auth.login(creds)
+    void this.auth.login(creds)
       .then(() => {
         const params = new URLSearchParams(location.search);
         const returnUrl = params.get('returnUrl') || '/dashboard';
-        this.router.navigateByUrl(returnUrl);
+        return this.router.navigateByUrl(returnUrl);
       })
-      .catch(err => {
+      .catch((err: Error) => {
         this.submitError.set(err?.message || 'Login failed');
       })
       .finally(() => this.isSubmitting.set(false));

@@ -18,13 +18,13 @@ export interface SuppressConsoleConfig {
 
 function matcherFactory(patterns: (RegExp | string)[] | undefined) {
   if (!patterns || !patterns.length) return () => false;
-  return (firstArg: any) => {
+  return (firstArg: unknown) => {
     if (typeof firstArg !== 'string') return false;
     return patterns.some(p => p instanceof RegExp ? p.test(firstArg) : firstArg.includes(p));
   };
 }
 
-export function suppressConsole(cfg: SuppressConsoleConfig) {
+export function suppressConsole(cfg: SuppressConsoleConfig): () => void {
   const shouldSuppressLog = matcherFactory(cfg.log);
   const shouldSuppressError = matcherFactory(cfg.error);
   const shouldSuppressWarn = matcherFactory(cfg.warn);
@@ -33,20 +33,20 @@ export function suppressConsole(cfg: SuppressConsoleConfig) {
   const originalError = console.error;
   const originalWarn = console.warn;
 
-  const logSpy = jest.spyOn(console, 'log').mockImplementation(((...args: any[]) => {
+  const logSpy = jest.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressLog(args[0])) return;
-    return (originalLog as any)(...args);
-  }) as any);
-  const errorSpy = jest.spyOn(console, 'error').mockImplementation(((...args: any[]) => {
+    void originalLog(...args);
+  });
+  const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressError(args[0])) return;
-    return (originalError as any)(...args);
-  }) as any);
-  const warnSpy = jest.spyOn(console, 'warn').mockImplementation(((...args: any[]) => {
+    void originalError(...args);
+  });
+  const warnSpy = jest.spyOn(console, 'warn').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressWarn(args[0])) return;
-    return (originalWarn as any)(...args);
-  }) as any);
+    void originalWarn(...args);
+  });
 
-  return function restore() {
+  return function restore(): void {
     logSpy.mockRestore();
     errorSpy.mockRestore();
     warnSpy.mockRestore();
@@ -54,7 +54,7 @@ export function suppressConsole(cfg: SuppressConsoleConfig) {
 }
 
 // Convenience preset for Clothes CRUD component noisy logs
-export function suppressClothesCrudConsole() {
+export function suppressClothesCrudConsole(): () => void {
   return suppressConsole({
     log: [
       /✅ Data loaded successfully/,

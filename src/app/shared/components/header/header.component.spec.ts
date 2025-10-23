@@ -18,9 +18,9 @@ class TestMockLoginComponent { }
 // Mock ThemeService
 class MockThemeService {
   private _isDarkMode = false;
-  isDarkMode() { return this._isDarkMode; }
-  getThemeIcon() { return this._isDarkMode ? '☀️' : '🌙'; }
-  toggleTheme() { this._isDarkMode = !this._isDarkMode; }
+  isDarkMode(): boolean { return this._isDarkMode; }
+  getThemeIcon(): string { return this._isDarkMode ? '☀️' : '🌙'; }
+  toggleTheme(): void { this._isDarkMode = !this._isDarkMode; }
 }
 
 describe('HeaderComponent', () => {

@@ -7,6 +7,18 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AccessibilityTestUtils } from '../../../testing/accessibility-test-utils';
 import { FormsModule } from '@angular/forms';
 
+// Helper functions for type-safe DOM queries
+function getCompiledElement(fixture: ComponentFixture<LoginComponent>): HTMLElement {
+  return fixture.nativeElement as HTMLElement;
+}
+
+function queryElement<T extends HTMLElement = HTMLElement>(
+  fixture: ComponentFixture<LoginComponent>, 
+  selector: string
+): T | null {
+  return getCompiledElement(fixture).querySelector(selector);
+}
+
 describe('LoginComponent Accessibility', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
@@ -40,23 +52,23 @@ describe('LoginComponent Accessibility', () => {
     });
 
     it('should have proper form landmark', () => {
-      const form = fixture.nativeElement.querySelector('form');
-      expect(form.getAttribute('aria-labelledby')).toBe('login-title');
-      expect(form.hasAttribute('novalidate')).toBeTruthy();
+      const form = queryElement<HTMLFormElement>(fixture, 'form');
+      expect(form?.getAttribute('aria-labelledby')).toBe('login-title');
+      expect(form?.hasAttribute('novalidate')).toBeTruthy();
     });
 
     it('should announce validation errors', async () => {
       // Trigger form submission to generate errors
-      const submitButton = fixture.nativeElement.querySelector('button[type="submit"]');
-      submitButton.click();
+      const submitButton = queryElement<HTMLButtonElement>(fixture, 'button[type="submit"]');
+      submitButton?.click();
       fixture.detectChanges();
 
       // Wait for async validation
       await fixture.whenStable();
       fixture.detectChanges();
 
-      const emailError = fixture.nativeElement.querySelector('#email-error');
-      const passwordError = fixture.nativeElement.querySelector('#password-error');
+      const emailError = queryElement(fixture, '#email-error');
+      const passwordError = queryElement(fixture, '#password-error');
 
       if (emailError) {
         expect(emailError.getAttribute('role')).toBe('alert');

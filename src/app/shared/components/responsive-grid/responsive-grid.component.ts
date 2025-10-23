@@ -1,10 +1,8 @@
 import { 
   Component, 
   ChangeDetectionStrategy,
-  OnInit,
   OnDestroy,
   ViewChild,
-  ComponentRef,
   inject,
   PLATFORM_ID,
   signal,
@@ -19,15 +17,15 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { DeviceService } from '../../../core/services/device.service';
-import { GridLoaderService } from '../../../core/services/grid-loader.service';
-import { GridDataService, GridDataConfig } from '../../../core/services/grid-data.service';
+import { DeviceService } from '../../../core/services';
+import { GridLoaderService } from '../../../core/services';
+import { GridDataService, GridDataConfig } from '../../../core/services';
 
 //#region Interfaces
 export interface ResponsiveGridConfig {
   // ag-Grid configuration (for desktop/tablet)
-  gridOptions?: any;
-  columnDefs?: any[];
+  gridOptions?: GridOptions;
+  columnDefs?: unknown[];
   
   // Mobile fallback configuration
   mobileView?: 'table' | 'list' | 'cards';
@@ -40,6 +38,36 @@ export interface ResponsiveGridConfig {
   showErrorMessage?: boolean;
   retryOnError?: boolean;
 }
+
+interface GridOptions {
+  [key: string]: unknown;
+}
+
+interface GridApi {
+  setGridOption: (option: string, value: unknown) => void;
+  sizeColumnsToFit: () => void;
+  destroy: () => void;
+  isDestroyed?: () => boolean;
+}
+
+interface GridReadyEvent {
+  api: GridApi;
+  [key: string]: unknown;
+}
+
+interface GridModule {
+  AgGridModule?: unknown;
+  AgGridAngular?: unknown;
+  createGrid?: (element: HTMLElement, gridOptions: GridOptions) => GridApi;
+  [key: string]: unknown;
+}
+
+interface GridComponent {
+  instance: {
+    api: GridApi;
+  };
+  destroy: () => void;
+}
 //#endregion
 
 //#region Component Declaration
@@ -51,17 +79,17 @@ export interface ResponsiveGridConfig {
   styleUrls: ['./responsive-grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ResponsiveGridComponent implements OnDestroy, AfterViewInit {
   //#endregion
 
   //#region Inputs & Outputs
   dataConfig = input.required<GridDataConfig>();
   config = input<ResponsiveGridConfig>({});
   // Optional direct signal-based data (bypasses GridDataService loading)
-  dataSignal = input<any[] | null | undefined>(undefined);
+  dataSignal = input<unknown[] | null | undefined>(undefined);
 
-  gridReady = output<any>();
-  dataLoaded = output<any[]>();
+  gridReady = output<GridReadyEvent>();
+  dataLoaded = output<unknown[]>();
   errorOccurred = output<Error>();
   //#endregion
 
@@ -70,23 +98,23 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#endregion
 
   //#region Component State
-  private data = signal<any[]>([]);
+  private readonly data = signal<unknown[]>([]);
   public isLoading = signal(true);
   public hasError = signal(false);
   public errorMessage = signal('');
   //#endregion
 
   //#region Grid State
-  private agGridComponent: ComponentRef<any> | null = null;
-  private destroy$ = new Subject<void>();
-  private pendingTimeouts: Set<NodeJS.Timeout> = new Set();
+  private agGridComponent: GridComponent | null = null;
+  private readonly destroy$ = new Subject<void>();
+  private readonly pendingTimeouts: Set<NodeJS.Timeout> = new Set();
   //#endregion
 
   //#region Services
-  private deviceService = inject(DeviceService);
-  private gridLoader = inject(GridLoaderService);
-  private gridDataService = inject(GridDataService);
-  private platformId = inject(PLATFORM_ID);
+  private readonly deviceService = inject(DeviceService);
+  private readonly gridLoader = inject(GridLoaderService);
+  private readonly gridDataService = inject(GridDataService);
+  private readonly platformId = inject(PLATFORM_ID);
   //#endregion
 
   //#region Computed Properties
@@ -104,7 +132,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       
       if (supportsGrids && hasData && !this.isLoading() && !this.hasError()) {
         // Switch to desktop with data - setup grid after view init
-        this.safeSetTimeout(() => this.ensureGridSetup(), 200);
+        this.safeSetTimeout(() => void this.ensureGridSetup(), 200);
       } else if (!supportsGrids && this.agGridComponent) {
         // Switch to mobile - cleanup grid to free memory
         this.cleanupGrid();
@@ -122,8 +150,9 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     });
 
     effect(() => {
-      const config = this.config();
-      this.setupDesktopGrid();
+      // Remove unused config variable
+      this.config();
+      void this.setupDesktopGrid();
     });
 
     // Effect for direct signal-driven data updates
@@ -135,7 +164,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
         this.data.set(directData);
         if (this.showDesktopGrid() && directData.length) {
           if (!this.agGridComponent) {
-            this.safeSetTimeout(() => this.ensureGridSetup(), 80);
+            this.safeSetTimeout(() => void this.ensureGridSetup(), 80);
           } else {
             this.updateGridData();
           }
@@ -154,19 +183,15 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   }
   //#endregion
 
-  //#region Lifecycle Hooks
-  ngOnInit() {
-    // Initial data loading is handled by effect in constructor
-  }
-
-  ngAfterViewInit() {
+  //#region Lifecycle 
+  ngAfterViewInit(): void {
     // Initial grid setup if needed
     if (this.showDesktopGrid() && this.data().length > 0 && !this.agGridComponent) {
-      this.safeSetTimeout(() => this.ensureGridSetup(), 100);
+      this.safeSetTimeout(() => void this.ensureGridSetup(), 100);
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
     this.cleanupGrid();
@@ -174,7 +199,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#endregion
 
   //#region Public Methods
-  retry() {
+  retry(): void {
     const currentConfig = this.dataConfig();
     if (currentConfig) {
       this.loadData(currentConfig);
@@ -183,7 +208,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#endregion
 
   //#region Private Methods - Data Loading
-  private loadData(config: GridDataConfig) {
+  private loadData(config: GridDataConfig): void {
     this.isLoading.set(true);
     this.hasError.set(false);
 
@@ -196,7 +221,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
           this.dataLoaded.emit(result.data);
           
           if (result.gridReady && this.showDesktopGrid() && isPlatformBrowser(this.platformId)) {
-            this.setupDesktopGrid();
+            void this.setupDesktopGrid();
           } else if (this.showDesktopGrid() && isPlatformBrowser(this.platformId)) {
             // Grid not ready yet, but we have data - setup grid when it becomes ready
             this.waitForGridAndSetup();
@@ -205,29 +230,29 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
           // Update grid data if grid is already set up
           this.updateGridData();
         },
-        error: (error) => {
+        error: (error: Error) => {
           this.isLoading.set(false);
           this.hasError.set(true);
-          this.errorMessage.set(error.message);
+          this.errorMessage.set(error.message || 'Unknown error occurred');
           this.errorOccurred.emit(error);
         }
       });
   }
 
-  private waitForGridAndSetup() {
+  private waitForGridAndSetup(): void {
     // Subscribe to grid state changes and setup when ready
     this.gridLoader.loadState$
       .pipe(takeUntil(this.destroy$))
       .subscribe(state => {
         if (state.isLoaded && !state.error && this.data().length > 0) {
-          this.setupDesktopGrid();
+          void this.setupDesktopGrid();
         }
       });
   }
   //#endregion
 
   //#region Private Methods - Theme Updates
-  private updateGridThemeClass(themeClass: string) {
+  private updateGridThemeClass(themeClass: string): void {
     if (this.gridContainer?.nativeElement) {
       const container = this.gridContainer.nativeElement;
       // Remove existing ag-theme classes from container
@@ -246,7 +271,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
   //#endregion
 
   //#region Private Methods - Cleanup
-  private cleanupGrid() {
+  private cleanupGrid(): void {
     if (this.agGridComponent) {
       this.agGridComponent.destroy();
       this.agGridComponent = null;
@@ -254,7 +279,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     this.clearPendingTimeouts();
   }
 
-  private clearPendingTimeouts() {
+  private clearPendingTimeouts(): void {
     this.pendingTimeouts.forEach(timeout => clearTimeout(timeout));
     this.pendingTimeouts.clear();
   }
@@ -276,7 +301,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     );
   }
 
-  private async ensureGridSetup() {
+  private async ensureGridSetup(): Promise<void> {
     // Only setup if we support grids, have data, and don't already have a grid
     if (!this.showDesktopGrid() || !this.data().length || this.agGridComponent) {
       return;
@@ -284,14 +309,14 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     
     // Check if the ViewChild container is available (might be recreated by @if)
     if (!this.gridContainer?.nativeElement) {
-      this.safeSetTimeout(() => this.ensureGridSetup(), 100);
+      this.safeSetTimeout(() => void this.ensureGridSetup(), 100);
       return;
     }
     
     await this.setupDesktopGrid();
   }
 
-  private async setupDesktopGrid() {
+  private async setupDesktopGrid(): Promise<void> {
     if (!this.gridContainer?.nativeElement || !isPlatformBrowser(this.platformId)) {
       return;
     }
@@ -300,19 +325,22 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     this.cleanupGrid();
     
     try {
-      const gridModule = await this.gridLoader.loadGridModule();
+      const gridModuleRaw = await this.gridLoader.loadGridModule();
       
-      if (!gridModule) {
+      if (!gridModuleRaw) {
         return;
       }
+
+      // Type assertion since we know the structure from GridLoaderService
+      const gridModule = gridModuleRaw as GridModule;
 
       // Clear any existing content in the grid container
       const containerElement = this.gridContainer.nativeElement;
       containerElement.innerHTML = '';
 
-      // Verify AgGridAngular component is available
-      if (!gridModule.AgGridAngular) {
-        throw new Error('AgGridAngular component not found in loaded module');
+      // Verify createGrid function is available
+      if (!gridModule.createGrid) {
+        throw new Error('createGrid function not found in loaded module');
       }
 
       // Create a div element for the ag-grid with theme class
@@ -324,11 +352,11 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       containerElement.appendChild(gridDiv);
 
       // Initialize ag-Grid directly on the div
-      const gridOptions = {
+      const gridOptions: GridOptions = {
         columnDefs: this.config().columnDefs || [],
         rowData: this.data(),
         ...this.config().gridOptions,
-        onGridReady: (params: any) => {
+        onGridReady: (params: GridReadyEvent) => {
           // Auto-size columns when ready - with safety check
           this.safeSetTimeout(() => {
             if (this.isGridValid() && params.api) {
@@ -342,15 +370,19 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       // Create the grid using ag-Grid's createGrid function
       const gridApi = gridModule.createGrid(gridDiv, gridOptions);
       
+      if (!gridApi) {
+        throw new Error('Failed to create grid API');
+      }
+
       // Store the grid API for later updates
       this.agGridComponent = { 
         instance: { api: gridApi },
         destroy: () => {
-          if (gridApi) {
+          if (gridApi && typeof gridApi.destroy === 'function') {
             gridApi.destroy();
           }
         }
-      } as any;
+      };
       
     } catch (error) {
       console.error('ResponsiveGridComponent: Failed to setup desktop grid:', error);
@@ -359,7 +391,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
     }
   }
 
-  private updateGridData() {
+  private updateGridData(): void {
     if (this.agGridComponent && this.data().length > 0) {
       const gridInstance = this.agGridComponent.instance;
       if (this.isGridValid() && gridInstance?.api) {
@@ -374,7 +406,7 @@ export class ResponsiveGridComponent implements OnInit, OnDestroy, AfterViewInit
       }
     } else if (this.showDesktopGrid() && this.data().length > 0 && !this.agGridComponent) {
       // We have data and should show grid, but no grid exists - try to set it up
-      this.safeSetTimeout(() => this.ensureGridSetup(), 100);
+      this.safeSetTimeout(() => void this.ensureGridSetup(), 100);
     }
   }
   //#endregion

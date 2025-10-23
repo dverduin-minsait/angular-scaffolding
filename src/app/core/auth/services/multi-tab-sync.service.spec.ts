@@ -8,7 +8,7 @@ import { UserProfile } from '../models/auth.models';
 
 // Mock BroadcastChannel for testing
 class MockBroadcastChannel {
-  private listeners: ((event: MessageEvent) => void)[] = [];
+  private readonly listeners: ((event: MessageEvent) => void)[] = [];
   private static instances: MockBroadcastChannel[] = [];
 
   constructor(public name: string) {
@@ -52,7 +52,7 @@ class MockBroadcastChannel {
 // Mock localStorage for storage fallback testing
 class MockStorage {
   private store: { [key: string]: string } = {};
-  private listeners: ((event: any) => void)[] = [];
+  private readonly listeners: ((event: any) => void)[] = [];
 
   getItem(key: string): string | null {
     return this.store[key] || null;

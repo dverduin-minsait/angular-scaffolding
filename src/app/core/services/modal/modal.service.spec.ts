@@ -29,7 +29,7 @@ describe('ModalService', () => {
     });
     // allow microtask flush for container creation
     return new Promise(resolve => setTimeout(resolve, 0)).then(() => {
-      const container = document.querySelector('[role="dialog"]') as HTMLElement | null;
+      const container = document.querySelector('[role="dialog"]');
       expect(container).toBeTruthy();
       expect(container?.getAttribute('aria-label')).toBe('Delete');
     });
@@ -79,7 +79,7 @@ describe('ModalService', () => {
     const p = service.confirm({ title: 'Delete', message: 'Sure?', confirmLabel: 'Yes', cancelLabel: 'No' });
     // Find the confirm dialog's confirm button and click it
     await new Promise(r => setTimeout(r, 0));
-    const buttons = Array.from(document.querySelectorAll('button')) as HTMLButtonElement[];
+    const buttons = Array.from(document.querySelectorAll('button'));
     const confirmBtn = buttons.find(b => b.textContent?.trim() === 'Yes');
     expect(confirmBtn).toBeTruthy();
     confirmBtn!.click();
@@ -90,7 +90,7 @@ describe('ModalService', () => {
   it('confirm() should resolve false when user cancels', async () => {
     const p = service.confirm({ title: 'Delete', message: 'Sure?', confirmLabel: 'Yes', cancelLabel: 'No' });
     await new Promise(r => setTimeout(r, 0));
-    const buttons = Array.from(document.querySelectorAll('button')) as HTMLButtonElement[];
+    const buttons = Array.from(document.querySelectorAll('button'));
     const cancelBtn = buttons.find(b => b.textContent?.trim() === 'No');
     expect(cancelBtn).toBeTruthy();
     cancelBtn!.click();
@@ -254,7 +254,7 @@ describe('ModalService', () => {
         detailed: true
       });
       await tick();
-      const backdrop = document.querySelector('.cdk-overlay-backdrop') as HTMLElement | null;
+      const backdrop = document.querySelector('.cdk-overlay-backdrop');
       expect(backdrop).toBeTruthy();
       backdrop!.click();
       const dismissResult = await dismissPromise as { confirmed: boolean; reason: string };
@@ -295,7 +295,7 @@ describe('ModalService', () => {
         disableBackdropClose: true
       });
       await tick();
-      const backdrop = document.querySelector('.cdk-overlay-backdrop') as HTMLElement | null;
+      const backdrop = document.querySelector('.cdk-overlay-backdrop');
       expect(backdrop).toBeTruthy();
       backdrop!.click();
       await tick();

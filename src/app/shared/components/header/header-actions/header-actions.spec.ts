@@ -3,20 +3,18 @@ import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
 
 import { HeaderActions } from './header-actions';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { TranslationService, SupportedLang } from '../../../../core/services/translation.service';
-import { provideStubTranslationService } from '../../../../testing/i18n-testing';
 
 // Mock ThemeService
 class MockThemeService {
-  private _isDarkMode = signal(false);
+  private readonly _isDarkMode = signal(false);
   
   isDarkMode = this._isDarkMode.asReadonly();
-  getThemeIcon() { return this._isDarkMode() ? '☀️' : '🌙'; }
-  toggleTheme() { this._isDarkMode.update(current => !current); }
+  getThemeIcon(): string { return this._isDarkMode() ? '☀️' : '🌙'; }
+  toggleTheme(): void { this._isDarkMode.update(current => !current); }
 }
 
 // Mock TranslationService
@@ -31,10 +29,10 @@ class MockTranslationService {
     return Promise.resolve();
   });
   
-  instant = jest.fn((key: string, params?: Record<string, any>) => {
+  instant = jest.fn((key: string, params?: Record<string, unknown>) => {
     const translations: Record<string, string> = {
       'app.actions.changeLanguage': 'Change language',
-      'app.actions.toggleTheme': params && params['theme'] ? `Switch to ${params['theme']} theme` : 'Toggle theme',
+      'app.actions.toggleTheme': params && typeof params['theme'] === 'string' ? `Switch to ${params['theme']} theme` : 'Toggle theme',
       'app.actions.openMenu': 'Open menu',
       'app.actions.closeMenu': 'Close menu',
       'app.languages.en': 'English',
@@ -163,7 +161,7 @@ describe('HeaderActions', () => {
       translateService.use('es');
       fixture.detectChanges();
 
-      const langSelect = fixture.debugElement.query(By.css('#lang-select'));
+      const _langSelect = fixture.debugElement.query(By.css('#lang-select'));
       // Note: This test might need to be updated based on how the component tracks current language
       // For now, let's just verify that the component has the right current language from the service
       expect(translateService.currentLang || translateService.defaultLang).toBeDefined();

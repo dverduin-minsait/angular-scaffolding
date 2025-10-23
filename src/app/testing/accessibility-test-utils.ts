@@ -1,6 +1,4 @@
 import { ComponentFixture } from '@angular/core/testing';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 /**
  * Utility functions for testing accessibility features
@@ -10,7 +8,7 @@ export class AccessibilityTestUtils {
   /**
    * Simulate keyboard navigation through focusable elements
    */
-  static simulateTabNavigation(fixture: ComponentFixture<any>): HTMLElement[] {
+  static simulateTabNavigation<T>(fixture: ComponentFixture<T>): HTMLElement[] {
     const focusableElements = this.getFocusableElements(fixture);
     
     // In test environment, just return the focusable elements
@@ -21,7 +19,7 @@ export class AccessibilityTestUtils {
   /**
    * Get all focusable elements in a component
    */
-  static getFocusableElements(fixture: ComponentFixture<any>): HTMLElement[] {
+  static getFocusableElements<T>(fixture: ComponentFixture<T>): HTMLElement[] {
     const focusableSelectors = [
       'a[href]',
       'button:not([disabled])',
@@ -31,12 +29,12 @@ export class AccessibilityTestUtils {
       '[tabindex]:not([tabindex="-1"])'
     ];
     
-    const container = fixture.nativeElement;
+    const container = fixture.nativeElement as HTMLElement;
     const elements: HTMLElement[] = [];
     
     focusableSelectors.forEach(selector => {
       const found = container.querySelectorAll(selector);
-      elements.push(...Array.from(found) as HTMLElement[]);
+      elements.push(...Array.from(found as NodeListOf<HTMLElement>));
     });
     
     return elements.filter(el => this.isVisible(el));
@@ -58,8 +56,9 @@ export class AccessibilityTestUtils {
   /**
    * Test keyboard navigation with arrow keys for radio groups
    */
-  static testArrowKeyNavigation(fixture: ComponentFixture<any>, radioGroupSelector: string): void {
-    const radioGroup = fixture.nativeElement.querySelector(radioGroupSelector);
+  static testArrowKeyNavigation<T>(fixture: ComponentFixture<T>, radioGroupSelector: string): void {
+    const container = fixture.nativeElement as HTMLElement;
+    const radioGroup = container.querySelector(radioGroupSelector);
     if (!radioGroup) return;
     
     // Look for actual radio input elements first, fallback to role="radio" for custom components
@@ -96,7 +95,7 @@ export class AccessibilityTestUtils {
   /**
    * Test escape key functionality for modal/popup elements
    */
-  static testEscapeKey(fixture: ComponentFixture<any>, element: HTMLElement, shouldClose: boolean = true): void {
+  static testEscapeKey<T>(fixture: ComponentFixture<T>, element: HTMLElement, _shouldClose = true): void {
     const escapeEvent = new KeyboardEvent('keydown', {
       key: 'Escape',
       code: 'Escape',
@@ -127,14 +126,15 @@ export class AccessibilityTestUtils {
   /**
    * Test form field accessibility
    */
-  static testFormFieldAccessibility(fixture: ComponentFixture<any>, fieldId: string): {
+  static testFormFieldAccessibility<T>(fixture: ComponentFixture<T>, fieldId: string): {
     hasLabel: boolean;
     hasRequiredIndicator: boolean;
     hasErrorAnnouncement: boolean;
     hasValidAutocomplete: boolean;
   } {
-    const field = fixture.nativeElement.querySelector(`#${fieldId}`);
-    const label = fixture.nativeElement.querySelector(`label[for="${fieldId}"]`);
+    const container = fixture.nativeElement as HTMLElement;
+    const field = container.querySelector(`#${fieldId}`);
+    const label = container.querySelector(`label[for="${fieldId}"]`);
     
     if (!field) {
       throw new Error(`Field with id "${fieldId}" not found`);
@@ -149,14 +149,15 @@ export class AccessibilityTestUtils {
     
     // Check for required indicator
     if (label) {
-      results.hasRequiredIndicator = label.textContent?.includes('*') || 
-                                   label.querySelector('[aria-label*="required"]') !== null;
+      const labelText = label.textContent?.includes('*') || false;
+      const requiredElement = label.querySelector('[aria-label*="required"]') !== null;
+      results.hasRequiredIndicator = labelText || requiredElement;
     }
     
     // Check for error announcement
     const ariaDescribedby = field.getAttribute('aria-describedby');
     if (ariaDescribedby) {
-      const errorElement = fixture.nativeElement.querySelector(`#${ariaDescribedby}`);
+      const errorElement = container.querySelector(`#${ariaDescribedby}`);
       results.hasErrorAnnouncement = errorElement?.getAttribute('role') === 'alert';
     }
     
@@ -170,13 +171,15 @@ export class AccessibilityTestUtils {
   /**
    * Test heading hierarchy
    */
-  static testHeadingHierarchy(fixture: ComponentFixture<any>): { valid: boolean; issues: string[] } {
-    const headings = fixture.nativeElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  static testHeadingHierarchy<T>(fixture: ComponentFixture<T>): { valid: boolean; issues: string[] } {
+    const container = fixture.nativeElement as HTMLElement;
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
     const issues: string[] = [];
     let previousLevel = 0;
     
-    (Array.from(headings) as HTMLElement[]).forEach((heading: HTMLElement, index: number) => {
-      const level = parseInt(heading.tagName.charAt(1));
+    Array.from(headings).forEach((heading: Element, index: number) => {
+      const headingElement = heading as HTMLElement;
+      const level = parseInt(headingElement.tagName.charAt(1));
       
       // First heading should be h1
       if (index === 0 && level !== 1) {
@@ -202,8 +205,8 @@ export class AccessibilityTestUtils {
    */
   static checkColorContrast(element: HTMLElement): number {
     const style = window.getComputedStyle(element);
-    const backgroundColor = style.backgroundColor;
-    const color = style.color;
+    const _backgroundColor = style.backgroundColor;
+    const _color = style.color;
     
     // This is a simplified version - a real implementation would calculate
     // the actual contrast ratio using WCAG guidelines
@@ -214,15 +217,16 @@ export class AccessibilityTestUtils {
   /**
    * Test live region announcements
    */
-  static testLiveRegion(fixture: ComponentFixture<any>, selector: string): {
+  static testLiveRegion<T>(fixture: ComponentFixture<T>, selector: string): {
     hasAriaLive: boolean;
     ariaLiveValue: string | null;
   } {
-    const element = fixture.nativeElement.querySelector(selector);
+    const container = fixture.nativeElement as HTMLElement;
+    const element = container.querySelector(selector);
     
     return {
-      hasAriaLive: element?.hasAttribute('aria-live') || false,
-      ariaLiveValue: element?.getAttribute('aria-live') || null
+      hasAriaLive: (element as HTMLElement)?.hasAttribute('aria-live') || false,
+      ariaLiveValue: (element as HTMLElement)?.getAttribute('aria-live') || null
     };
   }
   
@@ -249,7 +253,8 @@ export class AccessibilityTestUtils {
  */
 export const accessibilityMatchers = {
   toBeAccessible(received: HTMLElement) {
-    const focusable = AccessibilityTestUtils.getFocusableElements({ nativeElement: received } as any);
+    const mockFixture = { nativeElement: received } as ComponentFixture<unknown>;
+    const focusable = AccessibilityTestUtils.getFocusableElements(mockFixture);
     const hasSkipLinks = received.querySelector('.skip-link') !== null;
     const hasLandmarks = received.querySelector('[role="main"], [role="banner"], [role="navigation"]') !== null;
     

@@ -1,12 +1,12 @@
-import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { NavigationItem } from './navigation.types';
 import { Navbar } from './navbar/navbar';
 import { Sidebar } from './sidebar/sidebar';
 import { HeaderActions } from './header-actions/header-actions';
-import { ThemeService } from '../../../core/services/theme.service';
-import { TranslationService } from '../../../core/services/translation.service';
+import { ThemeService } from '../../../core/services';
+import { TranslationService, SupportedLang } from '../../../core/services/translation.service';
 
 @Component({
   selector: 'app-header',
@@ -58,9 +58,9 @@ export class HeaderComponent {
   // Language change handler for sidebar footer
   protected onLanguageChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
-    this.i18n.use(value as any);
+    void this.i18n.use(value as SupportedLang);
   }
 
   // Backwards compatibility noop (legacy method referenced in tests)
-  updateNavigationLinks(_links: any[]): void { /* no-op */ }
+  updateNavigationLinks(_links: unknown[]): void { /* no-op */ }
 }

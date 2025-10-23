@@ -1,7 +1,6 @@
 import { Injectable, inject, PLATFORM_ID, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { DeviceService } from './device.service';
 import { ThemeService } from './theme.service';
 
@@ -17,12 +16,13 @@ export interface GridLoadState {
   providedIn: 'root'
 })
 export class GridLoaderService {
-  private platformId = inject(PLATFORM_ID);
-  private themeService = inject(ThemeService);
-  private gridModule: any = null;
-  private loadPromise: Promise<any> | null = null;
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly deviceService = inject(DeviceService);
+  private readonly themeService = inject(ThemeService);
+  private gridModule: unknown = null;
+  private loadPromise: Promise<unknown> | null = null;
   
-  private loadStateSubject = new BehaviorSubject<GridLoadState>({
+  private readonly loadStateSubject = new BehaviorSubject<GridLoadState>({
     isLoading: false,
     isLoaded: false,
     error: null
@@ -30,7 +30,7 @@ export class GridLoaderService {
   
   public loadState$ = this.loadStateSubject.asObservable();
 
-  constructor(private deviceService: DeviceService) {
+  constructor() {
     // Set up theme change effect to update CSS when theme changes
     if (isPlatformBrowser(this.platformId)) {
       effect(() => {
@@ -46,7 +46,7 @@ export class GridLoaderService {
    * Loads ag-Grid module dynamically
    * Returns cached version if already loaded
    */
-  async loadGridModule(): Promise<any> {
+  async loadGridModule(): Promise<unknown> {
     // Skip loading if not in browser (SSR)
     if (!isPlatformBrowser(this.platformId)) {
       return null;
@@ -95,7 +95,7 @@ export class GridLoaderService {
     }
   }
 
-  private async performLoad(): Promise<any> {
+  private async performLoad(): Promise<unknown> {
     try {
       // Dynamic import of ag-Grid - this creates a separate chunk
       const [agGridAngular, agGridCommunity] = await Promise.all([
@@ -290,7 +290,7 @@ export class GridLoaderService {
   /**
    * Get theme-specific CSS variables based on current theme and theme pair
    */
-  private getThemeVariables(currentTheme: string, themePair: number): string {
+  private getThemeVariables(_currentTheme: string, _themePair: number): string {
     // Use CSS custom properties from our theme system instead of hardcoded values
     return `
       --ag-font-family: inherit;

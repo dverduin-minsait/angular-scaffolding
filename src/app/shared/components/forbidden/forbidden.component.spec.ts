@@ -73,7 +73,7 @@ describe('ForbiddenComponent', () => {
 
     it('should navigate to dashboard when back link is clicked', async () => {
       const navigateSpy = jest.spyOn(router, 'navigateByUrl');
-      const backLink = fixture.debugElement.query(By.css('.back-link'));
+      const _backLink = fixture.debugElement.query(By.css('.back-link'));
       
       // Simulate router link click behavior
       await router.navigateByUrl('/dashboard');
