@@ -7,10 +7,14 @@
 
   <app-generic-crud 
     [config]="crudConfig()" 
-    [dataSource]="bookStore"
+    [store]="bookStore"
+    [dataSignal]="filteredBooks"
+    [canCreate]="true"
+    [canEdit]="true"
+    [canDelete]="true"
     (events)="handleCrudEvent($event)">
     
-    <!-- Custom Filter Form (Projected Content) -->
+    <!-- Simplified Filter Form (Projected Content) -->
     <form crud-filters [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="crud-form">
       <div class="field-grid">
         <div class="form-field">
@@ -51,47 +55,6 @@
             <option value="Fiction">{{ 'app.demoBooks.filter.fields.category.options.fiction' | translate }}</option>
           </select>
         </div>
-        
-        <div class="form-field">
-          <label class="form-label" for="filter-inStock">
-            {{ 'app.demoBooks.filter.fields.availability.label' | translate }}
-          </label>
-          <select id="filter-inStock" class="form-control" formControlName="inStock">
-            <option value="">{{ 'app.demoBooks.filter.fields.availability.options.all' | translate }}</option>
-            <option value="true">{{ 'app.demoBooks.filter.fields.availability.options.inStock' | translate }}</option>
-            <option value="false">{{ 'app.demoBooks.filter.fields.availability.options.outOfStock' | translate }}</option>
-          </select>
-        </div>
-        
-        <div class="form-field">
-          <label class="form-label" for="filter-minPrice">
-            {{ 'app.demoBooks.filter.fields.priceRange.minPrice.label' | translate }}
-          </label>
-          <input 
-            id="filter-minPrice"
-            type="number"
-            class="form-control"
-            formControlName="minPrice"
-            [placeholder]="'app.demoBooks.filter.fields.priceRange.minPrice.placeholder' | translate"
-            min="0"
-            step="0.01"
-          />
-        </div>
-
-        <div class="form-field">
-          <label class="form-label" for="filter-maxPrice">
-            {{ 'app.demoBooks.filter.fields.priceRange.maxPrice.label' | translate }}
-          </label>
-          <input 
-            id="filter-maxPrice"
-            type="number"
-            class="form-control"
-            formControlName="maxPrice"
-            [placeholder]="'app.demoBooks.filter.fields.priceRange.maxPrice.placeholder' | translate"
-            min="0"
-            step="0.01"
-          />
-        </div>
       </div>
       
       <div class="form-actions">
@@ -104,7 +67,7 @@
       </div>
     </form>
 
-    <!-- Custom Entity Form (Projected Content) -->
+    <!-- Entity Form (Projected Content) -->
     <form crud-entity-form [formGroup]="entityForm" (ngSubmit)="saveEntity()" class="crud-form">
       <div class="field-grid">
         <div class="form-field">
@@ -301,7 +264,7 @@
           {{ isEditing() ? ('app.demoBooks.form.actions.update' | translate) : ('app.demoBooks.form.actions.create' | translate) }}
         </button>
         <button type="button" appButton variant="secondary" (click)="cancelForm()">
-          {{ 'app.demoBooks.form.actions.cancel' | translate }}
+          {{ 'app.demoBooks.form.actions.clean' | translate }}
         </button>
       </div>
     </form>

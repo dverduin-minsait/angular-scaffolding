@@ -1,4 +1,74 @@
 {
+  "books": [
+    {
+      "title": "The Clean Code 2",
+      "author": "Robert C. Martin",
+      "isbn": "978-0132350884",
+      "category": "Programming",
+      "price": 45.99,
+      "rating": 4.8,
+      "publishedDate": "2008-08-01",
+      "description": "A handbook of agile software craftsmanship",
+      "inStock": true,
+      "id": 1
+    },
+    {
+      "id": 2,
+      "title": "Angular in Action",
+      "author": "Jeremy Wilken",
+      "isbn": "978-1617293313",
+      "category": "Programming",
+      "price": 39.99,
+      "inStock": true,
+      "publishedDate": "2018-03-15",
+      "description": "Complete guide to Angular development",
+      "rating": 4.2,
+      "createdAt": "2024-01-02T00:00:00Z",
+      "updatedAt": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Design Patterns",
+      "author": "Gang of Four",
+      "isbn": "978-0201633610",
+      "category": "Programming",
+      "price": 54.99,
+      "inStock": false,
+      "publishedDate": "1994-10-21",
+      "description": "Elements of reusable object-oriented software",
+      "rating": 4.9,
+      "createdAt": "2024-01-03T00:00:00Z",
+      "updatedAt": "2024-01-03T00:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "The Art of War",
+      "author": "Sun Tzu",
+      "isbn": "978-1599869773",
+      "category": "Philosophy",
+      "price": 12.99,
+      "inStock": true,
+      "publishedDate": "-500-01-01",
+      "description": "Ancient Chinese military treatise",
+      "rating": 4.5,
+      "createdAt": "2024-01-04T00:00:00Z",
+      "updatedAt": "2024-01-04T00:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "JavaScript: The Good Parts",
+      "author": "Douglas Crockford",
+      "isbn": "978-0596517748",
+      "category": "Programming",
+      "price": 29.99,
+      "inStock": true,
+      "publishedDate": "2008-05-08",
+      "description": "Unearthing the excellence in JavaScript",
+      "rating": 4.1,
+      "createdAt": "2024-01-05T00:00:00Z",
+      "updatedAt": "2024-01-05T00:00:00Z"
+    }
+  ],
   "clothes": [
     {
       "name": "Denim Jacketa",
@@ -231,7 +301,9 @@
       "password": "Password123!",
       "displayName": "Admin User",
       "email": "admin@example.com",
-      "roles": ["admin"],
+      "roles": [
+        "admin"
+      ],
       "permissions": [
         "dashboard.view",
         "clothes.read",
@@ -246,7 +318,9 @@
       "password": "Password123!",
       "displayName": "View Only User",
       "email": "viewer@example.com",
-      "roles": ["user"],
+      "roles": [
+        "user"
+      ],
       "permissions": [
         "dashboard.view",
         "clothes.read"
@@ -258,7 +332,9 @@
       "password": "Password123!",
       "displayName": "Content Editor",
       "email": "editor@example.com",
-      "roles": ["editor"],
+      "roles": [
+        "editor"
+      ],
       "permissions": [
         "dashboard.view",
         "clothes.read",
@@ -267,15 +343,55 @@
     }
   ],
   "roles": [
-    { "id": 1, "name": "admin", "permissions": ["dashboard.view", "clothes.read", "clothes.write", "clothes.delete", "users.manage"] },
-    { "id": 2, "name": "user", "permissions": ["dashboard.view", "clothes.read"] },
-    { "id": 3, "name": "editor", "permissions": ["dashboard.view", "clothes.read", "clothes.write"] }
+    {
+      "id": 1,
+      "name": "admin",
+      "permissions": [
+        "dashboard.view",
+        "clothes.read",
+        "clothes.write",
+        "clothes.delete",
+        "users.manage"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "user",
+      "permissions": [
+        "dashboard.view",
+        "clothes.read"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "editor",
+      "permissions": [
+        "dashboard.view",
+        "clothes.read",
+        "clothes.write"
+      ]
+    }
   ],
   "permissionsCatalog": [
-    { "key": "dashboard.view", "description": "Access dashboard widgets" },
-    { "key": "clothes.read", "description": "List and view clothes" },
-    { "key": "clothes.write", "description": "Create or update clothes" },
-    { "key": "clothes.delete", "description": "Delete clothes" },
-    { "key": "users.manage", "description": "Manage platform users" }
+    {
+      "key": "dashboard.view",
+      "description": "Access dashboard widgets"
+    },
+    {
+      "key": "clothes.read",
+      "description": "List and view clothes"
+    },
+    {
+      "key": "clothes.write",
+      "description": "Create or update clothes"
+    },
+    {
+      "key": "clothes.delete",
+      "description": "Delete clothes"
+    },
+    {
+      "key": "users.manage",
+      "description": "Manage platform users"
+    }
   ]
 }

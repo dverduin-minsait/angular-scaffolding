@@ -1,15 +1,24 @@
-import { Component, inject, OnInit, signal, Signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { BookStore } from './book.store';
 import { BookApi } from './book.types';
-import { GenericCrudComponent, CrudConfig, CrudEvents } from '../../shared/components/crud';
+import { 
+  GenericCrudComponent, 
+  CrudConfig, 
+  CrudEvents,
+  textColumn,
+  priceColumn,
+  ratingColumn,
+  booleanColumn,
+  dateColumn
+} from '../../shared/components/crud';
 import { ButtonDirective } from '../../shared/directives';
 
 /**
- * Demo Book CRUD Component
- * Demonstrates the Generic CRUD System
+ * Simplified Demo Book CRUD Component
+ * Demonstrates the simplified Generic CRUD System
  * Following Angular 20 + signals + zoneless patterns from AGENTS.md
  */
 @Component({
@@ -29,86 +38,46 @@ import { ButtonDirective } from '../../shared/directives';
 export class DemoBookCrudComponent implements OnInit {
   protected readonly bookStore = inject(BookStore);
   private readonly fb = inject(FormBuilder);
-  private readonly translateService = inject(TranslateService);
 
   // Forms
   filterForm: FormGroup;
   entityForm: FormGroup;
 
-  // CRUD Configuration
-  readonly crudConfig: Signal<CrudConfig<BookApi>> = signal({
-    entityName: 'Book',
-    pluralName: 'Books',
-    columns: [
-      {
-        field: 'title',
-        headerName: 'Title',
-        flex: 2,
-        minWidth: 200,
-        sortable: true
-      },
-      {
-        field: 'author',
-        headerName: 'Author',
-        flex: 1.5,
-        minWidth: 150,
-        sortable: true
-      },
-      {
-        field: 'category',
-        headerName: 'Category',
-        flex: 1,
-        minWidth: 120,
-        sortable: true
-      },
-      {
-        field: 'price',
-        headerName: 'Price',
-        flex: 0.8,
-        minWidth: 100,
-        sortable: true,
-        valueFormatter: (value: unknown) => `$${Number(value).toFixed(2)}`
-      },
-      {
-        field: 'rating',
-        headerName: 'Rating',
-        flex: 0.7,
-        minWidth: 80,
-        sortable: true,
-        valueFormatter: (value: unknown) => `⭐ ${Number(value).toFixed(1)}`,
-        cellStyle: (value: unknown) => ({
-          color: Number(value) >= 4.0 ? '#28a745' : Number(value) >= 3.0 ? '#ffc107' : '#dc3545',
-          fontWeight: '600'
-        })
-      },
-      {
-        field: 'inStock',
-        headerName: 'Stock',
-        flex: 0.8,
-        minWidth: 100,
-        sortable: true,
-        valueFormatter: (value: unknown) => value ? '✅ In Stock' : '❌ Out of Stock',
-        cellStyle: (value: unknown) => ({
-          color: value ? '#28a745' : '#dc3545',
-          fontWeight: '600'
-        })
-      },
-      {
-        field: 'publishedDate',
-        headerName: 'Published',
-        flex: 1,
-        minWidth: 120,
-        sortable: true,
-        valueFormatter: (value: unknown) => 
-          value ? new Date(value as string).getFullYear().toString() : ''
-      }
-    ],
-    permissions: this.bookStore.permissions(),
-    enableBulkOperations: true,
-    enableExport: true,
-    enableSearch: true,
-    pageSize: 10
+  // Local filtering signals
+  private readonly _titleFilter = signal<string>('');
+  private readonly _authorFilter = signal<string>('');
+  
+  // Filtered data - this replaces the store's filteredItems
+  protected readonly filteredBooks = computed(() => {
+    const books = this.bookStore.items();
+    const titleFilter = this._titleFilter().toLowerCase().trim();
+    const authorFilter = this._authorFilter().toLowerCase().trim();
+    
+    if (!titleFilter && !authorFilter) return books;
+    
+    return books.filter(book => {
+      const titleMatch = !titleFilter || book.title.toLowerCase().includes(titleFilter);
+      const authorMatch = !authorFilter || book.author.toLowerCase().includes(authorFilter);
+      return titleMatch && authorMatch;
+    });
   });
+
+  // CRUD Configuration - using column helpers for cleaner code
+  readonly crudConfig = signal<CrudConfig<BookApi>>({
+    entityName: 'Book',
+    columns: [
+      textColumn<BookApi>('title', 'Title', { flex: 2, minWidth: 200 }),
+      textColumn<BookApi>('author', 'Author', { flex: 1.5, minWidth: 150 }),
+      textColumn<BookApi>('category', 'Category', { flex: 1, minWidth: 120 }),
+      priceColumn<BookApi>('price', 'Price', '$', { flex: 0.8, minWidth: 100 }),
+      ratingColumn<BookApi>('rating', 'Rating', 5, { flex: 0.7, minWidth: 80 }),
+      booleanColumn<BookApi>('inStock', 'Stock', '✅ In Stock', '❌ Out of Stock', { flex: 0.8, minWidth: 100 }),
+      dateColumn<BookApi>('publishedDate', 'Published', 'year', { flex: 1, minWidth: 120 })
+    ]
+  });
+
+  // Computed for form mode
+  readonly isEditing = computed(() => this.bookStore.selected() !== null);
 
   constructor() {
     this.filterForm = this.createFilterForm();
@@ -119,95 +88,48 @@ export class DemoBookCrudComponent implements OnInit {
     this.loadData();
   }
 
-  // Computed signals
-  isEditing = (): boolean => this.bookStore.selected() !== null;
-
   // Event handlers
   handleCrudEvent(event: CrudEvents<BookApi>): void {
-    console.log('📚 Book CRUD event:', event);
-    
-    // You can handle specific events here
-    if (event.onEntityCreated) {
-      console.log('✅ Book created successfully');
+    if (event.entityCreated) {
+      this.resetForm();
     }
-    if (event.onEntityUpdated) {
-      console.log('✏️ Book updated successfully');  
+    if (event.entityUpdated) {
+      this.resetForm();
     }
-    if (event.onEntityDeleted) {
-      console.log('🗑️ Book deleted successfully');
+    if (event.entitySelected) {
+      this.populateFormForEdit(event.entitySelected);
     }
   }
 
+  // Form handlers for projected content
   applyFilters(): void {
     if (this.filterForm.valid) {
-      const filter: Partial<BookApi> & { minPrice?: number; maxPrice?: number } = {};
+      const titleValue = this.filterForm.get('title')?.value as string;
+      const authorValue = this.filterForm.get('author')?.value as string;
       
-      // Type-safe filter building using form controls
-      const titleControl = this.filterForm.get('title');
-      const authorControl = this.filterForm.get('author');
-      const categoryControl = this.filterForm.get('category');
-      const inStockControl = this.filterForm.get('inStock');
-      const minPriceControl = this.filterForm.get('minPrice');
-      const maxPriceControl = this.filterForm.get('maxPrice');
-      
-      if (titleControl?.value && (titleControl.value as string).trim()) {
-        filter.title = (titleControl.value as string).trim();
-      }
-      if (authorControl?.value && (authorControl.value as string).trim()) {
-        filter.author = (authorControl.value as string).trim();
-      }
-      if (categoryControl?.value && (categoryControl.value as string).trim()) {
-        filter.category = categoryControl.value as BookApi['category'];
-      }
-      if (inStockControl?.value !== '' && inStockControl?.value !== null) {
-        filter.inStock = inStockControl?.value === 'true';
-      }
-      if (minPriceControl?.value && minPriceControl.value > 0) {
-        filter.minPrice = minPriceControl.value as number;
-      }
-      if (maxPriceControl?.value && maxPriceControl.value > 0) {
-        filter.maxPrice = maxPriceControl.value as number;
-      }
-      
-      this.bookStore.setFilter(filter as Partial<BookApi>);
+      // Update local filter signals instead of using store search
+      this._titleFilter.set(titleValue || '');
+      this._authorFilter.set(authorValue || '');
     }
   }
 
   clearFilters(): void {
     this.filterForm.reset();
-    this.bookStore.clearFilter();
+    this._titleFilter.set('');
+    this._authorFilter.set('');
   }
 
   saveEntity(): void {
     if (this.entityForm.valid) {
-      // Build entity data from individual form controls for type safety
-      const entityData: Partial<BookApi> = {
-        title: this.entityForm.get('title')?.value as string,
-        author: this.entityForm.get('author')?.value as string,
-        isbn: this.entityForm.get('isbn')?.value as string,
-        category: this.entityForm.get('category')?.value as BookApi['category'],
-        price: this.entityForm.get('price')?.value as number,
-        rating: this.entityForm.get('rating')?.value as number,
-        publishedDate: this.entityForm.get('publishedDate')?.value as string,
-        description: this.entityForm.get('description')?.value as string,
-        inStock: this.entityForm.get('inStock')?.value as boolean
-      };
+      const entityData: Partial<BookApi> = this.buildEntityFromForm();
       
       if (this.isEditing()) {
         const id = this.bookStore.selected()!.id;
         this.bookStore.update(id, entityData).subscribe({
-          next: () => {
-            console.log('✅ Book updated successfully');
-            this.resetForm();
-          },
           error: (error) => console.error('❌ Update failed:', error)
         });
       } else {
         this.bookStore.create(entityData).subscribe({
-          next: () => {
-            console.log('✅ Book created successfully');
-            this.resetForm();
-          },
           error: (error) => console.error('❌ Create failed:', error)
         });
       }
@@ -222,9 +144,36 @@ export class DemoBookCrudComponent implements OnInit {
   // Helper methods
   private loadData(): void {
     this.bookStore.refresh().subscribe({
-      next: () => console.log('📚 Books loaded successfully'),
       error: (error) => console.error('❌ Failed to load books:', error)
     });
+  }
+
+  private populateFormForEdit(book: BookApi): void {
+    this.entityForm.patchValue({
+      title: book.title,
+      author: book.author,
+      isbn: book.isbn,
+      category: book.category,
+      price: book.price,
+      rating: book.rating,
+      publishedDate: book.publishedDate,
+      description: book.description,
+      inStock: book.inStock
+    });
+  }
+
+  private buildEntityFromForm(): Partial<BookApi> {
+    return {
+      title: this.entityForm.get('title')?.value as string,
+      author: this.entityForm.get('author')?.value as string,
+      isbn: this.entityForm.get('isbn')?.value as string,
+      category: this.entityForm.get('category')?.value as BookApi['category'],
+      price: this.entityForm.get('price')?.value as number,
+      rating: this.entityForm.get('rating')?.value as number,
+      publishedDate: this.entityForm.get('publishedDate')?.value as string,
+      description: this.entityForm.get('description')?.value as string,
+      inStock: this.entityForm.get('inStock')?.value as boolean
+    };
   }
 
   private resetForm(): void {
@@ -245,10 +194,7 @@ export class DemoBookCrudComponent implements OnInit {
     return this.fb.group({
       title: [''],
       author: [''],
-      category: [''],
-      inStock: [''],
-      minPrice: [null],
-      maxPrice: [null]
+      category: ['']
     });
   }
 

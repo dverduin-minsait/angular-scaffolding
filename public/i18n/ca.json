@@ -146,7 +146,9 @@
         "cancel": "Cancel·lar"
       },
       "columns": {
-        "toggle": "Alternar Columnes"
+        "toggle": "Alternar Columnes",
+        "visibilityGroup": "Controls de visibilitat de columnes",
+        "toggleColumn": "Alternar"
       },
       "card": {
         "aria": "Targeta d'element"
@@ -154,7 +156,9 @@
       "dialog": {
         "delete": {
           "title": "Eliminar {{entity}}",
-          "message": "Estàs segur que vols eliminar aquest {{entity}}?"
+          "message": "Estàs segur que vols eliminar aquest {{entity}}?",
+          "confirmLabel": "Eliminar",
+          "cancelLabel": "Cancel·lar"
         }
       }
     },
@@ -260,7 +264,8 @@
         "actions": {
           "create": "Crear Llibre",
           "update": "Actualitzar Llibre",
-          "cancel": "Cancel·lar"
+          "cancel": "Cancel·lar",
+          "clean": "Netejar Formulari"
         },
         "errors": {
           "title": {

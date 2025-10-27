@@ -1,55 +1,30 @@
 import { Injectable, inject } from '@angular/core';
 import { BookApi } from './book.types';
 import { BookApiService } from './book.service';
-import { GenericCrudStore, CrudPermissionService } from '../../shared/components/crud';
+import { EntityStore } from '../../core/store/entity-store';
 
 /**
  * Demo Book Store
- * Extends Generic CRUD Store for testing
+ * Extends simplified Generic CRUD Store
+ * Following Angular 20 + signals + zoneless patterns from AGENTS.md
  */
 @Injectable()
-export class BookStore extends GenericCrudStore<BookApi, number> {
+export class BookStore extends EntityStore<BookApi, number> {
   constructor() {
     const apiService = inject(BookApiService);
-    const permissionService = inject(CrudPermissionService);
-    
-    super(apiService, permissionService, {
-      resource: 'books',
-      actions: {
-        create: 'feature:book-create',
-        read: 'feature:book-read',
-        update: 'feature:book-update',
-        delete: 'feature:book-delete',
-        export: 'feature:book-export'
-      }
-    });
-
-    // Initialize permissions for demo
-    permissionService.setUserRoles([
-      { name: 'admin', permissions: ['*'] }
-    ]);
-    
-    permissionService.setFeatureFlags({
-      'book-create': true,
-      'book-read': true,
-      'book-update': true,
-      'book-delete': true,
-      'book-export': true
-    });
-
-    this.updatePermissions();
+    super(apiService);
   }
 
   // Custom store methods for books
   getByCategory(category: string): BookApi[] {
-    return this.filteredItems().filter(book => book.category === category);
+    return this.items().filter((book: BookApi) => book.category === category);
   }
 
   getInStockBooks(): BookApi[] {
-    return this.filteredItems().filter(book => book.inStock);
+    return this.items().filter((book: BookApi) => book.inStock);
   }
 
   getHighRatedBooks(minRating = 4.0): BookApi[] {
-    return this.filteredItems().filter(book => book.rating >= minRating);
+    return this.items().filter((book: BookApi) => book.rating >= minRating);
   }
 }

@@ -146,7 +146,9 @@
         "cancel": "Cancel"
       },
       "columns": {
-        "toggle": "Toggle Columns"
+        "toggle": "Toggle Columns",
+        "visibilityGroup": "Column visibility controls",
+        "toggleColumn": "Toggle"
       },
       "card": {
         "aria": "Item card"
@@ -154,7 +156,9 @@
       "dialog": {
         "delete": {
           "title": "Delete {{entity}}",
-          "message": "Are you sure you want to delete this {{entity}}?"
+          "message": "Are you sure you want to delete this {{entity}}?",
+          "confirmLabel": "Delete",
+          "cancelLabel": "Cancel"
         }
       }
     },
@@ -260,7 +264,8 @@
         "actions": {
           "create": "Create Book",
           "update": "Update Book", 
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "clean": "Clean Form"
         },
         "errors": {
           "title": {

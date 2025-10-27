@@ -161,11 +161,14 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     const name = component.itemForm.get('name');
     name?.markAsTouched();
     name?.setValue('');
+    fixture.detectChanges();
     expect(component.nameError()).toBe('Name is required');
     name?.setValue('A');
     name?.markAsDirty();
+    fixture.detectChanges();
     expect(component.nameError()).toBe('Name must be at least 2 characters');
     name?.setValue('Ok');
+    fixture.detectChanges();
     expect(component.nameError()).toBe('');
   });
 
@@ -230,22 +233,34 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
   it('isFieldInvalid logic', () => {
     const price = component.itemForm.get('price');
     price?.setValue(-1); // untouched invalid
+    fixture.detectChanges();
     expect(component.isFieldInvalid('price')).toBe(false);
     price?.markAsTouched();
+    fixture.detectChanges();
     expect(component.isFieldInvalid('price')).toBe(true);
   });
 
-  it('brand & stock error helpers', () => {
+  it('brand error helper', () => {
     const brand = component.itemForm.get('brand');
     brand?.markAsTouched();
     brand?.setValue('');
+    fixture.detectChanges();
     expect(component.brandError()).toBe('Brand is required');
-    brand?.setValue('A');
-    expect(component.brandError()).toBe('Brand must be at least 2 characters');
+  });
 
+  it('brand minlength error', () => {
+    const brand = component.itemForm.get('brand');
+    brand?.markAsTouched();
+    brand?.setValue('A');
+    fixture.detectChanges();
+    expect(component.brandError()).toBe('Brand must be at least 2 characters');
+  });
+
+  it('stock error helper', () => {
     const stock = component.itemForm.get('stock');
     stock?.markAsTouched();
     stock?.setValue(-5);
+    fixture.detectChanges();
     expect(component.stockError()).toBe('Stock cannot be negative');
   });
 
@@ -253,8 +268,10 @@ describe('ClothesCrudAbstractComponent (behavior)', () => {
     const price = component.itemForm.get('price');
     price?.markAsTouched();
     price?.setValue(0);
+    fixture.detectChanges();
     expect(component.priceError()).toBe('Price must be greater than 0');
     price?.setValue(1);
+    fixture.detectChanges();
     expect(component.priceError()).toBe('');
   });
 });

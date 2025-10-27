@@ -146,7 +146,9 @@
         "cancel": "Cancelar"
       },
       "columns": {
-        "toggle": "Alternar Columnas"
+        "toggle": "Alternar Columnas",
+        "visibilityGroup": "Controles de visibilidad de columnas",
+        "toggleColumn": "Alternar"
       },
       "card": {
         "aria": "Tarjeta de elemento"
@@ -154,7 +156,9 @@
       "dialog": {
         "delete": {
           "title": "Eliminar {{entity}}",
-          "message": "¿Estás seguro de que quieres eliminar este {{entity}}?"
+          "message": "¿Estás seguro de que quieres eliminar este {{entity}}?",
+          "confirmLabel": "Eliminar",
+          "cancelLabel": "Cancelar"
         }
       }
     },
@@ -260,7 +264,8 @@
         "actions": {
           "create": "Crear Libro",
           "update": "Actualizar Libro",
-          "cancel": "Cancelar"
+          "cancel": "Cancelar",
+          "clean": "Limpiar Formulario"
         },
         "errors": {
           "title": {

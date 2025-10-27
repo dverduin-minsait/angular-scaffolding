@@ -79,13 +79,13 @@
       summary {
         cursor: pointer;
         padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
-        background: var(--surface-secondary, #f8f9fa);
+        background: transparent;
         border: 1px solid var(--border-color, #e0e0e0);
         border-radius: var(--border-radius-sm, 0.25rem);
         font-size: var(--font-size-sm, 0.875rem);
 
         &:hover {
-          background: var(--surface-hover, #e9ecef);
+          background: var(--hover-bg, #e9ecef);
         }
       }
 
@@ -93,7 +93,7 @@
         position: absolute;
         right: 0;
         z-index: 10;
-        background: var(--surface-primary, #fff);
+        background: var(--bg-secondary, #fff);
         border: 1px solid var(--border-color, #e0e0e0);
         border-radius: var(--border-radius-md, 0.5rem);
         padding: var(--spacing-md, 1rem);

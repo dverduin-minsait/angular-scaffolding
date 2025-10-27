@@ -85,7 +85,7 @@ describe('HeaderComponent', () => {
 
   it('should have correct navigation items structure', () => {
     const navItems = component['navigationItems']();
-    expect(navItems).toHaveLength(5);
+    expect(navItems).toHaveLength(6);
     
     // Check dashboard item
     expect(navItems[0]).toEqual({
@@ -98,6 +98,14 @@ describe('HeaderComponent', () => {
     // Check clothes item has children
     expect(navItems[1].id).toBe('clothes');
     expect(navItems[1].children).toBeDefined();
+
+    // Check demo-books item
+    expect(navItems[2]).toEqual({
+      id: 'demo-books',
+      label: 'app.navigation.demo-books',
+      path: '/demo-books',
+      icon: '📚'
+    });
     expect(navItems[1].children).toHaveLength(3);
   });
 

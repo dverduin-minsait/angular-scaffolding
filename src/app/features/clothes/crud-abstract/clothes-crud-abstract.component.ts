@@ -136,12 +136,16 @@ export class ClothesCrudAbstractComponent implements OnInit {
 
   constructor() {
     this.itemForm = this.fb.group({
-      name: ['', [void Validators.required, Validators.minLength(2)]],
-      brand: ['', [void Validators.required, Validators.minLength(2)]],
-      price: [0, [void Validators.required, Validators.min(0.01)]],
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      brand: ['', [Validators.required, Validators.minLength(2)]],
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      price: [0, [Validators.required, Validators.min(0.01)]],
       size: [''],
       color: [''],
-      stock: [0, [void Validators.required, Validators.min(0)]],
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      stock: [0, [Validators.required, Validators.min(0)]],
       season: [''],
       category: [''],
       description: [''],

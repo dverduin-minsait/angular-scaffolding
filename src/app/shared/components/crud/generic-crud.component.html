@@ -5,65 +5,56 @@
     
     <!-- Status Bar -->
     <section class="status-bar" aria-labelledby="crud-title">
-      <div class="status-item" [class.loading]="dataSource().loading().isLoading">
+      <div class="status-item" [class.loading]="store().loading().isLoading">
         <span aria-live="polite">
-          {{ dataSource().loading().isLoading ? 
-              ('app.crud.loading' | translate) + ' ' + (dataSource().loading().operation || '') : 
+          {{ store().loading().isLoading ? 
+              ('app.crud.loading' | translate) + ' ' + (store().loading().operation || '') : 
               ('app.crud.ready' | translate) }}
         </span>
       </div>
       <div class="status-item" [attr.aria-label]="'app.crud.itemsLoaded.aria' | translate">
-        {{ 'app.crud.items' | translate }}: {{ dataSource().items().length }}
+        {{ 'app.crud.items' | translate }}: {{ store().items().length }}
       </div>
-      @if(dataSource().error()) {
+      @if(store().error()) {
         <div class="status-item error" role="alert" aria-live="assertive">
-          ⚠️ {{ dataSource().error()?.message }}
+          ⚠️ {{ store().error()?.message }}
         </div>
       }
     </section>
   </header>
 
   <!-- Filter Section (Projected Content) -->
-  @if(hasFilterContent()) {
-    <section class="filter-section" aria-label="Filters">
-      <h3>{{ 'app.crud.filters.title' | translate }}</h3>
-      <ng-content select="[crud-filters]"></ng-content>
-      
-      <div class="filter-actions">
-        <button type="button" appButton variant="secondary" (click)="clearFilters()">
-          {{ 'app.crud.filters.clear' | translate }}
-        </button>
-      </div>
-    </section>
-  }
+  <section class="filter-section" aria-label="Filters">
+    <ng-content select="[crud-filters]"></ng-content>
+  </section>
 
   <!-- Grid Actions -->
   <section class="grid-actions">
-    @if(config().permissions.create) {
+    @if(canCreate()) {
       <button type="button" appButton variant="primary" (click)="startCreate()"
-        [disabled]="dataSource().loading().isLoading">
+        [disabled]="store().loading().isLoading">
         {{ 'app.crud.actions.create' | translate }} {{ config().entityName }}
       </button>
     }
     
     <button type="button" appButton variant="secondary" (click)="refreshData()"
-      [disabled]="dataSource().loading().isLoading">
+      [disabled]="store().loading().isLoading">
       {{ 'app.crud.actions.refresh' | translate }}
     </button>
     
-    @if(selectedEntity()) {
+    @if(store().selected()) {
       <button type="button" appButton variant="secondary" (click)="clearSelection()">
         {{ 'app.crud.actions.clearSelection' | translate }}
       </button>
       
-      @if(config().permissions.update) {
-        <button type="button" appButton variant="secondary" (click)="startEdit(selectedEntity()!)">
+      @if(canEdit()) {
+        <button type="button" appButton variant="secondary" (click)="startEdit()">
           {{ 'app.crud.actions.edit' | translate }}
         </button>
       }
 
-      @if(config().permissions.delete) {
-        <button type="button" appButton variant="danger" (click)="confirmDelete(selectedEntity()!.id)">
+      @if(canDelete()) {
+        <button type="button" appButton variant="danger" (click)="confirmDelete(store().selected()!)">
           {{ 'app.crud.actions.delete' | translate }}
         </button>
       }
@@ -72,13 +63,15 @@
     <!-- Column Visibility Toggle -->
     <details class="column-toggle-panel">
       <summary>{{ 'app.crud.columns.toggle' | translate }}</summary>
-      <div class="columns-list">
+      <div class="columns-list" role="group" [attr.aria-label]="'app.crud.columns.visibilityGroup' | translate">
         @for (column of config().columns; track column.field) {
-          <label class="col-toggle">
+          <label class="col-toggle" [for]="'col-toggle-' + getColumnKey(column.field)">
             <input 
+              [id]="'col-toggle-' + getColumnKey(column.field)"
               type="checkbox" 
               [checked]="getColumnVisibility(column.field)"
-              (change)="toggleColumn(getColumnKey(column.field))" 
+              (change)="toggleColumn(getColumnKey(column.field))"
+              [attr.aria-label]="('app.crud.columns.toggleColumn' | translate) + ' ' + column.headerName"
             />
             <span>{{ column.headerName }}</span>
           </label>
@@ -91,16 +84,16 @@
   <section class="grid-section" aria-label="Data list">
     <app-responsive-grid 
       [dataConfig]="gridDataConfig" 
-      [dataSignal]="filteredItems()" 
+      [dataSignal]="displayItems()" 
       [config]="gridConfig()"
       (gridReady)="onGridReady($event)">
       
       <!-- Mobile Cards Slot -->
       <div slot="mobile-cards" class="mobile-cards">
-        @for (item of filteredItems(); track item.id) {
+        @for (item of displayItems(); track item.id) {
           <div 
             class="mobile-card" 
-            [class.selected]="selectedEntity()?.id === item.id"
+            [class.selected]="store().selected()?.id === item.id"
             (click)="selectEntity(item)" 
             tabindex="0" 
             (keydown.enter)="selectEntity(item)"
@@ -117,15 +110,15 @@
             
             <!-- Card Actions -->
             <div class="card-actions">
-              @if(config().permissions.update) {
+              @if(canEdit()) {
                 <button type="button" appButton variant="secondary" size="sm" 
                   (click)="startEdit(item); $event.stopPropagation()">
                   {{ 'app.crud.actions.edit' | translate }}
                 </button>
               }
-              @if(config().permissions.delete) {
+              @if(canDelete()) {
                 <button type="button" appButton variant="danger" size="sm"
-                  (click)="confirmDelete(item.id); $event.stopPropagation()">
+                  (click)="confirmDelete(item); $event.stopPropagation()">
                   {{ 'app.crud.actions.delete' | translate }}
                 </button>
               }
@@ -137,13 +130,13 @@
   </section>
 
   <!-- Entity Form Section (Projected Content) -->
-  @if(hasEntityFormContent() && (isCreating() || isEditing())) {
-    <section class="entity-form-section" [attr.aria-label]="formSectionLabel()">
-      <h3>{{ formTitle() }}</h3>
+  @if(isFormActive()) {
+    <section class="entity-form-section" [attr.aria-label]="config().entityName + ' form'">
+      <h3>{{ isCreating() ? 'Create' : 'Edit' }} {{ config().entityName }}</h3>
       
       <ng-content select="[crud-entity-form]"></ng-content>
       
-      <!-- Form Actions (if not provided in projected content) -->
+      <!-- Default form actions (if not provided in projected content) -->
       <div class="form-actions">
         <button type="button" appButton variant="secondary" (click)="cancelForm()">
           {{ 'app.crud.actions.cancel' | translate }}
