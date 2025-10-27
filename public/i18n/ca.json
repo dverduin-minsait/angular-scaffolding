@@ -6,22 +6,19 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Tauler",
-      "clothes": {
-        "_": "Roba",
-        "men": "Home",
-        "crud": "CRUD Roba",
-        "women": {
-          "_": "Dona",
-          "dresses": "Vestits",
-          "shoes": "Sabates"
-        }
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Demo Tema",
+        "crudDemo": "Demo CRUD"
       },
       "auth": {
         "_": "Autenticació",
         "login": "Iniciar sessió",
         "register": "Registrar-se"
       },
+      "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
+      "theme-demo": "Demo Tema",
       "settings": "Configuració"
     },
     "actions": {
@@ -123,6 +120,202 @@
       "pt": "Portuguès",
       "ca": "Català",
       "gl": "Gallec"
+    },
+    "crud": {
+      "loading": "Carregant",
+      "ready": "Llest",
+      "items": "Elements",
+      "itemsLoaded": {
+        "aria": "Nombre d'elements carregats"
+      },
+      "filters": {
+        "title": "Filtres",
+        "clear": "Netejar Filtres"
+      },
+      "actions": {
+        "create": "Crear",
+        "refresh": "Actualitzar",
+        "clearSelection": "Netejar Selecció",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancel·lar"
+      },
+      "columns": {
+        "toggle": "Alternar Columnes",
+        "visibilityGroup": "Controls de visibilitat de columnes",
+        "toggleColumn": "Alternar"
+      },
+      "card": {
+        "aria": "Targeta d'element"
+      },
+      "dialog": {
+        "delete": {
+          "title": "Eliminar {{entity}}",
+          "message": "Estàs segur que vols eliminar aquest {{entity}}?",
+          "confirmLabel": "Eliminar",
+          "cancelLabel": "Cancel·lar"
+        }
+      }
+    },
+    "demoBooks": {
+      "title": "Demo CRUD - Llibres",
+      "description": "Aquest component demostra el Sistema CRUD Genèric amb projecció de contingut.",
+      "filter": {
+        "title": "Filtrar Llibres",
+        "fields": {
+          "title": {
+            "label": "Títol",
+            "placeholder": "Cercar per títol..."
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Cercar per autor..."
+          },
+          "category": {
+            "label": "Categoria",
+            "options": {
+              "all": "Totes les Categories",
+              "programming": "Programació",
+              "philosophy": "Filosofia",
+              "science": "Ciència",
+              "fiction": "Ficció",
+              "nonFiction": "No Ficció",
+              "biography": "Biografia"
+            }
+          },
+          "availability": {
+            "label": "Disponibilitat",
+            "options": {
+              "all": "Tots",
+              "inStock": "En Stock",
+              "outOfStock": "Esgotat"
+            }
+          },
+          "priceRange": {
+            "minPrice": {
+              "label": "Preu Min (€)",
+              "placeholder": "0.00"
+            },
+            "maxPrice": {
+              "label": "Preu Màx (€)",
+              "placeholder": "100.00"
+            }
+          }
+        },
+        "actions": {
+          "apply": "Aplicar Filtres",
+          "clear": "Netejar Filtres"
+        }
+      },
+      "form": {
+        "title": {
+          "create": "Crear Llibre",
+          "edit": "Editar Llibre"
+        },
+        "fields": {
+          "title": {
+            "label": "Títol del Llibre",
+            "placeholder": "Introduïu el títol del llibre",
+            "required": true
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Introduïu el nom de l'autor",
+            "required": true
+          },
+          "isbn": {
+            "label": "ISBN",
+            "placeholder": "978-0000000000",
+            "required": true
+          },
+          "category": {
+            "label": "Categoria",
+            "placeholder": "Seleccionar Categoria",
+            "required": true
+          },
+          "price": {
+            "label": "Preu (€)",
+            "placeholder": "0.00",
+            "required": true
+          },
+          "rating": {
+            "label": "Valoració (1-5)",
+            "placeholder": "5.0",
+            "required": true
+          },
+          "publishedDate": {
+            "label": "Data de Publicació",
+            "required": true
+          },
+          "description": {
+            "label": "Descripció",
+            "placeholder": "Descripció del llibre (opcional)",
+            "hint": "Descripció opcional del llibre"
+          },
+          "inStock": {
+            "label": "En Stock"
+          }
+        },
+        "actions": {
+          "create": "Crear Llibre",
+          "update": "Actualitzar Llibre",
+          "cancel": "Cancel·lar",
+          "clean": "Netejar Formulari"
+        },
+        "errors": {
+          "title": {
+            "required": "El títol és requerit",
+            "minLength": "El títol ha de tenir almenys 2 caràcters"
+          },
+          "author": {
+            "required": "L'autor és requerit",
+            "minLength": "L'autor ha de tenir almenys 2 caràcters"
+          },
+          "isbn": {
+            "required": "L'ISBN és requerit",
+            "pattern": "Si us plau, introduïu un format d'ISBN vàlid"
+          },
+          "category": {
+            "required": "La categoria és requerida"
+          },
+          "price": {
+            "required": "Un preu vàlid és requerit",
+            "min": "El preu ha de ser superior a 0"
+          },
+          "rating": {
+            "required": "Una valoració entre 1-5 és requerida",
+            "min": "La valoració ha de ser almenys 1",
+            "max": "La valoració no pot excedir 5"
+          },
+          "publishedDate": {
+            "required": "La data de publicació és requerida"
+          }
+        }
+      },
+      "stats": {
+        "title": "Estadístiques Demo",
+        "totalBooks": "Total de Llibres",
+        "inStock": "En Stock",
+        "highRated": "Ben Valorats (4.0+)",
+        "programmingBooks": "Llibres de Programació"
+      },
+      "grid": {
+        "columns": {
+          "title": "Títol",
+          "author": "Autor",
+          "category": "Categoria",
+          "price": "Preu",
+          "rating": "Valoració",
+          "stock": "Stock",
+          "published": "Publicat"
+        },
+        "formatters": {
+          "price": "{0}€",
+          "rating": "⭐ {0}",
+          "inStock": "✅ En Stock",
+          "outOfStock": "❌ Esgotat"
+        }
+      }
     },
     "clothes": {
       "catalog": {

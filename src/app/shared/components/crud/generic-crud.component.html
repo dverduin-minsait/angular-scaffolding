@@ -1,0 +1,147 @@
+<div class="generic-crud-container">
+  <!-- Header Section -->
+  <header class="crud-header">
+    <h2 id="crud-title">{{ config().entityName }}</h2>
+    
+    <!-- Status Bar -->
+    <section class="status-bar" aria-labelledby="crud-title">
+      <div class="status-item" [class.loading]="store().loading().isLoading">
+        <span aria-live="polite">
+          {{ store().loading().isLoading ? 
+              ('app.crud.loading' | translate) + ' ' + (store().loading().operation || '') : 
+              ('app.crud.ready' | translate) }}
+        </span>
+      </div>
+      <div class="status-item" [attr.aria-label]="'app.crud.itemsLoaded.aria' | translate">
+        {{ 'app.crud.items' | translate }}: {{ store().items().length }}
+      </div>
+      @if(store().error()) {
+        <div class="status-item error" role="alert" aria-live="assertive">
+          ⚠️ {{ store().error()?.message }}
+        </div>
+      }
+    </section>
+  </header>
+
+  <!-- Filter Section (Projected Content) -->
+  <section class="filter-section" aria-label="Filters">
+    <ng-content select="[crud-filters]"></ng-content>
+  </section>
+
+  <!-- Grid Actions -->
+  <section class="grid-actions">
+    @if(canCreate()) {
+      <button type="button" appButton variant="primary" (click)="startCreate()"
+        [disabled]="store().loading().isLoading">
+        {{ 'app.crud.actions.create' | translate }} {{ config().entityName }}
+      </button>
+    }
+    
+    <button type="button" appButton variant="secondary" (click)="refreshData()"
+      [disabled]="store().loading().isLoading">
+      {{ 'app.crud.actions.refresh' | translate }}
+    </button>
+    
+    @if(store().selected()) {
+      <button type="button" appButton variant="secondary" (click)="clearSelection()">
+        {{ 'app.crud.actions.clearSelection' | translate }}
+      </button>
+      
+      @if(canEdit()) {
+        <button type="button" appButton variant="secondary" (click)="startEdit()">
+          {{ 'app.crud.actions.edit' | translate }}
+        </button>
+      }
+
+      @if(canDelete()) {
+        <button type="button" appButton variant="danger" (click)="confirmDelete(store().selected()!)">
+          {{ 'app.crud.actions.delete' | translate }}
+        </button>
+      }
+    }
+
+    <!-- Column Visibility Toggle -->
+    <details class="column-toggle-panel">
+      <summary>{{ 'app.crud.columns.toggle' | translate }}</summary>
+      <div class="columns-list" role="group" [attr.aria-label]="'app.crud.columns.visibilityGroup' | translate">
+        @for (column of config().columns; track column.field) {
+          <label class="col-toggle" [for]="'col-toggle-' + getColumnKey(column.field)">
+            <input 
+              [id]="'col-toggle-' + getColumnKey(column.field)"
+              type="checkbox" 
+              [checked]="getColumnVisibility(column.field)"
+              (change)="toggleColumn(getColumnKey(column.field))"
+              [attr.aria-label]="('app.crud.columns.toggleColumn' | translate) + ' ' + column.headerName"
+            />
+            <span>{{ column.headerName }}</span>
+          </label>
+        }
+      </div>
+    </details>
+  </section>
+
+  <!-- Data Grid -->
+  <section class="grid-section" aria-label="Data list">
+    <app-responsive-grid 
+      [dataConfig]="gridDataConfig" 
+      [dataSignal]="displayItems()" 
+      [config]="gridConfig()"
+      (gridReady)="onGridReady($event)">
+      
+      <!-- Mobile Cards Slot -->
+      <div slot="mobile-cards" class="mobile-cards">
+        @for (item of displayItems(); track item.id) {
+          <div 
+            class="mobile-card" 
+            [class.selected]="store().selected()?.id === item.id"
+            (click)="selectEntity(item)" 
+            tabindex="0" 
+            (keydown.enter)="selectEntity(item)"
+            (keydown.space)="selectEntity(item)"
+            [attr.aria-label]="'app.crud.card.aria' | translate">
+            
+            <!-- Render first few columns as card content -->
+            @for (column of visibleColumns() | slice:0:4; track column.field) {
+              <div class="card-field">
+                <strong>{{ column.headerName }}:</strong>
+                <span>{{ formatCellValue(item[column.field], column) }}</span>
+              </div>
+            }
+            
+            <!-- Card Actions -->
+            <div class="card-actions">
+              @if(canEdit()) {
+                <button type="button" appButton variant="secondary" size="sm" 
+                  (click)="startEdit(item); $event.stopPropagation()">
+                  {{ 'app.crud.actions.edit' | translate }}
+                </button>
+              }
+              @if(canDelete()) {
+                <button type="button" appButton variant="danger" size="sm"
+                  (click)="confirmDelete(item); $event.stopPropagation()">
+                  {{ 'app.crud.actions.delete' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </app-responsive-grid>
+  </section>
+
+  <!-- Entity Form Section (Projected Content) -->
+  @if(isFormActive()) {
+    <section class="entity-form-section" [attr.aria-label]="config().entityName + ' form'">
+      <h3>{{ isCreating() ? 'Create' : 'Edit' }} {{ config().entityName }}</h3>
+      
+      <ng-content select="[crud-entity-form]"></ng-content>
+      
+      <!-- Default form actions (if not provided in projected content) -->
+      <div class="form-actions">
+        <button type="button" appButton variant="secondary" (click)="cancelForm()">
+          {{ 'app.crud.actions.cancel' | translate }}
+        </button>
+      </div>
+    </section>
+  }
+</div>

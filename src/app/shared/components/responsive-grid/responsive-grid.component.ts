@@ -11,7 +11,8 @@ import {
   output,
   ElementRef,
   effect,
-  AfterViewInit
+  AfterViewInit,
+  DestroyRef
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
@@ -115,6 +116,8 @@ export class ResponsiveGridComponent implements OnDestroy, AfterViewInit {
   private readonly gridLoader = inject(GridLoaderService);
   private readonly gridDataService = inject(GridDataService);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly destroyRef = inject(DestroyRef);
+  private isComponentDestroyed = false;
   //#endregion
 
   //#region Computed Properties
@@ -125,6 +128,11 @@ export class ResponsiveGridComponent implements OnDestroy, AfterViewInit {
 
   //#region Constructor
   constructor() {
+    // Register cleanup on component destruction
+    this.destroyRef.onDestroy(() => {
+      this.isComponentDestroyed = true;
+    });
+
     // Effect to handle device changes and grid setup/teardown
     effect(() => {
       const supportsGrids = this.deviceService.supportsGrids();
@@ -357,6 +365,9 @@ export class ResponsiveGridComponent implements OnDestroy, AfterViewInit {
         rowData: this.data(),
         ...this.config().gridOptions,
         onGridReady: (params: GridReadyEvent) => {
+          // Prevent emissions after component destruction
+          if (this.isComponentDestroyed) return;
+          
           // Auto-size columns when ready - with safety check
           this.safeSetTimeout(() => {
             if (this.isGridValid() && params.api) {

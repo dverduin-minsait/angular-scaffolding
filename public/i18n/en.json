@@ -6,22 +6,19 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Dashboard",
-      "clothes": {
-        "_": "Clothes",
-        "men": "Men",
-        "crud": "Clothes CRUD",
-        "women": {
-          "_": "Women",
-          "dresses": "Dresses",
-          "shoes": "Shoes"
-        }
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Theme Demo",
+        "crudDemo": "CRUD Demo"
       },
       "auth": {
         "_": "Authentication",
         "login": "Login",
         "register": "Register"
       },
+      "demo-books": "CRUD Demo",
       "themeDemo": "Theme Demo",
+      "theme-demo": "Theme Demo",
       "settings": "Settings"
     },
     "actions": {
@@ -124,86 +121,199 @@
       "ca": "Catalan",
       "gl": "Galician"
     },
-    "clothes": {
-      "catalog": {
-        "title": "Clothes Catalog",
-        "loading": "Loading clothes catalog...",
-        "columns": {
-          "name": "Product Name",
-          "brand": "Brand",
-          "price": "Price",
-          "size": "Size",
-          "color": "Color",
-          "stock": "Stock",
-          "category": "Category",
-          "season": "Season"
-        },
-        "mobile": {
-          "colorLabel": "Color:",
-          "stockLabel": "Stock:"
-        }
+    "crud": {
+      "loading": "Loading",
+      "ready": "Ready",
+      "items": "Items",
+      "itemsLoaded": {
+        "aria": "Number of items loaded"
       },
-      "crud": {
-        "title": "Clothes Manager",
-        "loading": "Loading",
-        "loadingShort": "Loading clothes...",
-        "ready": "Ready",
-        "items": "Items",
-        "itemsLoaded": { "aria": "Items loaded" },
-        "columns": {
-          "id": "ID",
-          "name": "Name",
-          "brand": "Brand",
-          "price": "Price",
-          "stock": "Stock",
-          "category": "Category",
-          "season": "Season",
-          "updatedAt": "Updated"
-        },
-        "actions": {
-          "refresh": "Refresh",
-          "clearSelection": "Clear Selection",
-          "openTestModal": "Open Test Modal"
-        },
-        "columnsPanel": "Columns",
-        "columnsPanelTitle": "Columns",
-        "form": {
-          "editTitle": "Edit Item",
-          "addTitle": "Add New Item",
-          "basicInfo": "Basic Info",
-          "actions": {
-            "update": "Update Item",
-            "create": "Create Item",
-            "reset": "Reset",
-            "cancel": "Cancel"
+      "filters": {
+        "title": "Filters",
+        "clear": "Clear Filters"
+      },
+      "actions": {
+        "create": "Create",
+        "refresh": "Refresh",
+        "clearSelection": "Clear Selection",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel"
+      },
+      "columns": {
+        "toggle": "Toggle Columns",
+        "visibilityGroup": "Column visibility controls",
+        "toggleColumn": "Toggle"
+      },
+      "card": {
+        "aria": "Item card"
+      },
+      "dialog": {
+        "delete": {
+          "title": "Delete {{entity}}",
+          "message": "Are you sure you want to delete this {{entity}}?",
+          "confirmLabel": "Delete",
+          "cancelLabel": "Cancel"
+        }
+      }
+    },
+    "demoBooks": {
+      "title": "CRUD Demo - Books",
+      "description": "This component demonstrates the Generic CRUD System with content projection.",
+      "filter": {
+        "title": "Filter Books",
+        "fields": {
+          "title": {
+            "label": "Title",
+            "placeholder": "Search by title..."
           },
-          "fields": {
-            "name": { "label": "Name" },
-            "brand": { "label": "Brand" },
-            "price": { "label": "Price" },
-            "stock": { "label": "Stock" },
-            "size": { "label": "Size" },
-            "season": { "label": "Season" },
-            "category": { "label": "Category" },
-            "color": { "label": "Color" },
-            "description": { "label": "Description" }
+          "author": {
+            "label": "Author", 
+            "placeholder": "Search by author..."
           },
-          "errors": {
-            "name": { "required": "Name is required", "min": "Name must be at least 2 characters" },
-            "brand": { "required": "Brand is required", "min": "Brand must be at least 2 characters" },
-            "price": { "required": "Price is required", "min": "Price must be greater than 0" },
-            "stock": { "required": "Stock is required", "min": "Stock cannot be negative" }
+          "category": {
+            "label": "Category",
+            "options": {
+              "all": "All Categories",
+              "programming": "Programming",
+              "philosophy": "Philosophy", 
+              "science": "Science",
+              "fiction": "Fiction",
+              "nonFiction": "Non-Fiction",
+              "biography": "Biography"
+            }
+          },
+          "availability": {
+            "label": "Availability",
+            "options": {
+              "all": "All",
+              "inStock": "In Stock",
+              "outOfStock": "Out of Stock"
+            }
+          },
+          "priceRange": {
+            "minPrice": {
+              "label": "Min Price ($)",
+              "placeholder": "0.00"
+            },
+            "maxPrice": {
+              "label": "Max Price ($)",
+              "placeholder": "100.00"
+            }
           }
         },
-        "stats": {
-          "total": { "label": "Total", "aria": "Total items" },
-          "available": { "label": "Available", "aria": "Available items" },
-          "lowStock": { "label": "Low Stock", "aria": "Low stock items" },
-          "value": { "label": "Value", "aria": "Inventory value" }
+        "actions": {
+          "apply": "Apply Filters",
+          "clear": "Clear Filters"
+        }
+      },
+      "form": {
+        "title": {
+          "create": "Create Book",
+          "edit": "Edit Book"
         },
-        "dialog": {
-          "delete": { "title": "Delete Item", "message": "Are you sure you want to delete this item?" },
-          "test": { "title": "Test Modal", "message": "This is a manual test modal." }
+        "fields": {
+          "title": {
+            "label": "Book Title",
+            "placeholder": "Enter book title",
+            "required": true
+          },
+          "author": {
+            "label": "Author",
+            "placeholder": "Enter author name",
+            "required": true
+          },
+          "isbn": {
+            "label": "ISBN",
+            "placeholder": "978-0000000000",
+            "required": true
+          },
+          "category": {
+            "label": "Category",
+            "placeholder": "Select Category",
+            "required": true
+          },
+          "price": {
+            "label": "Price ($)",
+            "placeholder": "0.00",
+            "required": true
+          },
+          "rating": {
+            "label": "Rating (1-5)",
+            "placeholder": "5.0",
+            "required": true
+          },
+          "publishedDate": {
+            "label": "Published Date",
+            "required": true
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Book description (optional)",
+            "hint": "Optional book description"
+          },
+          "inStock": {
+            "label": "In Stock"
+          }
+        },
+        "actions": {
+          "create": "Create Book",
+          "update": "Update Book", 
+          "cancel": "Cancel",
+          "clean": "Clean Form"
+        },
+        "errors": {
+          "title": {
+            "required": "Title is required",
+            "minLength": "Title must be at least 2 characters"
+          },
+          "author": {
+            "required": "Author is required",
+            "minLength": "Author must be at least 2 characters"
+          },
+          "isbn": {
+            "required": "ISBN is required",
+            "pattern": "Please enter a valid ISBN format"
+          },
+          "category": {
+            "required": "Category is required"
+          },
+          "price": {
+            "required": "Valid price is required",
+            "min": "Price must be greater than 0"
+          },
+          "rating": {
+            "required": "Rating between 1-5 is required",
+            "min": "Rating must be at least 1",
+            "max": "Rating cannot exceed 5"
+          },
+          "publishedDate": {
+            "required": "Published date is required"
+          }
+        }
+      },
+      "stats": {
+        "title": "Demo Statistics",
+        "totalBooks": "Total Books",
+        "inStock": "In Stock", 
+        "highRated": "High Rated (4.0+)",
+        "programmingBooks": "Programming Books"
+      },
+      "grid": {
+        "columns": {
+          "title": "Title",
+          "author": "Author",
+          "category": "Category", 
+          "price": "Price",
+          "rating": "Rating",
+          "stock": "Stock",
+          "published": "Published"
+        },
+        "formatters": {
+          "price": "${0}",
+          "rating": "⭐ {0}",
+          "inStock": "✅ In Stock",
+          "outOfStock": "❌ Out of Stock"
         }
       }
     }

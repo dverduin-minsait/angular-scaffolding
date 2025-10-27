@@ -6,22 +6,19 @@
     "title": "Anguliño",
     "navigation": {
       "dashboard": "Panel",
-      "clothes": {
-        "_": "Roupa",
-        "men": "Home",
-        "crud": "CRUD Roupa",
-        "women": {
-          "_": "Muller",
-          "dresses": "Vestidos",
-          "shoes": "Zapatos"
-        }
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Demo Tema",
+        "crudDemo": "Demo CRUD"
       },
       "auth": {
         "_": "Autenticación",
         "login": "Iniciar sesión",
         "register": "Rexistrarse"
       },
+      "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
+      "theme-demo": "Demo Tema",
       "settings": "Configuración"
     },
     "actions": {
@@ -123,6 +120,202 @@
       "pt": "Portugués",
       "ca": "Catalán",
       "gl": "Galego"
+    },
+    "crud": {
+      "loading": "Cargando",
+      "ready": "Listo",
+      "items": "Elementos",
+      "itemsLoaded": {
+        "aria": "Número de elementos cargados"
+      },
+      "filters": {
+        "title": "Filtros",
+        "clear": "Limpar Filtros"
+      },
+      "actions": {
+        "create": "Crear",
+        "refresh": "Actualizar",
+        "clearSelection": "Limpar Selección",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancelar"
+      },
+      "columns": {
+        "toggle": "Alternar Columnas",
+        "visibilityGroup": "Controis de visibilidade de columnas",
+        "toggleColumn": "Alternar"
+      },
+      "card": {
+        "aria": "Tarxeta de elemento"
+      },
+      "dialog": {
+        "delete": {
+          "title": "Eliminar {{entity}}",
+          "message": "Estás seguro de que queres eliminar este {{entity}}?",
+          "confirmLabel": "Eliminar",
+          "cancelLabel": "Cancelar"
+        }
+      }
+    },
+    "demoBooks": {
+      "title": "Demo CRUD - Libros",
+      "description": "Este compoñente demostra o Sistema CRUD Xenérico con proxección de contido.",
+      "filter": {
+        "title": "Filtrar Libros",
+        "fields": {
+          "title": {
+            "label": "Título",
+            "placeholder": "Buscar por título..."
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Buscar por autor..."
+          },
+          "category": {
+            "label": "Categoría",
+            "options": {
+              "all": "Todas as Categorías",
+              "programming": "Programación",
+              "philosophy": "Filosofía",
+              "science": "Ciencia",
+              "fiction": "Ficción",
+              "nonFiction": "Non Ficción",
+              "biography": "Biografía"
+            }
+          },
+          "availability": {
+            "label": "Dispoñibilidade",
+            "options": {
+              "all": "Todos",
+              "inStock": "En Stock",
+              "outOfStock": "Esgotado"
+            }
+          },
+          "priceRange": {
+            "minPrice": {
+              "label": "Prezo Min (€)",
+              "placeholder": "0.00"
+            },
+            "maxPrice": {
+              "label": "Prezo Máx (€)",
+              "placeholder": "100.00"
+            }
+          }
+        },
+        "actions": {
+          "apply": "Aplicar Filtros",
+          "clear": "Limpar Filtros"
+        }
+      },
+      "form": {
+        "title": {
+          "create": "Crear Libro",
+          "edit": "Editar Libro"
+        },
+        "fields": {
+          "title": {
+            "label": "Título do Libro",
+            "placeholder": "Introduza o título do libro",
+            "required": true
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Introduza o nome do autor",
+            "required": true
+          },
+          "isbn": {
+            "label": "ISBN",
+            "placeholder": "978-0000000000",
+            "required": true
+          },
+          "category": {
+            "label": "Categoría",
+            "placeholder": "Seleccionar Categoría",
+            "required": true
+          },
+          "price": {
+            "label": "Prezo (€)",
+            "placeholder": "0.00",
+            "required": true
+          },
+          "rating": {
+            "label": "Valoración (1-5)",
+            "placeholder": "5.0",
+            "required": true
+          },
+          "publishedDate": {
+            "label": "Data de Publicación",
+            "required": true
+          },
+          "description": {
+            "label": "Descrición",
+            "placeholder": "Descrición do libro (opcional)",
+            "hint": "Descrición opcional do libro"
+          },
+          "inStock": {
+            "label": "En Stock"
+          }
+        },
+        "actions": {
+          "create": "Crear Libro",
+          "update": "Actualizar Libro",
+          "cancel": "Cancelar",
+          "clean": "Limpar Formulario"
+        },
+        "errors": {
+          "title": {
+            "required": "O título é obrigatorio",
+            "minLength": "O título debe ter polo menos 2 caracteres"
+          },
+          "author": {
+            "required": "O autor é obrigatorio",
+            "minLength": "O autor debe ter polo menos 2 caracteres"
+          },
+          "isbn": {
+            "required": "O ISBN é obrigatorio",
+            "pattern": "Por favor introduza un formato de ISBN válido"
+          },
+          "category": {
+            "required": "A categoría é obrigatoria"
+          },
+          "price": {
+            "required": "Un prezo válido é obrigatorio",
+            "min": "O prezo debe ser maior ca 0"
+          },
+          "rating": {
+            "required": "Unha valoración entre 1-5 é obrigatoria",
+            "min": "A valoración debe ser polo menos 1",
+            "max": "A valoración non pode exceder 5"
+          },
+          "publishedDate": {
+            "required": "A data de publicación é obrigatoria"
+          }
+        }
+      },
+      "stats": {
+        "title": "Estatísticas Demo",
+        "totalBooks": "Total de Libros",
+        "inStock": "En Stock",
+        "highRated": "Ben Valorados (4.0+)",
+        "programmingBooks": "Libros de Programación"
+      },
+      "grid": {
+        "columns": {
+          "title": "Título",
+          "author": "Autor",
+          "category": "Categoría",
+          "price": "Prezo",
+          "rating": "Valoración",
+          "stock": "Stock",
+          "published": "Publicado"
+        },
+        "formatters": {
+          "price": "{0}€",
+          "rating": "⭐ {0}",
+          "inStock": "✅ En Stock",
+          "outOfStock": "❌ Esgotado"
+        }
+      }
     },
     "clothes": {
       "catalog": {

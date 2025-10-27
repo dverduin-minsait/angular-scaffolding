@@ -1,5 +1,5 @@
-// Import theme system
-@use '../../themes/index' as *;
+// Import only the mixins we need
+@use '../../themes/mixins' as *;
 
 .dashboard {
   padding: 2rem;

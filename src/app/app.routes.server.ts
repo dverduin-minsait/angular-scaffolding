@@ -20,10 +20,6 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server
   },
   {
-    path: 'clothes/**',
-    renderMode: RenderMode.Server
-  },
-  {
     path: 'theme-demo/**',
     renderMode: RenderMode.Server
   },

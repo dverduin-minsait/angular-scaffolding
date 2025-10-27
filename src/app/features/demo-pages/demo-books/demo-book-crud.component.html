@@ -1,0 +1,295 @@
+
+<div class="demo-crud-wrapper">
+  <header class="demo-header">
+    <h1>{{ 'app.demoBooks.title' | translate }}</h1>
+    <p>{{ 'app.demoBooks.description' | translate }}</p>
+  </header>
+
+  <app-generic-crud 
+    [config]="crudConfig()" 
+    [store]="bookStore"
+    [dataSignal]="filteredBooks"
+    [canCreate]="true"
+    [canEdit]="true"
+    [canDelete]="true"
+    (events)="handleCrudEvent($event)">
+    
+    <!-- Simplified Filter Form (Projected Content) -->
+    <form crud-filters [formGroup]="filterForm" (ngSubmit)="applyFilters()" class="crud-form">
+      <div class="field-grid">
+        <div class="form-field">
+          <label class="form-label" for="filter-title">
+            {{ 'app.demoBooks.filter.fields.title.label' | translate }}
+          </label>
+          <input 
+            id="filter-title"
+            type="text"
+            class="form-control"
+            formControlName="title"
+            [placeholder]="'app.demoBooks.filter.fields.title.placeholder' | translate"
+          />
+        </div>
+        
+        <div class="form-field">
+          <label class="form-label" for="filter-author">
+            {{ 'app.demoBooks.filter.fields.author.label' | translate }}
+          </label>
+          <input 
+            id="filter-author"
+            type="text"
+            class="form-control"
+            formControlName="author"
+            [placeholder]="'app.demoBooks.filter.fields.author.placeholder' | translate"
+          />
+        </div>
+        
+        <div class="form-field">
+          <label class="form-label" for="filter-category">
+            {{ 'app.demoBooks.filter.fields.category.label' | translate }}
+          </label>
+          <select id="filter-category" class="form-control" formControlName="category">
+            <option value="">{{ 'app.demoBooks.filter.fields.category.options.all' | translate }}</option>
+            <option value="Programming">{{ 'app.demoBooks.filter.fields.category.options.programming' | translate }}</option>
+            <option value="Philosophy">{{ 'app.demoBooks.filter.fields.category.options.philosophy' | translate }}</option>
+            <option value="Science">{{ 'app.demoBooks.filter.fields.category.options.science' | translate }}</option>
+            <option value="Fiction">{{ 'app.demoBooks.filter.fields.category.options.fiction' | translate }}</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" appButton variant="secondary">
+          {{ 'app.demoBooks.filter.actions.apply' | translate }}
+        </button>
+        <button type="button" appButton variant="secondary" (click)="clearFilters()">
+          {{ 'app.demoBooks.filter.actions.clear' | translate }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Entity Form (Projected Content) -->
+    <form crud-entity-form [formGroup]="entityForm" (ngSubmit)="saveEntity()" class="crud-form">
+      <div class="field-grid">
+        <div class="form-field">
+          <label class="form-label" for="entity-title">
+            {{ 'app.demoBooks.form.fields.title.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-title"
+            type="text"
+            class="form-control"
+            formControlName="title"
+            [placeholder]="'app.demoBooks.form.fields.title.placeholder' | translate"
+            [attr.aria-invalid]="isFieldInvalid('title') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('title') ? 'title-error' : null"
+          />
+          @if (isFieldInvalid('title')) {
+            <div id="title-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('title') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-author">
+            {{ 'app.demoBooks.form.fields.author.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-author"
+            type="text"
+            class="form-control"
+            formControlName="author"
+            [placeholder]="'app.demoBooks.form.fields.author.placeholder' | translate"
+            [attr.aria-invalid]="isFieldInvalid('author') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('author') ? 'author-error' : null"
+          />
+          @if (isFieldInvalid('author')) {
+            <div id="author-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('author') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-isbn">
+            {{ 'app.demoBooks.form.fields.isbn.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-isbn"
+            type="text"
+            class="form-control"
+            formControlName="isbn"
+            [placeholder]="'app.demoBooks.form.fields.isbn.placeholder' | translate"
+            [attr.aria-invalid]="isFieldInvalid('isbn') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('isbn') ? 'isbn-error' : null"
+          />
+          @if (isFieldInvalid('isbn')) {
+            <div id="isbn-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('isbn') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-category">
+            {{ 'app.demoBooks.form.fields.category.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <select 
+            id="entity-category" 
+            class="form-control"
+            formControlName="category"
+            [attr.aria-invalid]="isFieldInvalid('category') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('category') ? 'category-error' : null">
+            <option value="">{{ 'app.demoBooks.form.fields.category.placeholder' | translate }}</option>
+            <option value="Programming">{{ 'app.demoBooks.filter.fields.category.options.programming' | translate }}</option>
+            <option value="Philosophy">{{ 'app.demoBooks.filter.fields.category.options.philosophy' | translate }}</option>
+            <option value="Science">{{ 'app.demoBooks.filter.fields.category.options.science' | translate }}</option>
+            <option value="Fiction">{{ 'app.demoBooks.filter.fields.category.options.fiction' | translate }}</option>
+            <option value="Non-Fiction">{{ 'app.demoBooks.filter.fields.category.options.nonFiction' | translate }}</option>
+            <option value="Biography">{{ 'app.demoBooks.filter.fields.category.options.biography' | translate }}</option>
+          </select>
+          @if (isFieldInvalid('category')) {
+            <div id="category-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('category') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-price">
+            {{ 'app.demoBooks.form.fields.price.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-price"
+            type="number"
+            class="form-control"
+            formControlName="price"
+            [placeholder]="'app.demoBooks.form.fields.price.placeholder' | translate"
+            min="0"
+            step="0.01"
+            [attr.aria-invalid]="isFieldInvalid('price') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('price') ? 'price-error' : null"
+          />
+          @if (isFieldInvalid('price')) {
+            <div id="price-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('price') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-rating">
+            {{ 'app.demoBooks.form.fields.rating.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-rating"
+            type="number"
+            class="form-control"
+            formControlName="rating"
+            [placeholder]="'app.demoBooks.form.fields.rating.placeholder' | translate"
+            min="1"
+            max="5"
+            step="0.1"
+            [attr.aria-invalid]="isFieldInvalid('rating') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('rating') ? 'rating-error' : null"
+          />
+          @if (isFieldInvalid('rating')) {
+            <div id="rating-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('rating') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="entity-publishedDate">
+            {{ 'app.demoBooks.form.fields.publishedDate.label' | translate }}
+            <span aria-label="required">*</span>
+          </label>
+          <input 
+            id="entity-publishedDate"
+            type="date"
+            class="form-control"
+            formControlName="publishedDate"
+            [attr.aria-invalid]="isFieldInvalid('publishedDate') ? 'true' : 'false'"
+            [attr.aria-describedby]="isFieldInvalid('publishedDate') ? 'publishedDate-error' : null"
+          />
+          @if (isFieldInvalid('publishedDate')) {
+            <div id="publishedDate-error" class="form-error" role="alert" aria-live="polite">
+              {{ getFieldError('publishedDate') | translate }}
+            </div>
+          }
+        </div>
+
+        <div class="form-field form-field-wide">
+          <label class="form-label" for="entity-description">
+            {{ 'app.demoBooks.form.fields.description.label' | translate }}
+          </label>
+          <textarea 
+            id="entity-description"
+            class="form-control"
+            formControlName="description"
+            [placeholder]="'app.demoBooks.form.fields.description.placeholder' | translate"
+            rows="3">
+          </textarea>
+          <div class="form-hint">{{ 'app.demoBooks.form.fields.description.hint' | translate }}</div>
+        </div>
+
+        <div class="form-field">
+          <div class="form-field--horizontal">
+            <input 
+              id="entity-inStock"
+              type="checkbox"
+              formControlName="inStock"
+            />
+            <label class="form-label" for="entity-inStock">
+              {{ 'app.demoBooks.form.fields.inStock.label' | translate }}
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button 
+          type="submit" 
+          appButton 
+          variant="primary"
+          [disabled]="entityForm.invalid || bookStore.loading().isLoading"
+        >
+          {{ isEditing() ? ('app.demoBooks.form.actions.update' | translate) : ('app.demoBooks.form.actions.create' | translate) }}
+        </button>
+        <button type="button" appButton variant="secondary" (click)="cancelForm()">
+          {{ 'app.demoBooks.form.actions.clean' | translate }}
+        </button>
+      </div>
+    </form>
+  </app-generic-crud>
+
+  <!-- Demo Stats Section -->
+  <section class="demo-stats">
+    <h3>{{ 'app.demoBooks.stats.title' | translate }}</h3>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h4>{{ 'app.demoBooks.stats.totalBooks' | translate }}</h4>
+        <span class="stat-value">{{ bookStore.items().length }}</span>
+      </div>
+      <div class="stat-card">
+        <h4>{{ 'app.demoBooks.stats.inStock' | translate }}</h4>
+        <span class="stat-value">{{ bookStore.getInStockBooks().length }}</span>
+      </div>
+      <div class="stat-card">
+        <h4>{{ 'app.demoBooks.stats.highRated' | translate }}</h4>
+        <span class="stat-value">{{ bookStore.getHighRatedBooks().length }}</span>
+      </div>
+      <div class="stat-card">
+        <h4>{{ 'app.demoBooks.stats.programmingBooks' | translate }}</h4>
+        <span class="stat-value">{{ bookStore.getByCategory('Programming').length }}</span>
+      </div>
+    </div>
+  </section>
+</div>

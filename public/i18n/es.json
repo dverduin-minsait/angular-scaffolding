@@ -6,22 +6,19 @@
     "title": "Angulo",
     "navigation": {
       "dashboard": "Panel",
-      "clothes": {
-        "_": "Ropa",
-        "men": "Hombre",
-        "crud": "CRUD Ropa",
-        "women": {
-          "_": "Mujer",
-          "dresses": "Vestidos",
-          "shoes": "Zapatos"
-        }
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Demo Tema",
+        "crudDemo": "Demo CRUD"
       },
       "auth": {
         "_": "Autenticación",
         "login": "Iniciar sesión",
         "register": "Registrarse"
       },
+      "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
+      "theme-demo": "Demo Tema",
       "settings": "Configuración"
     },
     "actions": {
@@ -119,91 +116,204 @@
     },
     "languages": {
       "en": "Inglés",
-      "es": "Español",
+      "es": "Español", 
       "pt": "Portugués",
       "ca": "Catalán",
       "gl": "Gallego"
     },
-    "clothes": {
-      "catalog": {
-        "title": "Catálogo de Ropa",
-        "loading": "Cargando catálogo de ropa...",
-        "columns": {
-          "name": "Nombre del producto",
-          "brand": "Marca",
-          "price": "Precio",
-          "size": "Talla",
-          "color": "Color",
-          "stock": "Stock",
-          "category": "Categoría",
-          "season": "Temporada"
-        },
-        "mobile": {
-          "colorLabel": "Color:",
-          "stockLabel": "Stock:"
-        }
+    "crud": {
+      "loading": "Cargando",
+      "ready": "Listo",
+      "items": "Elementos",
+      "itemsLoaded": {
+        "aria": "Número de elementos cargados"
       },
-      "crud": {
-        "title": "Gestor de Ropa",
-        "loading": "Cargando",
-        "loadingShort": "Cargando ropa...",
-        "ready": "Listo",
-        "items": "Ítems",
-        "itemsLoaded": { "aria": "Ítems cargados" },
-        "columns": {
-          "id": "ID",
-          "name": "Nombre",
-          "brand": "Marca",
-          "price": "Precio",
-          "stock": "Stock",
-          "category": "Categoría",
-          "season": "Temporada",
-          "updatedAt": "Actualizado"
-        },
-        "actions": {
-          "refresh": "Refrescar",
-          "clearSelection": "Limpiar selección",
-          "openTestModal": "Abrir modal de prueba"
-        },
-        "columnsPanel": "Columnas",
-        "columnsPanelTitle": "Columnas",
-        "form": {
-          "editTitle": "Editar Ítem",
-          "addTitle": "Agregar Nuevo Ítem",
-          "basicInfo": "Información Básica",
-          "actions": {
-            "update": "Actualizar Ítem",
-            "create": "Crear Ítem",
-            "reset": "Reiniciar",
-            "cancel": "Cancelar"
+      "filters": {
+        "title": "Filtros",
+        "clear": "Limpiar Filtros"
+      },
+      "actions": {
+        "create": "Crear",
+        "refresh": "Actualizar",
+        "clearSelection": "Limpiar Selección",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "cancel": "Cancelar"
+      },
+      "columns": {
+        "toggle": "Alternar Columnas",
+        "visibilityGroup": "Controles de visibilidad de columnas",
+        "toggleColumn": "Alternar"
+      },
+      "card": {
+        "aria": "Tarjeta de elemento"
+      },
+      "dialog": {
+        "delete": {
+          "title": "Eliminar {{entity}}",
+          "message": "¿Estás seguro de que quieres eliminar este {{entity}}?",
+          "confirmLabel": "Eliminar",
+          "cancelLabel": "Cancelar"
+        }
+      }
+    },
+    "demoBooks": {
+      "title": "Demo CRUD - Libros",
+      "description": "Este componente demuestra el Sistema CRUD Genérico con proyección de contenido.",
+      "filter": {
+        "title": "Filtrar Libros",
+        "fields": {
+          "title": {
+            "label": "Título",
+            "placeholder": "Buscar por título..."
           },
-          "fields": {
-            "name": { "label": "Nombre" },
-            "brand": { "label": "Marca" },
-            "price": { "label": "Precio" },
-            "stock": { "label": "Stock" },
-            "size": { "label": "Talla" },
-            "season": { "label": "Temporada" },
-            "category": { "label": "Categoría" },
-            "color": { "label": "Color" },
-            "description": { "label": "Descripción" }
+          "author": {
+            "label": "Autor",
+            "placeholder": "Buscar por autor..."
           },
-          "errors": {
-            "name": { "required": "El nombre es obligatorio", "min": "El nombre debe tener al menos 2 caracteres" },
-            "brand": { "required": "La marca es obligatoria", "min": "La marca debe tener al menos 2 caracteres" },
-            "price": { "required": "El precio es obligatorio", "min": "El precio debe ser mayor que 0" },
-            "stock": { "required": "El stock es obligatorio", "min": "El stock no puede ser negativo" }
+          "category": {
+            "label": "Categoría",
+            "options": {
+              "all": "Todas las Categorías",
+              "programming": "Programación",
+              "philosophy": "Filosofía",
+              "science": "Ciencia",
+              "fiction": "Ficción",
+              "nonFiction": "No Ficción",
+              "biography": "Biografía"
+            }
+          },
+          "availability": {
+            "label": "Disponibilidad",
+            "options": {
+              "all": "Todos",
+              "inStock": "En Stock",
+              "outOfStock": "Agotado"
+            }
+          },
+          "priceRange": {
+            "minPrice": {
+              "label": "Precio Min ($)",
+              "placeholder": "0.00"
+            },
+            "maxPrice": {
+              "label": "Precio Max ($)",
+              "placeholder": "100.00"
+            }
           }
         },
-        "stats": {
-          "total": { "label": "Total", "aria": "Ítems totales" },
-          "available": { "label": "Disponibles", "aria": "Ítems disponibles" },
-          "lowStock": { "label": "Bajo Stock", "aria": "Ítems con poco stock" },
-          "value": { "label": "Valor", "aria": "Valor de inventario" }
+        "actions": {
+          "apply": "Aplicar Filtros",
+          "clear": "Limpiar Filtros"
+        }
+      },
+      "form": {
+        "title": {
+          "create": "Crear Libro",
+          "edit": "Editar Libro"
         },
-        "dialog": {
-          "delete": { "title": "Eliminar Ítem", "message": "¿Seguro que deseas eliminar este ítem?" },
-          "test": { "title": "Modal de Prueba", "message": "Este es un modal de prueba manual." }
+        "fields": {
+          "title": {
+            "label": "Título del Libro",
+            "placeholder": "Ingrese el título del libro",
+            "required": true
+          },
+          "author": {
+            "label": "Autor",
+            "placeholder": "Ingrese el nombre del autor",
+            "required": true
+          },
+          "isbn": {
+            "label": "ISBN",
+            "placeholder": "978-0000000000",
+            "required": true
+          },
+          "category": {
+            "label": "Categoría",
+            "placeholder": "Seleccionar Categoría",
+            "required": true
+          },
+          "price": {
+            "label": "Precio ($)",
+            "placeholder": "0.00",
+            "required": true
+          },
+          "rating": {
+            "label": "Calificación (1-5)",
+            "placeholder": "5.0",
+            "required": true
+          },
+          "publishedDate": {
+            "label": "Fecha de Publicación",
+            "required": true
+          },
+          "description": {
+            "label": "Descripción",
+            "placeholder": "Descripción del libro (opcional)",
+            "hint": "Descripción opcional del libro"
+          },
+          "inStock": {
+            "label": "En Stock"
+          }
+        },
+        "actions": {
+          "create": "Crear Libro",
+          "update": "Actualizar Libro",
+          "cancel": "Cancelar",
+          "clean": "Limpiar Formulario"
+        },
+        "errors": {
+          "title": {
+            "required": "El título es requerido",
+            "minLength": "El título debe tener al menos 2 caracteres"
+          },
+          "author": {
+            "required": "El autor es requerido",
+            "minLength": "El autor debe tener al menos 2 caracteres"
+          },
+          "isbn": {
+            "required": "El ISBN es requerido",
+            "pattern": "Por favor ingrese un formato de ISBN válido"
+          },
+          "category": {
+            "required": "La categoría es requerida"
+          },
+          "price": {
+            "required": "Un precio válido es requerido",
+            "min": "El precio debe ser mayor a 0"
+          },
+          "rating": {
+            "required": "Una calificación entre 1-5 es requerida",
+            "min": "La calificación debe ser al menos 1",
+            "max": "La calificación no puede exceder 5"
+          },
+          "publishedDate": {
+            "required": "La fecha de publicación es requerida"
+          }
+        }
+      },
+      "stats": {
+        "title": "Estadísticas Demo",
+        "totalBooks": "Total de Libros",
+        "inStock": "En Stock",
+        "highRated": "Bien Calificados (4.0+)",
+        "programmingBooks": "Libros de Programación"
+      },
+      "grid": {
+        "columns": {
+          "title": "Título",
+          "author": "Autor",
+          "category": "Categoría",
+          "price": "Precio",
+          "rating": "Calificación",
+          "stock": "Stock",
+          "published": "Publicado"
+        },
+        "formatters": {
+          "price": "${0}",
+          "rating": "⭐ {0}",
+          "inStock": "✅ En Stock",
+          "outOfStock": "❌ Agotado"
         }
       }
     }

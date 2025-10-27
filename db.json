@@ -1,227 +1,72 @@
 {
-  "clothes": [
+  "books": [
     {
-      "name": "Denim Jacketa",
-      "brand": "UrbanStyle",
-      "price": 89.99,
-      "size": "L",
-      "color": "blue",
-      "stock": 12,
-      "season": "Fall",
-      "category": "Jackets",
-      "description": "Vintage-style denim jacket with classic fit and premium quality",
-      "imageUrl": "https://via.placeholder.com/300x400/4169e1/ffffff?text=Denim+Jacket",
-      "updatedAt": "2025-09-26T11:30:34.526Z",
-      "id": 2
+      "title": "The Clean Code 2",
+      "author": "Robert C. Martin",
+      "isbn": "978-0132350884",
+      "category": "Programming",
+      "price": 45.99,
+      "rating": 4.8,
+      "publishedDate": "2008-08-01",
+      "description": "A handbook of agile software craftsmanship",
+      "inStock": true,
+      "id": 1
     },
     {
-      "name": "Summer Floral Dress",
-      "brand": "FloralFashion",
-      "price": 65.5,
-      "size": "S",
-      "color": "pink",
-      "stock": 8,
-      "season": "Summer",
-      "category": "Dresses",
-      "description": "Light and airy floral dress perfect for summer occasionses",
-      "imageUrl": "https://via.placeholder.com/300x400/ffb6c1/000000?text=Floral+Dress",
-      "updatedAt": "2025-09-26T11:27:52.909Z",
-      "id": 3
+      "id": 2,
+      "title": "Angular in Action",
+      "author": "Jeremy Wilken",
+      "isbn": "978-1617293313",
+      "category": "Programming",
+      "price": 39.99,
+      "inStock": true,
+      "publishedDate": "2018-03-15",
+      "description": "Complete guide to Angular development",
+      "rating": 4.2,
+      "createdAt": "2024-01-02T00:00:00Z",
+      "updatedAt": "2024-01-02T00:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Design Patterns",
+      "author": "Gang of Four",
+      "isbn": "978-0201633610",
+      "category": "Programming",
+      "price": 54.99,
+      "inStock": false,
+      "publishedDate": "1994-10-21",
+      "description": "Elements of reusable object-oriented software",
+      "rating": 4.9,
+      "createdAt": "2024-01-03T00:00:00Z",
+      "updatedAt": "2024-01-03T00:00:00Z"
     },
     {
       "id": 4,
-      "name": "Winter Wool Sweater",
-      "brand": "CozyKnits",
-      "price": 78,
-      "size": "XL",
-      "color": "gray",
-      "stock": 15,
-      "season": "Winter",
-      "category": "Sweaters",
-      "description": "Warm merino wool sweater for cold winter days",
-      "imageUrl": "https://via.placeholder.com/300x400/808080/ffffff?text=Wool+Sweater",
-      "createdAt": "2025-01-20T08:45:00Z",
-      "updatedAt": "2025-09-21T13:30:00Z"
+      "title": "The Art of War",
+      "author": "Sun Tzu",
+      "isbn": "978-1599869773",
+      "category": "Philosophy",
+      "price": 12.99,
+      "inStock": true,
+      "publishedDate": "-500-01-01",
+      "description": "Ancient Chinese military treatise",
+      "rating": 4.5,
+      "createdAt": "2024-01-04T00:00:00Z",
+      "updatedAt": "2024-01-04T00:00:00Z"
     },
     {
       "id": 5,
-      "name": "Casual Chinos",
-      "brand": "SmartCasual",
-      "price": 42.75,
-      "size": "M",
-      "color": "khaki",
-      "stock": 22,
-      "season": "Spring",
-      "category": "Pants",
-      "description": "Versatile chino pants suitable for both casual and semi-formal occasions",
-      "imageUrl": "https://via.placeholder.com/300x400/f0e68c/000000?text=Chino+Pants",
-      "createdAt": "2025-02-28T14:00:00Z",
-      "updatedAt": "2025-09-19T15:20:00Z"
-    },
-    {
-      "id": 6,
-      "name": "Athletic Running Shorts",
-      "brand": "SportsFit",
-      "price": 28.95,
-      "size": "L",
-      "color": "black",
-      "stock": 35,
-      "season": "Summer",
-      "category": "Shorts",
-      "description": "Moisture-wicking running shorts with built-in compression",
-      "imageUrl": "https://via.placeholder.com/300x400/000000/ffffff?text=Running+Shorts",
-      "createdAt": "2025-04-12T16:30:00Z",
-      "updatedAt": "2025-09-23T10:15:00Z"
-    },
-    {
-      "id": 7,
-      "name": "Silk Blouse",
-      "brand": "ElegantWear",
-      "price": 95,
-      "size": "S",
-      "color": "cream",
-      "stock": 6,
-      "season": "Spring",
-      "category": "Blouses",
-      "description": "Luxurious silk blouse with pearl buttons and elegant draping",
-      "imageUrl": "https://via.placeholder.com/300x400/f5f5dc/000000?text=Silk+Blouse",
-      "createdAt": "2025-01-30T12:45:00Z",
-      "updatedAt": "2025-09-24T09:30:00Z"
-    },
-    {
-      "id": 8,
-      "name": "Leather Boots",
-      "brand": "BootCraft",
-      "price": 145,
-      "size": "42",
-      "color": "brown",
-      "stock": 4,
-      "season": "Fall",
-      "category": "Footwear",
-      "description": "Handcrafted leather boots with durable construction and timeless style",
-      "imageUrl": "https://via.placeholder.com/300x400/8b4513/ffffff?text=Leather+Boots",
-      "createdAt": "2025-03-15T13:20:00Z",
-      "updatedAt": "2025-09-25T11:00:00Z"
-    },
-    {
-      "id": 9,
-      "name": "Hoodie Sweatshirt",
-      "brand": "ComfortZone",
-      "price": 52.5,
-      "size": "M",
-      "color": "navy",
-      "stock": 18,
-      "season": "Fall",
-      "category": "Hoodies",
-      "description": "Soft cotton blend hoodie with kangaroo pocket and drawstring hood",
-      "imageUrl": "https://via.placeholder.com/300x400/000080/ffffff?text=Navy+Hoodie",
-      "createdAt": "2025-02-14T15:10:00Z",
-      "updatedAt": "2025-09-20T17:45:00Z"
-    },
-    {
-      "id": 10,
-      "name": "Lightweight Cardigan",
-      "brand": "SoftLayers",
-      "price": 55.8,
-      "size": "S",
-      "color": "cream",
-      "stock": 11,
-      "season": "Spring",
-      "category": "Cardigans",
-      "description": "Lightweight knit cardigan perfect for layering in transitional weather",
-      "imageUrl": "https://via.placeholder.com/300x400/f5f5dc/000000?text=Light+Cardigan",
-      "createdAt": "2025-04-01T10:00:00Z",
-      "updatedAt": "2025-09-22T14:30:00Z"
-    },
-    {
-      "id": 11,
-      "name": "Waterproof Rain Jacket",
-      "brand": "WeatherShield",
-      "price": 125,
-      "size": "XL",
-      "color": "yellow",
-      "stock": 9,
-      "season": "Fall",
-      "category": "Jackets",
-      "description": "Fully waterproof rain jacket with sealed seams and ventilation",
-      "imageUrl": "https://via.placeholder.com/300x400/ffff00/000000?text=Rain+Jacket",
-      "createdAt": "2025-03-20T11:30:00Z",
-      "updatedAt": "2025-09-21T16:20:00Z"
-    },
-    {
-      "id": 12,
-      "name": "Designer Silk Blouse",
-      "brand": "LuxeFabric",
-      "price": 95.6,
-      "size": "M",
-      "color": "purple",
-      "stock": 3,
-      "season": "Summer",
-      "category": "Blouses",
-      "description": "Premium designer silk blouse with hand-finished details",
-      "imageUrl": "https://via.placeholder.com/300x400/800080/ffffff?text=Designer+Blouse",
-      "createdAt": "2025-04-10T09:45:00Z",
-      "updatedAt": "2025-09-25T08:15:00Z"
-    },
-    {
-      "id": 13,
-      "name": "Performance Polo",
-      "brand": "ActiveWear",
-      "price": 38.9,
-      "size": "L",
-      "color": "white",
-      "stock": 27,
-      "season": "Summer",
-      "category": "Polo Shirts",
-      "description": "Moisture-wicking polo shirt with UV protection and anti-odor technology",
-      "imageUrl": "https://via.placeholder.com/300x400/ffffff/000000?text=Performance+Polo",
-      "createdAt": "2025-05-01T14:15:00Z",
-      "updatedAt": "2025-09-23T12:40:00Z"
-    },
-    {
-      "id": 14,
-      "name": "Vintage Jeans",
-      "brand": "RetroFit",
-      "price": 68,
-      "size": "32",
-      "color": "blue",
-      "stock": 16,
-      "season": "Fall",
-      "category": "Jeans",
-      "description": "Classic vintage-fit jeans with authentic wash and comfortable stretch",
-      "imageUrl": "https://via.placeholder.com/300x400/4169e1/ffffff?text=Vintage+Jeans",
-      "createdAt": "2025-01-25T16:20:00Z",
-      "updatedAt": "2025-09-24T13:50:00Z"
-    },
-    {
-      "id": 15,
-      "name": "Cashmere Scarf",
-      "brand": "LuxuryAccents",
-      "price": 89.99,
-      "size": "One Size",
-      "color": "gray",
-      "stock": 7,
-      "season": "Winter",
-      "category": "Accessories",
-      "description": "Ultra-soft cashmere scarf with elegant fringe details",
-      "imageUrl": "https://via.placeholder.com/300x400/808080/ffffff?text=Cashmere+Scarf",
-      "createdAt": "2025-02-05T13:25:00Z",
-      "updatedAt": "2025-09-22T15:10:00Z"
-    },
-    {
-      "name": "Denim Jacket",
-      "brand": "UrbanStyle",
-      "price": 89.99,
-      "size": "L",
-      "color": "blue",
-      "stock": 12,
-      "season": "Fall",
-      "category": "Jackets",
-      "description": "Vintage-style denim jacket with classic fit and premium quality",
-      "imageUrl": "https://via.placeholder.com/300x400/4169e1/ffffff?text=Denim+Jacket",
-      "updatedAt": "2025-09-26T11:11:37.745Z",
-      "createdAt": "2025-09-26T11:11:37.745Z",
-      "id": 18
+      "title": "JavaScript: The Good Parts",
+      "author": "Douglas Crockford",
+      "isbn": "978-0596517748",
+      "category": "Programming",
+      "price": 29.99,
+      "inStock": true,
+      "publishedDate": "2008-05-08",
+      "description": "Unearthing the excellence in JavaScript",
+      "rating": 4.1,
+      "createdAt": "2024-01-05T00:00:00Z",
+      "updatedAt": "2024-01-05T00:00:00Z"
     }
   ],
   "users": [
@@ -231,12 +76,11 @@
       "password": "Password123!",
       "displayName": "Admin User",
       "email": "admin@example.com",
-      "roles": ["admin"],
+      "roles": [
+        "admin"
+      ],
       "permissions": [
         "dashboard.view",
-        "clothes.read",
-        "clothes.write",
-        "clothes.delete",
         "users.manage"
       ]
     },
@@ -246,10 +90,11 @@
       "password": "Password123!",
       "displayName": "View Only User",
       "email": "viewer@example.com",
-      "roles": ["user"],
+      "roles": [
+        "user"
+      ],
       "permissions": [
-        "dashboard.view",
-        "clothes.read"
+        "dashboard.view"
       ]
     },
     {
@@ -258,7 +103,9 @@
       "password": "Password123!",
       "displayName": "Content Editor",
       "email": "editor@example.com",
-      "roles": ["editor"],
+      "roles": [
+        "editor"
+      ],
       "permissions": [
         "dashboard.view",
         "clothes.read",
@@ -267,15 +114,37 @@
     }
   ],
   "roles": [
-    { "id": 1, "name": "admin", "permissions": ["dashboard.view", "clothes.read", "clothes.write", "clothes.delete", "users.manage"] },
-    { "id": 2, "name": "user", "permissions": ["dashboard.view", "clothes.read"] },
-    { "id": 3, "name": "editor", "permissions": ["dashboard.view", "clothes.read", "clothes.write"] }
+    {
+      "id": 1,
+      "name": "admin",
+      "permissions": [
+        "dashboard.view",
+        "users.manage"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "user",
+      "permissions": [
+        "dashboard.view"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "editor",
+      "permissions": [
+        "dashboard.view"
+      ]
+    }
   ],
   "permissionsCatalog": [
-    { "key": "dashboard.view", "description": "Access dashboard widgets" },
-    { "key": "clothes.read", "description": "List and view clothes" },
-    { "key": "clothes.write", "description": "Create or update clothes" },
-    { "key": "clothes.delete", "description": "Delete clothes" },
-    { "key": "users.manage", "description": "Manage platform users" }
+    {
+      "key": "dashboard.view",
+      "description": "Access dashboard widgets"
+    },
+    {
+      "key": "users.manage",
+      "description": "Manage platform users"
+    }
   ]
 }

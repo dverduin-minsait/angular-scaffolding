@@ -1,0 +1,274 @@
+/**
+ * Generic CRUD Component Styles
+ * Following design tokens and theme system from AGENTS.md
+ */
+
+.generic-crud-container {
+  padding: var(--spacing-md, 1rem);
+  
+  .crud-header {
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    
+    h2 {
+      color: var(--text-primary, #333);
+      margin-bottom: var(--spacing-sm, 0.5rem);
+      font-size: var(--font-size-xl, 1.5rem);
+      font-weight: var(--font-weight-semibold, 600);
+    }
+  }
+
+  .status-bar {
+    display: flex;
+    gap: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-md, 1rem);
+    padding: var(--spacing-sm, 0.5rem);
+    background: var(--surface-secondary, #f8f9fa);
+    border-radius: var(--border-radius-sm, 0.25rem);
+    border: 1px solid var(--border-color, #e0e0e0);
+
+    .status-item {
+      font-size: var(--font-size-sm, 0.875rem);
+      color: var(--text-secondary, #666);
+
+      &.loading {
+        color: var(--primary, #007bff);
+        font-weight: var(--font-weight-medium, 500);
+      }
+
+      &.error {
+        color: var(--danger, #dc3545);
+        font-weight: var(--font-weight-medium, 500);
+      }
+    }
+  }
+
+  .filter-section {
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    padding: var(--spacing-md, 1rem);
+    background: var(--surface-primary, #fff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: var(--border-radius-md, 0.5rem);
+
+    h3 {
+      margin-bottom: var(--spacing-md, 1rem);
+      font-size: var(--font-size-lg, 1.125rem);
+      font-weight: var(--font-weight-medium, 500);
+      color: var(--text-primary, #333);
+    }
+
+    // Use global form styles - no need to duplicate them
+    // Components projecting content should use .form-field, .form-label, .form-control classes
+    
+    .filter-actions {
+      margin-top: var(--spacing-md, 1rem);
+      display: flex;
+      gap: var(--spacing-sm, 0.5rem);
+    }
+  }
+
+  .grid-actions {
+    display: flex;
+    gap: var(--spacing-sm, 0.5rem);
+    margin-bottom: var(--spacing-md, 1rem);
+    flex-wrap: wrap;
+    align-items: center;
+
+    .column-toggle-panel {
+      margin-left: auto;
+      
+      summary {
+        cursor: pointer;
+        padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+        background: transparent;
+        border: 1px solid var(--border-color, #e0e0e0);
+        border-radius: var(--border-radius-sm, 0.25rem);
+        font-size: var(--font-size-sm, 0.875rem);
+
+        &:hover {
+          background: var(--hover-bg, #e9ecef);
+        }
+      }
+
+      .columns-list {
+        position: absolute;
+        right: 0;
+        z-index: 10;
+        background: var(--bg-secondary, #fff);
+        border: 1px solid var(--border-color, #e0e0e0);
+        border-radius: var(--border-radius-md, 0.5rem);
+        padding: var(--spacing-md, 1rem);
+        margin-top: var(--spacing-xs, 0.25rem);
+        box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
+        min-width: 200px;
+      }
+
+      .col-toggle {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs, 0.25rem);
+        padding: var(--spacing-xs, 0.25rem) 0;
+        cursor: pointer;
+        font-size: var(--font-size-sm, 0.875rem);
+
+        input[type="checkbox"] {
+          margin: 0;
+        }
+
+        &:hover {
+          color: var(--primary, #007bff);
+        }
+      }
+    }
+  }
+
+  .grid-section {
+    margin-bottom: var(--spacing-lg, 1.5rem);
+  }
+
+  .mobile-cards {
+    display: grid;
+    gap: var(--spacing-md, 1rem);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+    .mobile-card {
+      background: var(--surface-primary, #fff);
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: var(--border-radius-md, 0.5rem);
+      padding: var(--spacing-md, 1rem);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: var(--primary, #007bff);
+        box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
+      }
+
+      &.selected {
+        border-color: var(--primary, #007bff);
+        background: var(--primary-light, #e3f2fd);
+      }
+
+      &:focus {
+        outline: 2px solid var(--primary, #007bff);
+        outline-offset: 2px;
+      }
+
+      .card-field {
+        display: flex;
+        margin-bottom: var(--spacing-xs, 0.25rem);
+        font-size: var(--font-size-sm, 0.875rem);
+
+        strong {
+          color: var(--text-secondary, #666);
+          margin-right: var(--spacing-xs, 0.25rem);
+          min-width: 80px;
+        }
+
+        span {
+          color: var(--text-primary, #333);
+          flex: 1;
+        }
+      }
+
+      .card-actions {
+        margin-top: var(--spacing-md, 1rem);
+        display: flex;
+        gap: var(--spacing-xs, 0.25rem);
+        border-top: 1px solid var(--border-color, #e0e0e0);
+        padding-top: var(--spacing-sm, 0.5rem);
+      }
+    }
+  }
+
+  .entity-form-section {
+    background: var(--surface-primary, #fff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: var(--border-radius-md, 0.5rem);
+    padding: var(--spacing-lg, 1.5rem);
+
+    h3 {
+      margin-bottom: var(--spacing-md, 1rem);
+      font-size: var(--font-size-lg, 1.125rem);
+      font-weight: var(--font-weight-medium, 500);
+      color: var(--text-primary, #333);
+    }
+
+    // Use global form styles - no need to duplicate them
+    // Components projecting content should use .form-field, .form-label, .form-control classes
+
+    .form-actions {
+      margin-top: var(--spacing-lg, 1.5rem);
+      display: flex;
+      gap: var(--spacing-sm, 0.5rem);
+      padding-top: var(--spacing-md, 1rem);
+      border-top: 1px solid var(--border-color, #e0e0e0);
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .generic-crud-container {
+    padding: var(--spacing-sm, 0.5rem);
+
+    .grid-actions {
+      flex-direction: column;
+      align-items: stretch;
+
+      .column-toggle-panel {
+        margin-left: 0;
+        order: -1;
+      }
+    }
+
+    .mobile-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .generic-crud-container {
+    .crud-header h2 {
+      color: var(--text-primary-dark, #f0f0f0);
+    }
+
+    .status-bar {
+      background: var(--surface-secondary-dark, #2d3748);
+      border-color: var(--border-color-dark, #4a5568);
+
+      .status-item {
+        color: var(--text-secondary-dark, #a0aec0);
+      }
+    }
+
+    .filter-section,
+    .entity-form-section {
+      background: var(--surface-primary-dark, #1a202c);
+      border-color: var(--border-color-dark, #4a5568);
+
+      h3 {
+        color: var(--text-primary-dark, #f0f0f0);
+      }
+
+      // Global form styles handle dark theme automatically
+      // No need to duplicate dark theme form styling here
+    }
+
+    .mobile-cards .mobile-card {
+      background: var(--surface-primary-dark, #1a202c);
+      border-color: var(--border-color-dark, #4a5568);
+
+      .card-field {
+        strong {
+          color: var(--text-secondary-dark, #a0aec0);
+        }
+
+        span {
+          color: var(--text-primary-dark, #f0f0f0);
+        }
+      }
+    }
+  }
+}

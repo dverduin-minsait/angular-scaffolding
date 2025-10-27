@@ -1,6 +1,6 @@
 // Global app styles
-// Import theme system for component usage
-@use 'themes/index' as *;
+// No imports needed - component only uses CSS custom properties (var(--*))
+// which are globally available via :root definitions in styles.scss
 
 * {
   box-sizing: border-box;

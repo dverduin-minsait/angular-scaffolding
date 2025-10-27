@@ -95,7 +95,7 @@ describe('HeaderComponent Accessibility', () => {
           'app.actions.toggleTheme': 'Switch to dark theme',
           'app.title': 'Angular Architecture',
           'app.navigation.dashboard': 'Dashboard',
-          'app.navigation.clothes._': 'Clothes'
+          'app.navigation.demo-books': 'Demo Books'
         })
       ]
     }).compileComponents();
