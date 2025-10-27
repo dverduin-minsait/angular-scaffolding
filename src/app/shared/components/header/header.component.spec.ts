@@ -85,7 +85,7 @@ describe('HeaderComponent', () => {
 
   it('should have correct navigation items structure', () => {
     const navItems = component['navigationItems']();
-    expect(navItems).toHaveLength(6);
+    expect(navItems).toHaveLength(5); // dashboard, demo-books, auth, theme-demo, settings
     
     // Check dashboard item
     expect(navItems[0]).toEqual({
@@ -95,18 +95,18 @@ describe('HeaderComponent', () => {
       icon: '📊'
     });
 
-    // Check clothes item has children
-    expect(navItems[1].id).toBe('clothes');
-    expect(navItems[1].children).toBeDefined();
-
     // Check demo-books item
-    expect(navItems[2]).toEqual({
+    expect(navItems[1]).toEqual({
       id: 'demo-books',
       label: 'app.navigation.demo-books',
       path: '/demo-books',
       icon: '📚'
     });
-    expect(navItems[1].children).toHaveLength(3);
+
+    // Check auth item has children
+    expect(navItems[2].id).toBe('auth');
+    expect(navItems[2].children).toBeDefined();
+    expect(navItems[2].children).toHaveLength(2);
   });
 
   it('should handle language change', () => {

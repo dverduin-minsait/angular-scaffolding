@@ -6,16 +6,6 @@
     "title": "Angulinho",
     "navigation": {
       "dashboard": "Painel",
-      "clothes": {
-        "_": "Roupas",
-        "men": "Homem",
-        "crud": "CRUD Roupas",
-        "women": {
-          "_": "Mulher",
-          "dresses": "Vestidos",
-          "shoes": "Sapatos"
-        }
-      },
       "auth": {
         "_": "Autenticação",
         "login": "Iniciar sessão",

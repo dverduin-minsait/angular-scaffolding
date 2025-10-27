@@ -32,15 +32,6 @@ export const routes: Routes = [
     loadComponent: () => import('./shared/components/forbidden/forbidden.component').then(c => c.ForbiddenComponent)
   },
   {
-    path: 'clothes',
-    data: { breadcrumb: 'Clothes' },
-    canMatch: [
-      () => import('./core/auth/guards/auth.guard').then(m => m.authGuard),
-      () => import('./core/auth/guards/permission.guard').then(m => m.permissionGuard(['clothes.view']))
-    ],
-    loadChildren: () => import('./features/clothes/clothes.routes').then(m => m.CLOTHES_ROUTES)
-  },
-  {
     path: 'demo-books',
     data: { breadcrumb: 'CRUD Demo' },
     canMatch: [() => import('./core/auth/guards/auth.guard').then(m => m.authGuard)],

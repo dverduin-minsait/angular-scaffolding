@@ -52,19 +52,3 @@ export function suppressConsole(cfg: SuppressConsoleConfig): () => void {
     warnSpy.mockRestore();
   };
 }
-
-// Convenience preset for Clothes CRUD component noisy logs
-export function suppressClothesCrudConsole(): () => void {
-  return suppressConsole({
-    log: [
-      /✅ Data loaded successfully/,
-      /✅ Item (created|updated|deleted) successfully/
-    ],
-    error: [
-      /❌ Error loading data:/,
-      /❌ Error updating item:/,
-      /❌ Error creating item:/,
-      /❌ Error deleting item:/
-    ]
-  });
-}

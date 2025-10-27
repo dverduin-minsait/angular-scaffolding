@@ -6,16 +6,6 @@
     "title": "Angulo",
     "navigation": {
       "dashboard": "Panel",
-      "clothes": {
-        "_": "Ropa",
-        "men": "Hombre",
-        "crud": "CRUD Ropa",
-        "women": {
-          "_": "Mujer",
-          "dresses": "Vestidos",
-          "shoes": "Zapatos"
-        }
-      },
       "auth": {
         "_": "Autenticación",
         "login": "Iniciar sesión",
@@ -319,89 +309,6 @@
           "rating": "⭐ {0}",
           "inStock": "✅ En Stock",
           "outOfStock": "❌ Agotado"
-        }
-      }
-    },
-    "clothes": {
-      "catalog": {
-        "title": "Catálogo de Ropa",
-        "loading": "Cargando catálogo de ropa...",
-        "columns": {
-          "name": "Nombre del producto",
-          "brand": "Marca",
-          "price": "Precio",
-          "size": "Talla",
-          "color": "Color",
-          "stock": "Stock",
-          "category": "Categoría",
-          "season": "Temporada"
-        },
-        "mobile": {
-          "colorLabel": "Color:",
-          "stockLabel": "Stock:"
-        }
-      },
-      "crud": {
-        "title": "Gestor de Ropa",
-        "loading": "Cargando",
-        "loadingShort": "Cargando ropa...",
-        "ready": "Listo",
-        "items": "Ítems",
-        "itemsLoaded": { "aria": "Ítems cargados" },
-        "columns": {
-          "id": "ID",
-          "name": "Nombre",
-          "brand": "Marca",
-          "price": "Precio",
-          "stock": "Stock",
-          "category": "Categoría",
-          "season": "Temporada",
-          "updatedAt": "Actualizado"
-        },
-        "actions": {
-          "refresh": "Refrescar",
-          "clearSelection": "Limpiar selección",
-          "openTestModal": "Abrir modal de prueba"
-        },
-        "columnsPanel": "Columnas",
-        "columnsPanelTitle": "Columnas",
-        "form": {
-          "editTitle": "Editar Ítem",
-          "addTitle": "Agregar Nuevo Ítem",
-          "basicInfo": "Información Básica",
-          "actions": {
-            "update": "Actualizar Ítem",
-            "create": "Crear Ítem",
-            "reset": "Reiniciar",
-            "cancel": "Cancelar"
-          },
-          "fields": {
-            "name": { "label": "Nombre" },
-            "brand": { "label": "Marca" },
-            "price": { "label": "Precio" },
-            "stock": { "label": "Stock" },
-            "size": { "label": "Talla" },
-            "season": { "label": "Temporada" },
-            "category": { "label": "Categoría" },
-            "color": { "label": "Color" },
-            "description": { "label": "Descripción" }
-          },
-          "errors": {
-            "name": { "required": "El nombre es obligatorio", "min": "El nombre debe tener al menos 2 caracteres" },
-            "brand": { "required": "La marca es obligatoria", "min": "La marca debe tener al menos 2 caracteres" },
-            "price": { "required": "El precio es obligatorio", "min": "El precio debe ser mayor que 0" },
-            "stock": { "required": "El stock es obligatorio", "min": "El stock no puede ser negativo" }
-          }
-        },
-        "stats": {
-          "total": { "label": "Total", "aria": "Ítems totales" },
-          "available": { "label": "Disponibles", "aria": "Ítems disponibles" },
-          "lowStock": { "label": "Bajo Stock", "aria": "Ítems con poco stock" },
-          "value": { "label": "Valor", "aria": "Valor de inventario" }
-        },
-        "dialog": {
-          "delete": { "title": "Eliminar Ítem", "message": "¿Seguro que deseas eliminar este ítem?" },
-          "test": { "title": "Modal de Prueba", "message": "Este es un modal de prueba manual." }
         }
       }
     }

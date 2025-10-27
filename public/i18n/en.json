@@ -6,16 +6,6 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Dashboard",
-      "clothes": {
-        "_": "Clothes",
-        "men": "Men",
-        "crud": "Clothes CRUD",
-        "women": {
-          "_": "Women",
-          "dresses": "Dresses",
-          "shoes": "Shoes"
-        }
-      },
       "auth": {
         "_": "Authentication",
         "login": "Login",
@@ -319,89 +309,6 @@
           "rating": "⭐ {0}",
           "inStock": "✅ In Stock",
           "outOfStock": "❌ Out of Stock"
-        }
-      }
-    },
-    "clothes": {
-      "catalog": {
-        "title": "Clothes Catalog",
-        "loading": "Loading clothes catalog...",
-        "columns": {
-          "name": "Product Name",
-          "brand": "Brand",
-          "price": "Price",
-          "size": "Size",
-          "color": "Color",
-          "stock": "Stock",
-          "category": "Category",
-          "season": "Season"
-        },
-        "mobile": {
-          "colorLabel": "Color:",
-          "stockLabel": "Stock:"
-        }
-      },
-      "crud": {
-        "title": "Clothes Manager",
-        "loading": "Loading",
-        "loadingShort": "Loading clothes...",
-        "ready": "Ready",
-        "items": "Items",
-        "itemsLoaded": { "aria": "Items loaded" },
-        "columns": {
-          "id": "ID",
-          "name": "Name",
-          "brand": "Brand",
-          "price": "Price",
-          "stock": "Stock",
-          "category": "Category",
-          "season": "Season",
-          "updatedAt": "Updated"
-        },
-        "actions": {
-          "refresh": "Refresh",
-          "clearSelection": "Clear Selection",
-          "openTestModal": "Open Test Modal"
-        },
-        "columnsPanel": "Columns",
-        "columnsPanelTitle": "Columns",
-        "form": {
-          "editTitle": "Edit Item",
-          "addTitle": "Add New Item",
-          "basicInfo": "Basic Info",
-          "actions": {
-            "update": "Update Item",
-            "create": "Create Item",
-            "reset": "Reset",
-            "cancel": "Cancel"
-          },
-          "fields": {
-            "name": { "label": "Name" },
-            "brand": { "label": "Brand" },
-            "price": { "label": "Price" },
-            "stock": { "label": "Stock" },
-            "size": { "label": "Size" },
-            "season": { "label": "Season" },
-            "category": { "label": "Category" },
-            "color": { "label": "Color" },
-            "description": { "label": "Description" }
-          },
-          "errors": {
-            "name": { "required": "Name is required", "min": "Name must be at least 2 characters" },
-            "brand": { "required": "Brand is required", "min": "Brand must be at least 2 characters" },
-            "price": { "required": "Price is required", "min": "Price must be greater than 0" },
-            "stock": { "required": "Stock is required", "min": "Stock cannot be negative" }
-          }
-        },
-        "stats": {
-          "total": { "label": "Total", "aria": "Total items" },
-          "available": { "label": "Available", "aria": "Available items" },
-          "lowStock": { "label": "Low Stock", "aria": "Low stock items" },
-          "value": { "label": "Value", "aria": "Inventory value" }
-        },
-        "dialog": {
-          "delete": { "title": "Delete Item", "message": "Are you sure you want to delete this item?" },
-          "test": { "title": "Test Modal", "message": "This is a manual test modal." }
         }
       }
     }

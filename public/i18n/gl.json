@@ -6,16 +6,6 @@
     "title": "Anguliño",
     "navigation": {
       "dashboard": "Panel",
-      "clothes": {
-        "_": "Roupa",
-        "men": "Home",
-        "crud": "CRUD Roupa",
-        "women": {
-          "_": "Muller",
-          "dresses": "Vestidos",
-          "shoes": "Zapatos"
-        }
-      },
       "auth": {
         "_": "Autenticación",
         "login": "Iniciar sesión",

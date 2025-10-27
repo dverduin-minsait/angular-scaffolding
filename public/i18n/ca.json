@@ -6,16 +6,6 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Tauler",
-      "clothes": {
-        "_": "Roba",
-        "men": "Home",
-        "crud": "CRUD Roba",
-        "women": {
-          "_": "Dona",
-          "dresses": "Vestits",
-          "shoes": "Sabates"
-        }
-      },
       "auth": {
         "_": "Autenticació",
         "login": "Iniciar sessió",
