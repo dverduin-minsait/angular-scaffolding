@@ -1,4 +1,5 @@
-@use '../../app/themes/mixins' as *; // Reuse existing logic if needed
+// No imports needed - component only uses CSS custom properties (var(--*))
+// which are globally available via :root definitions in styles.scss
 
 /* Base button class using design tokens */
 .btn {

@@ -6,6 +6,11 @@
     "title": "Angulinho",
     "navigation": {
       "dashboard": "Painel",
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Demo Tema",
+        "crudDemo": "Demo CRUD"
+      },
       "auth": {
         "_": "Autenticação",
         "login": "Iniciar sessão",

@@ -6,6 +6,11 @@
     "title": "Angle",
     "navigation": {
       "dashboard": "Dashboard",
+      "demos": {
+        "_": "Demos",
+        "themeDemo": "Theme Demo",
+        "crudDemo": "CRUD Demo"
+      },
       "auth": {
         "_": "Authentication",
         "login": "Login",

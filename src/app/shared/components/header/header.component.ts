@@ -27,13 +27,14 @@ export class HeaderComponent {
   // Navigation structure (same as before)
   protected readonly navigationItems = signal<NavigationItem[]>([
     { id: 'dashboard', label: 'app.navigation.dashboard', path: '/dashboard', icon: '📊' },
-    { id: 'demo-books', label: 'app.navigation.demo-books', path: '/demo-books', icon: '📚' },
+    { id: 'demos', label: 'app.navigation.demos._', icon: '🎨', children: [
+      { id: 'theme-demo', label: 'app.navigation.demos.themeDemo', path: '/demo/theme-demo' },
+      { id: 'demo-books', label: 'app.navigation.demos.crudDemo', path: '/demo-books' }
+    ] },
     { id: 'auth', label: 'app.navigation.auth._', icon: '🔐', children: [
       { id: 'login', label: 'app.navigation.auth.login', path: '/auth/login' },
       { id: 'register', label: 'app.navigation.auth.register', path: '/auth/register' }
-    ] },
-    { id: 'theme-demo', label: 'app.navigation.themeDemo', path: '/theme-demo', icon: '🎨' },
-    { id: 'settings', label: 'app.navigation.settings', path: '/settings', icon: '⚙️' }
+    ] }
   ]).asReadonly();
 
   protected toggleSidebar(): void {
