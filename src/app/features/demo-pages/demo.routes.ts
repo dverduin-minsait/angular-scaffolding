@@ -1,4 +1,6 @@
-export const DEMO_ROUTES = [
+import { Routes } from '@angular/router';
+
+export const DEMO_ROUTES: Routes = [
   {
     path: 'theme-demo',
     loadChildren: () => import('./theme-demo/theme-demo.routes').then(m => m.THEME_DEMO_ROUTES)
@@ -10,5 +12,6 @@ export const DEMO_ROUTES = [
   {
     path: '',
     redirectTo: 'theme-demo',
+    pathMatch: 'full'
   }
 ];
