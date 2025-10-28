@@ -48,6 +48,13 @@ describe('ThemeService', () => {
       documentElement: mockHtmlElement
     };
 
+    // Mock window.matchMedia (the service now uses window.matchMedia directly)
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: jest.fn().mockReturnValue(mockMediaQuery)
+    });
+
     TestBed.configureTestingModule({
       providers: [
         ThemeService,
@@ -388,7 +395,7 @@ describe('ThemeService', () => {
       // Register a custom theme that does not include dark keyword
       const custom = { name: 'ocean', displayName: 'Ocean', icon: '🌊', cssClass: 'ocean-theme' };
       service.registerCustomTheme(custom);
-      service.setTheme('ocean');
+      service.setTheme('ocean' as Theme);
       service.toggleTheme();
       expect(service.currentTheme()).toBe('light');
     });
@@ -423,7 +430,7 @@ describe('ThemeService', () => {
     it('should toggle theme pair for custom theme to light2', () => {
       const custom = { name: 'forest', displayName: 'Forest', icon: '🌳', cssClass: 'forest-theme' };
       service.registerCustomTheme(custom);
-      service.setTheme('forest');
+      service.setTheme('forest' as Theme);
       service.toggleThemePair();
       expect(service.currentTheme()).toBe('light2');
     });
@@ -452,31 +459,31 @@ describe('ThemeService', () => {
     it('should register, update, and list custom theme and detect dark mode naming', () => {
       const darkCustom = { name: 'dark-ocean', displayName: 'Dark Ocean', icon: '🌊', cssClass: 'dark-ocean-theme' };
       service.registerCustomTheme(darkCustom);
-      service.setTheme('dark-ocean');
+      service.setTheme('dark-ocean' as Theme);
       expect(service.isDarkMode()).toBe(true); // name includes dark
       // Update existing
       const updated = { ...darkCustom, displayName: 'Deep Dark Ocean' };
       service.registerCustomTheme(updated);
       const all = service.getAllThemes();
-      const found = all.find(t => t.name === 'dark-ocean');
+      const found = all.find(t => (t as any).name === 'dark-ocean');
       expect(found?.displayName).toBe('Deep Dark Ocean');
     });
 
     it('should unregister custom theme and fallback to system when removing current theme', () => {
       const theme = { name: 'sunset', displayName: 'Sunset', icon: '🌇', cssClass: 'sunset-theme' };
       service.registerCustomTheme(theme);
-      service.setTheme('sunset');
+      service.setTheme('sunset' as Theme);
       service.unregisterCustomTheme('sunset');
       expect(service.currentTheme()).toBe('system');
       const all = service.getAllThemes();
-      expect(all.find(t => t.name === 'sunset')).toBeUndefined();
+      expect(all.find(t => (t as any).name === 'sunset')).toBeUndefined();
     });
 
     it('should apply config with customThemes and highContrast', async () => {
       const customList = [{ name: 'cool', displayName: 'Cool', icon: '🧊', cssClass: 'cool-theme' }];
       service.applyThemeConfig({ customThemes: customList, highContrast: true });
       expect(service.highContrast()).toBe(true);
-      expect(service.getAllThemes().some(t => t.name === 'cool')).toBe(true);
+      expect(service.getAllThemes().some(t => (t as any).name === 'cool')).toBe(true);
       // debounce write
       await new Promise(r => setTimeout(r, 350));
       expect(mockStorage.setItem).toHaveBeenCalledWith('theme-high-contrast', 'true');

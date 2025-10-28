@@ -25,7 +25,7 @@
             <span class="label">{{ item.label | translate }}</span>
           </button>
           <ul class="nav-sub-list" [class.nested]="depth>0" [id]="'grp-'+item.id" role="group"
-              [class.open]="isGroupOpen(item.id)" [attr.aria-hidden]="!isGroupOpen(item.id)">
+              [class.open]="isGroupOpen(item.id)" [attr.inert]="!isGroupOpen(item.id) ? '' : null">
             <ng-container *ngTemplateOutlet="recursiveNav; context: { items: item.children, depth: depth + 1 }"></ng-container>
           </ul>
         </div>

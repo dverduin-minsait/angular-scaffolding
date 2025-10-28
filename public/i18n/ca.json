@@ -9,7 +9,8 @@
       "demos": {
         "_": "Demos",
         "themeDemo": "Demo Tema",
-        "crudDemo": "Demo CRUD"
+        "crudDemo": "Demo CRUD",
+        "ssrDemo": "Demo SSR"
       },
       "auth": {
         "_": "Autenticació",
@@ -317,87 +318,158 @@
         }
       }
     },
-    "clothes": {
-      "catalog": {
-        "title": "Catàleg de Roba",
-        "loading": "Carregant catàleg de roba...",
-        "columns": {
-          "name": "Nom del producte",
-          "brand": "Marca",
-          "price": "Preu",
-          "size": "Talla",
-          "color": "Color",
-          "stock": "Estoc",
-          "category": "Categoria",
-          "season": "Temporada"
-        },
-        "mobile": {
-          "colorLabel": "Color:",
-          "stockLabel": "Estoc:"
-        }
+    "ssrDemo": {
+      "common": {
+        "backToHome": "Tornar a l'Inici"
       },
-      "crud": {
-        "title": "Gestor de Roba",
-        "loading": "Carregant",
-        "loadingShort": "Carregant roba...",
-        "ready": "Llest",
-        "items": "Elements",
-        "itemsLoaded": { "aria": "Elements carregats" },
-        "columns": {
-          "id": "ID",
-          "name": "Nom",
-          "brand": "Marca",
-          "price": "Preu",
-          "stock": "Estoc",
-          "category": "Categoria",
-          "season": "Temporada",
-          "updatedAt": "Actualitzat"
+      "home": {
+        "title": "Demo SSR vs CSR",
+        "subtitle": "Comprenent Server-Side Rendering i Client-Side Rendering a Angular",
+        "whatIsSSR": "Què és SSR?",
+        "ssrExplanation": "Server-Side Rendering (SSR) genera HTML al servidor abans d'enviar-lo al client. Això millora el temps de càrrega inicial, el SEO i proporciona un millor rendiment percebut.",
+        "ssr": {
+          "benefit1": "Primera Pintura de Contingut Ràpida (FCP)",
+          "benefit2": "Amigable amb SEO (els rastrejadors veuen el contingut)",
+          "benefit3": "Millor rendiment percebut",
+          "benefit4": "Contingut disponible abans que es carregui JavaScript",
+          "tradeoff1": "Requereix infraestructura de servidor"
         },
-        "actions": {
-          "refresh": "Refrescar",
-          "clearSelection": "Netejar selecció",
-          "openTestModal": "Obrir modal de prova"
+        "csr": {
+          "benefit1": "Desplegament més simple (hosting estàtic)",
+          "benefit2": "Interaccions riques del client",
+          "benefit3": "Sense complexitat del costat del servidor",
+          "tradeoff1": "Visualització de contingut inicial més lenta",
+          "tradeoff2": "Desafiaments de SEO"
         },
-        "columnsPanel": "Columnes",
-        "columnsPanelTitle": "Columnes",
-        "form": {
-          "editTitle": "Editar Element",
-          "addTitle": "Afegir Nou Element",
-          "basicInfo": "Informació Bàsica",
-          "actions": {
-            "update": "Actualitzar Element",
-            "create": "Crear Element",
-            "reset": "Reiniciar",
-            "cancel": "Cancel·lar"
-          },
-          "fields": {
-            "name": { "label": "Nom" },
-            "brand": { "label": "Marca" },
-            "price": { "label": "Preu" },
-            "stock": { "label": "Estoc" },
-            "size": { "label": "Talla" },
-            "season": { "label": "Temporada" },
-            "category": { "label": "Categoria" },
-            "color": { "label": "Color" },
-            "description": { "label": "Descripció" }
-          },
-          "errors": {
-            "name": { "required": "El nom és obligatori", "min": "El nom ha de tenir almenys 2 caràcters" },
-            "brand": { "required": "La marca és obligatòria", "min": "La marca ha de tenir almenys 2 caràcters" },
-            "price": { "required": "El preu és obligatori", "min": "El preu ha de ser més gran que 0" },
-            "stock": { "required": "L'estoc és obligatori", "min": "L'estoc no pot ser negatiu" }
-          }
+        "tryItOut": "Prova-ho",
+        "ssrPage": {
+          "title": "Pàgina amb SSR Habilitat",
+          "description": "Explora una pàgina amb implementació SSR adequada usant guards de plataforma i accés segur a APIs del navegador.",
+          "feature1": "Guards isPlatformBrowser",
+          "feature2": "Obtenció de dades segura al servidor",
+          "feature3": "Seguiment d'hidratació",
+          "feature4": "Mètriques de rendiment",
+          "button": "Veure Pàgina SSR",
+          "buttonAria": "Navegar a la pàgina de demostració amb SSR habilitat"
         },
-        "stats": {
-          "total": { "label": "Total", "aria": "Total elements" },
-          "available": { "label": "Disponibles", "aria": "Elements disponibles" },
-          "lowStock": { "label": "Baix Estoc", "aria": "Elements amb poc estoc" },
-          "value": { "label": "Valor", "aria": "Valor d'inventari" }
+        "csrPage": {
+          "title": "Pàgina Només CSR",
+          "description": "Mira què passa sense seguretat SSR - ús directe d'APIs del navegador que fallaria durant el renderitzat al servidor.",
+          "feature1": "Accés directe a APIs del navegador",
+          "feature2": "Sense guards de plataforma",
+          "feature3": "Funcions només del client",
+          "feature4": "Problemes de compatibilitat amb SSR",
+          "button": "Veure Pàgina CSR",
+          "buttonAria": "Navegar a la pàgina de demostració només del costat del client"
         },
-        "dialog": {
-          "delete": { "title": "Eliminar Element", "message": "Segur que vols eliminar aquest element?" },
-          "test": { "title": "Modal de Prova", "message": "Aquest és un modal de prova manual." }
-        }
+        "technicalDetails": "Detalls Tècnics",
+        "tech": {
+          "angular": "Versió d'Angular",
+          "ssr": "Tecnologia SSR",
+          "hydration": "Estratègia d'Hidratació",
+          "renderTime": "Temps de Renderitzat de Pàgina"
+        },
+        "footer": "Aquesta demo mostra les diferències arquitectòniques entre els enfocaments SSR i CSR en aplicacions Angular."
+      },
+      "ssrPage": {
+        "title": "Pàgina amb SSR Habilitat",
+        "subtitle": "Demostrant la implementació adequada de Server-Side Rendering amb Angular",
+        "platformDetection": "Detecció de Plataforma",
+        "currentPlatform": "Plataforma Actual",
+        "serverData": "Dades del Costat del Servidor",
+        "dataAvailable": "Dades Disponibles",
+        "message": "Missatge",
+        "timestamp": "Marca de Temps",
+        "requestId": "ID de Sol·licitud",
+        "platform": "Plataforma",
+        "runtime": "Temps d'Execució",
+        "serverDataNote": "Aquestes dades es preparen durant el renderitzat del costat del servidor i estan disponibles immediatament a la font HTML. Això millora el SEO i el rendiment de càrrega inicial.",
+        "loadingData": "Carregant dades del servidor...",
+        "performance": "Mètriques de Rendiment",
+        "renderType": "Tipus de Renderitzat",
+        "renderTime": "Temps de Renderitzat",
+        "hydrationStatus": "Estat d'Hidratació",
+        "hydrated": "Hidratat",
+        "hydrationTime": "Temps d'Hidratació",
+        "timeToInteractive": "Temps fins Interactivitat",
+        "browserFeatures": "Característiques del Navegador (Només Client)",
+        "userAgent": "Agent d'Usuari",
+        "language": "Idioma",
+        "screenSize": "Mida de Pantalla",
+        "cookies": "Cookies",
+        "ssrSafety": "Verificacions de Seguretat SSR",
+        "domAccess": "Accés al DOM",
+        "domAccessExplanation": "Fem servir isPlatformBrowser per protegir l'accés al DOM, evitant errors durant el renderitzat al servidor.",
+        "localStorage": "Accés a localStorage",
+        "localStorageExplanation": "localStorage només s'accedeix al navegador, amb gestió de resposta adequada per a SSR.",
+        "clientInteraction": "Interacció del Costat del Client",
+        "clientInteractionDescription": "Aquest botó demostra l'obtenció de dades del costat del client que només s'executa al navegador després de l'hidratació.",
+        "fetchData": "Obtenir Dades del Client",
+        "fetchDataAria": "Obtenir dades de l'API del costat del client",
+        "loading": "Carregant...",
+        "result": "Resultat",
+        "error": "Error",
+        "keyTakeaways": "Conclusions Clau",
+        "takeaway1": "Fes servir isPlatformBrowser per protegir el codi específic del navegador",
+        "takeaway2": "Les dades poden obtenir-se al servidor i hidratar-se al client",
+        "takeaway3": "La implementació adequada de SSR millora el SEO i el rendiment",
+        "takeaway4": "Prova sempre la teva aplicació amb SSR habilitat per detectar problemes aviat",
+        "compareWithCSR": "Comparar amb Pàgina CSR"
+      },
+      "csrPage": {
+        "title": "Pàgina Només del Costat del Client (Sense SSR)",
+        "subtitle": "Demostrant què passa sense mesures de seguretat SSR",
+        "warning": "Advertència: Aquesta Pàgina NO és Segura per a SSR",
+        "warningDescription": "Aquesta pàgina fa servir intencionadament patrons insegurs per demostrar què passa sense els guards SSR adequats. En una aplicació real, això causaria errors durant el renderitzat al servidor.",
+        "browserEnvironment": "Entorn del Navegador",
+        "windowSize": "Mida de Finestra",
+        "platform": "Plataforma",
+        "language": "Idioma",
+        "cpuCores": "Nuclis de CPU",
+        "deviceMemory": "Memòria del Dispositiu",
+        "connection": "Tipus de Connexió",
+        "onlineStatus": "Estat en Línia",
+        "cookiesEnabled": "Cookies",
+        "userAgent": "Agent d'Usuari",
+        "loadingEnvironment": "Carregant entorn del navegador...",
+        "performanceMetrics": "Mètriques de Rendiment",
+        "domContentLoaded": "DOM Contingut Carregat",
+        "loadComplete": "Càrrega Completa",
+        "firstPaint": "Primera Pintura",
+        "firstContentfulPaint": "Primera Pintura de Contingut",
+        "gatheringMetrics": "Recopilant mètriques de rendiment...",
+        "storageAPIs": "APIs d'Emmagatzematge",
+        "available": "Disponible",
+        "unavailable": "No Disponible",
+        "localStorageDescription": "Emmagatzematge persistent per a dades que sobreviuen recarregues de pàgina",
+        "sessionStorageDescription": "Emmagatzematge temporal que s'esborra quan es tanca la pestanya",
+        "interactiveDemo": "Demo Interactiva",
+        "counter": "Comptador",
+        "incrementAria": "Incrementar valor del comptador",
+        "increment": "Incrementar",
+        "dynamicContent": "Contingut Dinàmic",
+        "addContent": "Afegir Contingut",
+        "addContentAria": "Afegir nou element de contingut dinàmic",
+        "clearAll": "Netejar Tot",
+        "clearAria": "Netejar totes les dades i reiniciar comptadors",
+        "generatedContent": "Contingut Generat",
+        "realTimeUpdates": "Actualitzacions en Temps Real",
+        "currentTime": "Hora Actual",
+        "realTimeNote": "Aquest rellotge s'actualitza cada segon usant setInterval, que fallaria en SSR sense els guards adequats.",
+        "domManipulation": "Manipulació del DOM",
+        "triggerResize": "Activar Redimensionament de Finestra",
+        "triggerResizeAria": "Activar manualment esdeveniment de redimensionament de finestra",
+        "domNote": "La manipulació directa del DOM i esdeveniments de finestra només funcionen al navegador.",
+        "ssrIssues": "Problemes de Compatibilitat amb SSR",
+        "issue1Title": "Sense Guards de Plataforma",
+        "issue1Description": "Aquest component accedeix a window, document i navigator sense verificar si existeixen, causant errors en SSR.",
+        "issue2Title": "Accés Directe a Emmagatzematge",
+        "issue2Description": "localStorage i sessionStorage s'accedeixen directament sense try-catch o verificacions de plataforma.",
+        "issue3Title": "Temporitzadors Insegurs",
+        "issue3Description": "setInterval es fa servir sense detecció de plataforma, el que crearia fugues de memòria en SSR.",
+        "issue4Title": "Manca de Proves SSR",
+        "issue4Description": "Sense proves SSR, aquests problemes només apareixerien en producció quan SSR estigui habilitat.",
+        "compareWithSSR": "Comparar amb Pàgina SSR"
       }
     }
   }

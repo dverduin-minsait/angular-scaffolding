@@ -100,7 +100,7 @@ describe('HeaderComponent', () => {
     expect(navItems[1].label).toBe('app.navigation.demos._');
     expect(navItems[1].icon).toBe('🎨');
     expect(navItems[1].children).toBeDefined();
-    expect(navItems[1].children).toHaveLength(2);
+    expect(navItems[1].children).toHaveLength(3);
     expect(navItems[1].children![0]).toEqual({
       id: 'theme-demo',
       label: 'app.navigation.demos.themeDemo',
@@ -110,6 +110,11 @@ describe('HeaderComponent', () => {
       id: 'demo-books',
       label: 'app.navigation.demos.crudDemo',
       path: '/demo-books'
+    });
+    expect(navItems[1].children![2]).toEqual({
+      id: 'ssr-demo',
+      label: 'app.navigation.demos.ssrDemo',
+      path: '/demo/ssr-demo'
     });
 
     // Check auth item has children

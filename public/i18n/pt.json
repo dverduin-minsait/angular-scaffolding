@@ -9,7 +9,8 @@
       "demos": {
         "_": "Demos",
         "themeDemo": "Demo Tema",
-        "crudDemo": "Demo CRUD"
+        "crudDemo": "Demo CRUD",
+        "ssrDemo": "Demo SSR"
       },
       "auth": {
         "_": "Autenticação",
@@ -317,87 +318,158 @@
         }
       }
     },
-    "clothes": {
-      "catalog": {
-        "title": "Catálogo de Roupas",
-        "loading": "Carregando catálogo de roupas...",
-        "columns": {
-          "name": "Nome do Produto",
-          "brand": "Marca",
-          "price": "Preço",
-          "size": "Tamanho",
-          "color": "Cor",
-          "stock": "Estoque",
-          "category": "Categoria",
-          "season": "Estação"
-        },
-        "mobile": {
-          "colorLabel": "Cor:",
-          "stockLabel": "Estoque:"
-        }
+    "ssrDemo": {
+      "common": {
+        "backToHome": "Voltar ao Início"
       },
-      "crud": {
-        "title": "Gerenciador de Roupas",
-        "loading": "Carregando",
-        "loadingShort": "Carregando roupas...",
-        "ready": "Pronto",
-        "items": "Itens",
-        "itemsLoaded": { "aria": "Itens carregados" },
-        "columns": {
-          "id": "ID",
-          "name": "Nome",
-          "brand": "Marca",
-          "price": "Preço",
-          "stock": "Estoque",
-          "category": "Categoria",
-          "season": "Estação",
-          "updatedAt": "Atualizado"
+      "home": {
+        "title": "Demo SSR vs CSR",
+        "subtitle": "Compreendendo Server-Side Rendering e Client-Side Rendering no Angular",
+        "whatIsSSR": "O que é SSR?",
+        "ssrExplanation": "Server-Side Rendering (SSR) gera HTML no servidor antes de enviá-lo ao cliente. Isso melhora o tempo de carregamento inicial, o SEO e proporciona melhor desempenho percebido.",
+        "ssr": {
+          "benefit1": "Primeira Pintura de Conteúdo Rápida (FCP)",
+          "benefit2": "Amigável para SEO (rastreadores veem o conteúdo)",
+          "benefit3": "Melhor desempenho percebido",
+          "benefit4": "Conteúdo disponível antes do JavaScript carregar",
+          "tradeoff1": "Requer infraestrutura de servidor"
         },
-        "actions": {
-          "refresh": "Atualizar",
-          "clearSelection": "Limpar seleção",
-          "openTestModal": "Abrir modal de teste"
+        "csr": {
+          "benefit1": "Implantação mais simples (hospedagem estática)",
+          "benefit2": "Interações ricas do cliente",
+          "benefit3": "Sem complexidade do lado do servidor",
+          "tradeoff1": "Exibição de conteúdo inicial mais lenta",
+          "tradeoff2": "Desafios de SEO"
         },
-        "columnsPanel": "Colunas",
-        "columnsPanelTitle": "Colunas",
-        "form": {
-          "editTitle": "Editar Item",
-          "addTitle": "Adicionar Novo Item",
-          "basicInfo": "Informações Básicas",
-          "actions": {
-            "update": "Atualizar Item",
-            "create": "Criar Item",
-            "reset": "Redefinir",
-            "cancel": "Cancelar"
-          },
-          "fields": {
-            "name": { "label": "Nome" },
-            "brand": { "label": "Marca" },
-            "price": { "label": "Preço" },
-            "stock": { "label": "Estoque" },
-            "size": { "label": "Tamanho" },
-            "season": { "label": "Estação" },
-            "category": { "label": "Categoria" },
-            "color": { "label": "Cor" },
-            "description": { "label": "Descrição" }
-          },
-          "errors": {
-            "name": { "required": "Nome é obrigatório", "min": "Nome deve ter pelo menos 2 caracteres" },
-            "brand": { "required": "Marca é obrigatória", "min": "Marca deve ter pelo menos 2 caracteres" },
-            "price": { "required": "Preço é obrigatório", "min": "Preço deve ser maior que 0" },
-            "stock": { "required": "Estoque é obrigatório", "min": "Estoque não pode ser negativo" }
-          }
+        "tryItOut": "Experimente",
+        "ssrPage": {
+          "title": "Página com SSR Habilitado",
+          "description": "Explore uma página com implementação SSR adequada usando guards de plataforma e acesso seguro às APIs do navegador.",
+          "feature1": "Guards isPlatformBrowser",
+          "feature2": "Busca de dados segura no servidor",
+          "feature3": "Rastreamento de hidratação",
+          "feature4": "Métricas de desempenho",
+          "button": "Ver Página SSR",
+          "buttonAria": "Navegar para a página de demonstração com SSR habilitado"
         },
-        "stats": {
-          "total": { "label": "Total", "aria": "Total de itens" },
-          "available": { "label": "Disponíveis", "aria": "Itens disponíveis" },
-          "lowStock": { "label": "Baixo Estoque", "aria": "Itens com pouco estoque" },
-          "value": { "label": "Valor", "aria": "Valor de inventário" }
+        "csrPage": {
+          "title": "Página Somente CSR",
+          "description": "Veja o que acontece sem segurança SSR - uso direto de APIs do navegador que falharia durante a renderização no servidor.",
+          "feature1": "Acesso direto às APIs do navegador",
+          "feature2": "Sem guards de plataforma",
+          "feature3": "Recursos apenas do cliente",
+          "feature4": "Problemas de compatibilidade com SSR",
+          "button": "Ver Página CSR",
+          "buttonAria": "Navegar para a página de demonstração apenas do lado do cliente"
         },
-        "dialog": {
-          "delete": { "title": "Excluir Item", "message": "Tem certeza de que deseja excluir este item?" },
-          "test": { "title": "Modal de Teste", "message": "Este é um modal de teste manual." }
-        }
+        "technicalDetails": "Detalhes Técnicos",
+        "tech": {
+          "angular": "Versão do Angular",
+          "ssr": "Tecnologia SSR",
+          "hydration": "Estratégia de Hidratação",
+          "renderTime": "Tempo de Renderização da Página"
+        },
+        "footer": "Esta demo mostra as diferenças arquiteturais entre as abordagens SSR e CSR em aplicações Angular."
+      },
+      "ssrPage": {
+        "title": "Página com SSR Habilitado",
+        "subtitle": "Demonstrando a implementação adequada de Server-Side Rendering com Angular",
+        "platformDetection": "Detecção de Plataforma",
+        "currentPlatform": "Plataforma Atual",
+        "serverData": "Dados do Lado do Servidor",
+        "dataAvailable": "Dados Disponíveis",
+        "message": "Mensagem",
+        "timestamp": "Marca de Tempo",
+        "requestId": "ID da Solicitação",
+        "platform": "Plataforma",
+        "runtime": "Tempo de Execução",
+        "serverDataNote": "Esses dados são preparados durante a renderização do lado do servidor e estão disponíveis imediatamente na fonte HTML. Isso melhora o SEO e o desempenho de carregamento inicial.",
+        "loadingData": "Carregando dados do servidor...",
+        "performance": "Métricas de Desempenho",
+        "renderType": "Tipo de Renderização",
+        "renderTime": "Tempo de Renderização",
+        "hydrationStatus": "Status de Hidratação",
+        "hydrated": "Hidratado",
+        "hydrationTime": "Tempo de Hidratação",
+        "timeToInteractive": "Tempo até Interatividade",
+        "browserFeatures": "Recursos do Navegador (Somente Cliente)",
+        "userAgent": "Agente do Usuário",
+        "language": "Idioma",
+        "screenSize": "Tamanho da Tela",
+        "cookies": "Cookies",
+        "ssrSafety": "Verificações de Segurança SSR",
+        "domAccess": "Acesso ao DOM",
+        "domAccessExplanation": "Usamos isPlatformBrowser para proteger o acesso ao DOM, evitando erros durante a renderização no servidor.",
+        "localStorage": "Acesso ao localStorage",
+        "localStorageExplanation": "localStorage só é acessado no navegador, com tratamento de fallback adequado para SSR.",
+        "clientInteraction": "Interação do Lado do Cliente",
+        "clientInteractionDescription": "Este botão demonstra a busca de dados do lado do cliente que só é executada no navegador após a hidratação.",
+        "fetchData": "Buscar Dados do Cliente",
+        "fetchDataAria": "Buscar dados da API do lado do cliente",
+        "loading": "Carregando...",
+        "result": "Resultado",
+        "error": "Erro",
+        "keyTakeaways": "Principais Conclusões",
+        "takeaway1": "Use isPlatformBrowser para proteger código específico do navegador",
+        "takeaway2": "Os dados podem ser buscados no servidor e hidratados no cliente",
+        "takeaway3": "A implementação adequada de SSR melhora o SEO e o desempenho",
+        "takeaway4": "Sempre teste sua aplicação com SSR habilitado para detectar problemas cedo",
+        "compareWithCSR": "Comparar com Página CSR"
+      },
+      "csrPage": {
+        "title": "Página Somente do Lado do Cliente (Sem SSR)",
+        "subtitle": "Demonstrando o que acontece sem medidas de segurança SSR",
+        "warning": "Aviso: Esta Página NÃO é Segura para SSR",
+        "warningDescription": "Esta página usa intencionalmente padrões inseguros para demonstrar o que acontece sem os guards SSR adequados. Em uma aplicação real, isso causaria erros durante a renderização no servidor.",
+        "browserEnvironment": "Ambiente do Navegador",
+        "windowSize": "Tamanho da Janela",
+        "platform": "Plataforma",
+        "language": "Idioma",
+        "cpuCores": "Núcleos de CPU",
+        "deviceMemory": "Memória do Dispositivo",
+        "connection": "Tipo de Conexão",
+        "onlineStatus": "Status Online",
+        "cookiesEnabled": "Cookies",
+        "userAgent": "Agente do Usuário",
+        "loadingEnvironment": "Carregando ambiente do navegador...",
+        "performanceMetrics": "Métricas de Desempenho",
+        "domContentLoaded": "DOM Conteúdo Carregado",
+        "loadComplete": "Carregamento Completo",
+        "firstPaint": "Primeira Pintura",
+        "firstContentfulPaint": "Primeira Pintura de Conteúdo",
+        "gatheringMetrics": "Coletando métricas de desempenho...",
+        "storageAPIs": "APIs de Armazenamento",
+        "available": "Disponível",
+        "unavailable": "Não Disponível",
+        "localStorageDescription": "Armazenamento persistente para dados que sobrevivem a recarregamentos de página",
+        "sessionStorageDescription": "Armazenamento temporário que é limpo quando a aba é fechada",
+        "interactiveDemo": "Demo Interativa",
+        "counter": "Contador",
+        "incrementAria": "Incrementar valor do contador",
+        "increment": "Incrementar",
+        "dynamicContent": "Conteúdo Dinâmico",
+        "addContent": "Adicionar Conteúdo",
+        "addContentAria": "Adicionar novo item de conteúdo dinâmico",
+        "clearAll": "Limpar Tudo",
+        "clearAria": "Limpar todos os dados e reiniciar contadores",
+        "generatedContent": "Conteúdo Gerado",
+        "realTimeUpdates": "Atualizações em Tempo Real",
+        "currentTime": "Hora Atual",
+        "realTimeNote": "Este relógio atualiza a cada segundo usando setInterval, que falharia no SSR sem os guards adequados.",
+        "domManipulation": "Manipulação do DOM",
+        "triggerResize": "Acionar Redimensionamento da Janela",
+        "triggerResizeAria": "Acionar manualmente evento de redimensionamento da janela",
+        "domNote": "A manipulação direta do DOM e eventos de janela funcionam apenas no navegador.",
+        "ssrIssues": "Problemas de Compatibilidade com SSR",
+        "issue1Title": "Sem Guards de Plataforma",
+        "issue1Description": "Este componente acessa window, document e navigator sem verificar se existem, causando erros no SSR.",
+        "issue2Title": "Acesso Direto ao Armazenamento",
+        "issue2Description": "localStorage e sessionStorage são acessados diretamente sem try-catch ou verificações de plataforma.",
+        "issue3Title": "Temporizadores Inseguros",
+        "issue3Description": "setInterval é usado sem detecção de plataforma, o que criaria vazamentos de memória no SSR.",
+        "issue4Title": "Falta de Testes SSR",
+        "issue4Description": "Sem testes SSR, esses problemas só apareceriam em produção quando o SSR estivesse habilitado.",
+        "compareWithSSR": "Comparar com Página SSR"
       }
     }
   }

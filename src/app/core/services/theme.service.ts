@@ -1,5 +1,5 @@
-import { Injectable, inject, signal, effect, InjectionToken } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Injectable, inject, signal, effect, InjectionToken, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { ThemeUtils } from '../utils/theme.utils';
 
@@ -42,6 +42,8 @@ const AUTO_SWITCH_CONFIG = {
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
   private readonly storage = inject(LOCAL_STORAGE);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   
   // Theme state signals
   private readonly _currentTheme = signal<Theme>('system');
@@ -75,8 +77,13 @@ export class ThemeService {
   private readonly STORAGE_WRITE_DEBOUNCE_MS = inject(ThemeService.THEME_STORAGE_DEBOUNCE_MS);
   
   private get mediaQuery(): MediaQueryList | null {
-    if (this._mediaQuery === null && this.document.defaultView && typeof this.document.defaultView.matchMedia === 'function') {
-      this._mediaQuery = this.document.defaultView.matchMedia('(prefers-color-scheme: dark)');
+    // SSR safety: Only create media query in browser
+    if (!this.isBrowser) {
+      return null;
+    }
+    
+    if (this._mediaQuery === null && typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      this._mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     }
     return this._mediaQuery;
   }
@@ -129,43 +136,48 @@ export class ThemeService {
    * Setup listener for system color scheme changes
    */
   private setupSystemPreferenceListener(): void {
-    if (this.mediaQuery) {
-      this.mediaQuery.addEventListener('change', () => {
-        if (this._currentTheme() === 'system') {
-          this.updateDarkModeState();
-        }
-      });
+    // SSR safety: Only setup listener in browser
+    if (!this.isBrowser || !this.mediaQuery) {
+      return;
     }
+    
+    this.mediaQuery.addEventListener('change', () => {
+      if (this._currentTheme() === 'system') {
+        this.updateDarkModeState();
+      }
+    });
   }
   
   /**
    * Setup listener for system high contrast preference changes
    */
   private setupHighContrastListener(): void {
-    // Check if browser supports high contrast media queries
-    if (this.document.defaultView && typeof this.document.defaultView.matchMedia === 'function') {
-      const highContrastQuery = this.document.defaultView.matchMedia('(prefers-contrast: high)');
-      if (highContrastQuery) {
-        // Set initial high contrast state if not explicitly set
+    // SSR safety: Only setup listener in browser
+    if (!this.isBrowser || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return;
+    }
+    
+    const highContrastQuery = window.matchMedia('(prefers-contrast: high)');
+    if (highContrastQuery) {
+      // Set initial high contrast state if not explicitly set
+      try {
+        if (this.storage?.getItem(STORAGE_KEYS.HIGH_CONTRAST) === null) {
+          this._highContrast.set(highContrastQuery.matches);
+        }
+      } catch {
+        // Ignore storage errors and use default
+      }
+      
+      highContrastQuery.addEventListener('change', (e) => {
+        // Only auto-update if user hasn't explicitly set preference
         try {
           if (this.storage?.getItem(STORAGE_KEYS.HIGH_CONTRAST) === null) {
-            this._highContrast.set(highContrastQuery.matches);
+            this._highContrast.set(e.matches);
           }
         } catch {
-          // Ignore storage errors and use default
+          // Ignore storage errors
         }
-        
-        highContrastQuery.addEventListener('change', (e) => {
-          // Only auto-update if user hasn't explicitly set preference
-          try {
-            if (this.storage?.getItem(STORAGE_KEYS.HIGH_CONTRAST) === null) {
-              this._highContrast.set(e.matches);
-            }
-          } catch {
-            // Ignore storage errors
-          }
-        });
-      }
+      });
     }
   }
   
