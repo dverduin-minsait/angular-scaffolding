@@ -29,7 +29,8 @@ export class HeaderComponent {
     { id: 'dashboard', label: 'app.navigation.dashboard', path: '/dashboard', icon: '📊' },
     { id: 'demos', label: 'app.navigation.demos._', icon: '🎨', children: [
       { id: 'theme-demo', label: 'app.navigation.demos.themeDemo', path: '/demo/theme-demo' },
-      { id: 'demo-books', label: 'app.navigation.demos.crudDemo', path: '/demo-books' }
+      { id: 'demo-books', label: 'app.navigation.demos.crudDemo', path: '/demo-books' },
+      { id: 'ssr-demo', label: 'app.navigation.demos.ssrDemo', path: '/demo/ssr-demo' }
     ] },
     { id: 'auth', label: 'app.navigation.auth._', icon: '🔐', children: [
       { id: 'login', label: 'app.navigation.auth.login', path: '/auth/login' },

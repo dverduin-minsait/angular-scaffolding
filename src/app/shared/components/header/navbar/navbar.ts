@@ -47,26 +47,6 @@ export class Navbar implements OnDestroy {
         this.removeDesktopOutsideListeners();
       }
     });
-
-    // Auto-open ancestor groups of the active route for deep linking
-    this.router.events.subscribe(() => {
-      const current = this.router.url;
-      const ancestors: string[] = [];
-      const visit = (items: NavigationItem[], lineage: string[]): void => {
-        for (const item of items) {
-          if (this.isGroup(item)) visit(item.children, [...lineage, item.id]);
-          else if (item.path === current) ancestors.push(...lineage);
-        }
-      };
-      visit(this.items(), []);
-      if (ancestors.length) {
-        this.openGroupsSignal.update(prev => {
-          const next = new Set(prev);
-          ancestors.forEach(id => next.add(id));
-          return next;
-        });
-      }
-    });
   }
 
   protected toggleGroup(id: string): void {

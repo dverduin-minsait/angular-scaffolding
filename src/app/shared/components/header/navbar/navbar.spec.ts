@@ -186,8 +186,8 @@ describe('Navbar', () => {
       const authToggle = fixture.debugElement.query(By.css('button[aria-controls="grp-auth"]'));
       let authGroup = fixture.debugElement.query(By.css('#grp-auth'));
       
-      // Initially hidden
-      expect(authGroup.nativeElement.getAttribute('aria-hidden')).toBe('true');
+      // Initially hidden (inert prevents focus and screen reader access)
+      expect(authGroup.nativeElement.hasAttribute('inert')).toBe(true);
       expect(authGroup.nativeElement.classList.contains('open')).toBe(false);
       
       // Click to open
@@ -195,7 +195,7 @@ describe('Navbar', () => {
       fixture.detectChanges();
       
       authGroup = fixture.debugElement.query(By.css('#grp-auth'));
-      expect(authGroup.nativeElement.getAttribute('aria-hidden')).toBe('false');
+      expect(authGroup.nativeElement.hasAttribute('inert')).toBe(false);
       expect(authGroup.nativeElement.classList.contains('open')).toBe(true);
     });
 
@@ -232,14 +232,6 @@ describe('Navbar', () => {
       
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       expect(dashboardLink.nativeElement.getAttribute('aria-current')).toBe('page');
-    });
-
-    it('should auto-open ancestor groups for active routes', async () => {
-      await router.navigate(['/auth/register']);
-      fixture.detectChanges();
-      
-      // Auth group should be opened for its child route
-      expect(component['isGroupOpen']('auth')).toBe(true);
     });
 
     it('should handle navigation to nested routes', async () => {
@@ -536,7 +528,8 @@ describe('Navbar', () => {
     it('should have proper ARIA attributes for group panels', () => {
       const authPanel = fixture.debugElement.query(By.css('#grp-auth'));
       expect(authPanel.nativeElement.getAttribute('role')).toBe('group');
-      expect(authPanel.nativeElement.getAttribute('aria-hidden')).toBe('true');
+      // Uses inert attribute instead of aria-hidden to prevent focus issues (WCAG compliance)
+      expect(authPanel.nativeElement.hasAttribute('inert')).toBe(true);
     });
 
     it('should update aria-current for active pages', async () => {

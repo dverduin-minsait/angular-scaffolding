@@ -1,0 +1,198 @@
+<div class="ssr-page">
+  <header class="page-header">
+    <h1>{{ 'app.ssrDemo.ssrPage.title' | translate }}</h1>
+    <p class="subtitle">{{ 'app.ssrDemo.ssrPage.subtitle' | translate }}</p>
+  </header>
+
+  <!-- Platform Detection -->
+  <section class="demo-section">
+    <h2>{{ 'app.ssrDemo.ssrPage.platformDetection' | translate }}</h2>
+    <div class="info-box" [class.server]="isServer" [class.client]="isBrowser">
+      <p><strong>{{ 'app.ssrDemo.ssrPage.currentPlatform' | translate }}:</strong></p>
+      <p class="platform-badge">
+        @if (isServer) {
+          <span class="badge server-badge">🖥️ Server (SSR)</span>
+        } @else {
+          <span class="badge client-badge">💻 Client (Browser)</span>
+        }
+      </p>
+      <p class="render-info">{{ renderInfo() }}</p>
+    </div>
+  </section>
+
+  <!-- Server Data -->
+  <section class="demo-section">
+    <h2>{{ 'app.ssrDemo.ssrPage.serverData' | translate }}</h2>
+    @if (hasData()) {
+      <div class="data-card success">
+        <h3>✅ {{ 'app.ssrDemo.ssrPage.dataAvailable' | translate }}</h3>
+        <dl class="data-list">
+          <dt>{{ 'app.ssrDemo.ssrPage.message' | translate }}:</dt>
+          <dd>{{ serverData()?.message }}</dd>
+          
+          <dt>{{ 'app.ssrDemo.ssrPage.timestamp' | translate }}:</dt>
+          <dd><code>{{ serverData()?.timestamp }}</code></dd>
+          
+          <dt>{{ 'app.ssrDemo.ssrPage.requestId' | translate }}:</dt>
+          <dd><code>{{ serverData()?.requestId }}</code></dd>
+          
+          <dt>{{ 'app.ssrDemo.ssrPage.platform' | translate }}:</dt>
+          <dd>{{ serverData()?.serverInfo?.platform }}</dd>
+          
+          <dt>{{ 'app.ssrDemo.ssrPage.runtime' | translate }}:</dt>
+          <dd>{{ serverData()?.serverInfo?.nodeVersion }}</dd>
+        </dl>
+        <p class="info-note">
+          {{ 'app.ssrDemo.ssrPage.serverDataNote' | translate }}
+        </p>
+      </div>
+    } @else {
+      <div class="data-card loading">
+        <p>{{ 'app.ssrDemo.ssrPage.loadingData' | translate }}</p>
+      </div>
+    }
+  </section>
+
+  <!-- Performance Metrics -->
+  <section class="demo-section">
+    <h2>{{ 'app.ssrDemo.ssrPage.performance' | translate }}</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">{{ 'app.ssrDemo.ssrPage.renderType' | translate }}</div>
+        <div class="metric-value">{{ metrics().renderType }}</div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-label">{{ 'app.ssrDemo.ssrPage.renderTime' | translate }}</div>
+        <div class="metric-value">{{ metrics().renderTime }}</div>
+      </div>
+      
+      @if (metrics().isHydrated) {
+        <div class="metric-card success">
+          <div class="metric-label">{{ 'app.ssrDemo.ssrPage.hydrationStatus' | translate }}</div>
+          <div class="metric-value">✅ {{ 'app.ssrDemo.ssrPage.hydrated' | translate }}</div>
+        </div>
+        
+        @if (metrics().hydrationTime) {
+          <div class="metric-card">
+            <div class="metric-label">{{ 'app.ssrDemo.ssrPage.hydrationTime' | translate }}</div>
+            <div class="metric-value">{{ metrics().hydrationTime }}</div>
+          </div>
+        }
+      }
+      
+      @if (metrics().timeToInteractive) {
+        <div class="metric-card">
+          <div class="metric-label">{{ 'app.ssrDemo.ssrPage.timeToInteractive' | translate }}</div>
+          <div class="metric-value">{{ metrics().timeToInteractive }}</div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Browser Features (Client-only) -->
+  @if (isBrowser) {
+    <section class="demo-section">
+      <h2>{{ 'app.ssrDemo.ssrPage.browserFeatures' | translate }}</h2>
+      @if (browserFeatures()) {
+        <div class="data-card">
+          <dl class="data-list">
+            <dt>{{ 'app.ssrDemo.ssrPage.userAgent' | translate }}:</dt>
+            <dd class="truncate">{{ browserFeatures()?.userAgent }}</dd>
+            
+            <dt>{{ 'app.ssrDemo.ssrPage.language' | translate }}:</dt>
+            <dd>{{ browserFeatures()?.language }}</dd>
+            
+            <dt>{{ 'app.ssrDemo.ssrPage.screenSize' | translate }}:</dt>
+            <dd>{{ browserFeatures()?.screenSize }}</dd>
+            
+            <dt>{{ 'app.ssrDemo.ssrPage.cookies' | translate }}:</dt>
+            <dd>{{ browserFeatures()?.cookiesEnabled ? '✅' : '❌' }}</dd>
+          </dl>
+        </div>
+      }
+    </section>
+  }
+
+  <!-- SSR Safety Checks -->
+  <section class="demo-section">
+    <h2>{{ 'app.ssrDemo.ssrPage.ssrSafety' | translate }}</h2>
+    <div class="safety-checks">
+      <div class="safety-card">
+        <h3>{{ 'app.ssrDemo.ssrPage.domAccess' | translate }}</h3>
+        <p class="safety-result">{{ checkDOMAccess() }}</p>
+        <p class="safety-explanation">
+          {{ 'app.ssrDemo.ssrPage.domAccessExplanation' | translate }}
+        </p>
+      </div>
+      
+      <div class="safety-card">
+        <h3>{{ 'app.ssrDemo.ssrPage.localStorage' | translate }}</h3>
+        <p class="safety-result">{{ checkLocalStorage() }}</p>
+        <p class="safety-explanation">
+          {{ 'app.ssrDemo.ssrPage.localStorageExplanation' | translate }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client Interaction -->
+  @if (isBrowser) {
+    <section class="demo-section">
+      <h2>{{ 'app.ssrDemo.ssrPage.clientInteraction' | translate }}</h2>
+      <div class="interaction-card">
+        <p>{{ 'app.ssrDemo.ssrPage.clientInteractionDescription' | translate }}</p>
+        <button 
+          type="button"
+          (click)="fetchClientData()"
+          [disabled]="loading()"
+          class="action-button"
+          [attr.aria-label]="'app.ssrDemo.ssrPage.fetchDataAria' | translate">
+          @if (loading()) {
+            {{ 'app.ssrDemo.ssrPage.loading' | translate }}
+          } @else {
+            {{ 'app.ssrDemo.ssrPage.fetchData' | translate }}
+          }
+        </button>
+        
+        @if (clientData()) {
+          <div class="client-data-result success">
+            <p><strong>{{ 'app.ssrDemo.ssrPage.result' | translate }}:</strong></p>
+            <p>{{ clientData() }}</p>
+          </div>
+        }
+        
+        @if (error()) {
+          <div class="client-data-result error">
+            <p><strong>{{ 'app.ssrDemo.ssrPage.error' | translate }}:</strong></p>
+            <p>{{ error() }}</p>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- Key Takeaways -->
+  <section class="demo-section">
+    <h2>{{ 'app.ssrDemo.ssrPage.keyTakeaways' | translate }}</h2>
+    <div class="takeaways">
+      <div class="takeaway-item">
+        <span class="takeaway-icon">✅</span>
+        <p>{{ 'app.ssrDemo.ssrPage.takeaway1' | translate }}</p>
+      </div>
+      <div class="takeaway-item">
+        <span class="takeaway-icon">✅</span>
+        <p>{{ 'app.ssrDemo.ssrPage.takeaway2' | translate }}</p>
+      </div>
+      <div class="takeaway-item">
+        <span class="takeaway-icon">✅</span>
+        <p>{{ 'app.ssrDemo.ssrPage.takeaway3' | translate }}</p>
+      </div>
+      <div class="takeaway-item">
+        <span class="takeaway-icon">⚠️</span>
+        <p>{{ 'app.ssrDemo.ssrPage.takeaway4' | translate }}</p>
+      </div>
+    </div>
+  </section>
+</div>
+
