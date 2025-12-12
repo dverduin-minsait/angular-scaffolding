@@ -6,7 +6,7 @@ Superseded by: None
 
 ## Context
 The application needs a consistent, accessible, and easily themeable modal / dialog mechanism that:
-- Works with Angular 20 standalone + zoneless change detection + signals (ADR-001)
+- Works with Angular 21 standalone + zoneless change detection + signals (ADR-001)
 - Avoids heavyweight UI libraries (Material, PrimeNG, etc.) at this stage to keep bundle size lean
 - Supports SSR / hydration without Zone.js side effects
 - Provides deterministic focus management & ARIA semantics for accessibility

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 interface ColorDefinition {
   name: string;
@@ -8,7 +8,7 @@ interface ColorDefinition {
 @Component({
   selector: 'app-color-palette',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="color-palette-container">
       <div class="color-section">

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { BookStore } from './book.store';
 import { BookApi } from './book.types';
@@ -25,12 +25,11 @@ import { ButtonDirective } from '../../../shared/directives';
   selector: 'app-demo-book-crud',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     GenericCrudComponent,
     ButtonDirective,
     TranslateModule
-  ],
+],
   providers: [BookStore],
   templateUrl: './demo-book-crud.component.html',
   styleUrls: ['./demo-book-crud.component.scss']

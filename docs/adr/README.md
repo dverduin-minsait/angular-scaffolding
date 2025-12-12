@@ -19,7 +19,7 @@ See `ADR-0000-template.md` for the canonical structure.
 
 ## Index
 (Keep this updated when adding ADRs)  
-- 001: Adopt Angular 20 Standalone + Zoneless + Signals (Accepted)
+- 001: Adopt Angular 21 Standalone + Zoneless + Signals (Accepted)
 - 002: Grid Library (AG Grid) + BaseApiService Abstraction + CSS Variable Theming (Proposed)
 - 003: Unified Modal Service on Angular CDK Dialog (Proposed)
 

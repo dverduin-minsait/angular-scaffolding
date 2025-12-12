@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ThemeService, Theme } from '../../../../../core/services';
 
 @Component({
   selector: 'app-theme-pair-demo',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="theme-pair-demo">
       <h3>🎨 Theme Pair Demonstration</h3>

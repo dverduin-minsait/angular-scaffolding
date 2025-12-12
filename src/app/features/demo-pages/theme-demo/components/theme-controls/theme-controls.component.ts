@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ThemeService, Theme } from '../../../../../core/services';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { ButtonDirective } from '../../../../../shared/directives';
 @Component({
   selector: 'app-theme-controls',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, TranslatePipe],
+  imports: [FormsModule, ButtonDirective, TranslatePipe],
   template: `
     <div class="theme-controls">
       <div class="control-group">

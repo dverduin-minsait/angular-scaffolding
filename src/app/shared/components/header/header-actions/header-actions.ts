@@ -1,12 +1,12 @@
 import { Component, inject, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { ThemeService } from '../../../../core/services';
 import { TranslationService, SupportedLang } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-header-actions',
-  imports: [CommonModule, TranslatePipe],
+  imports: [TranslatePipe],
   templateUrl: './header-actions.html',
   styleUrl: './header-actions.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

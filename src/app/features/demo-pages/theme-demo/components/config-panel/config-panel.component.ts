@@ -1,11 +1,11 @@
 import { Component, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ThemeService } from '../../../../../core/services';
 
 @Component({
   selector: 'app-config-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="config-panel">
       <div class="config-info">

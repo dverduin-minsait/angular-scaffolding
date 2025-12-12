@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from '../../../../../shared/directives';
 
 @Component({
   selector: 'app-interactive-demo',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective],
+  imports: [FormsModule, ButtonDirective],
   template: `
     <div class="interactive-demo">
       <div class="component-grid">

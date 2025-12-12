@@ -1,6 +1,6 @@
-# Angular Architecture Blueprint (Angular 20)
+# Angular Architecture Blueprint (Angular 21)
 
-Modern, production-ready Angular 20 reference application: standalone APIs, signals-first reactivity, zoneless change detection, SSR + hydration, accessibility focus, and a disciplined architecture documented through ADRs.
+Modern, production-ready Angular 21 reference application: standalone APIs, signals-first reactivity, zoneless change detection, SSR + hydration, accessibility focus, and a disciplined architecture documented through ADRs.
 
 <!-- Badges: replace placeholder links when workflows are added -->
 ![CI](https://img.shields.io/badge/CI-pending-lightgrey.svg) ![Coverage](https://img.shields.io/badge/coverage-TBD-lightgrey.svg) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
@@ -12,7 +12,7 @@ Modern, production-ready Angular 20 reference application: standalone APIs, sign
 * Documents architectural decisions in ADRs for transparency & evolution.
 
 ## Tech Stack
-* Angular 20 (standalone, no NgModules) + zoneless change detection.
+* Angular 21 (standalone, no NgModules) + zoneless change detection.
 * Signals for UI state (RxJS reserved for external/event/HTTP boundary use).
 * SSR + hydration (`server.ts`, platform-server integration).
 * Jest + Testing Library + strict TypeScript.

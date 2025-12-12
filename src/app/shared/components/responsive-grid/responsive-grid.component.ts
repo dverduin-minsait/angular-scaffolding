@@ -14,7 +14,7 @@ import {
   AfterViewInit,
   DestroyRef
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -75,7 +75,7 @@ interface GridComponent {
 @Component({
   selector: 'app-responsive-grid',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './responsive-grid.component.html',
   styleUrls: ['./responsive-grid.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

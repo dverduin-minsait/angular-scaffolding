@@ -1,5 +1,5 @@
 import { Component, signal, inject, PLATFORM_ID, computed } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -24,7 +24,7 @@ interface PerformanceMetrics {
 @Component({
   selector: 'app-ssr-page',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [TranslateModule],
   templateUrl: './ssr-page.component.html',
   styleUrl: './ssr-page.component.scss'
 })
