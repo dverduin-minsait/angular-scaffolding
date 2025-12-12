@@ -1,5 +1,5 @@
 import { Component, signal, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -9,7 +9,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, ButtonDirective, TranslatePipe],
+  imports: [ReactiveFormsModule, RouterLink, ButtonDirective, TranslatePipe],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

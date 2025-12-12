@@ -1,5 +1,5 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 import { NavigationItem } from './navigation.types';
 import { Navbar } from './navbar/navbar';
@@ -11,7 +11,7 @@ import { TranslationService, SupportedLang } from '../../../core/services/transl
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, TranslatePipe, Navbar, Sidebar, HeaderActions],
+  imports: [TranslatePipe, Navbar, Sidebar, HeaderActions],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

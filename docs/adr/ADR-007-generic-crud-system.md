@@ -10,7 +10,7 @@ The application requires a standardized way to implement CRUD (Create, Read, Upd
 2. Provides consistent UX across all CRUD operations
 3. Supports content projection for custom forms and filters
 4. Implements role-based permission controls
-5. Maintains type safety and follows Angular 20 best practices
+5. Maintains type safety and follows Angular 21 best practices
 6. Includes tooling for rapid component generation
 
 ## Decision
@@ -24,7 +24,7 @@ We will implement a **Generic CRUD Component System** with the following archite
 
 ### Key Design Patterns
 - **Content Projection**: Use `<ng-content select="[crud-filters]">` and `<ng-content select="[crud-entity-form]">` for custom forms
-- **Signal-based State**: Leverage Angular 20 signals for reactive state management
+- **Signal-based State**: Leverage Angular 21 signals for reactive state management
 - **Type-safe Configuration**: Strongly typed interfaces for column definitions and permissions
 - **Permission-driven UI**: Hide/show actions based on user roles and feature flags
 - **Generator-first Approach**: Provide tooling to generate complete CRUD implementations
@@ -64,7 +64,7 @@ We evaluated multiple implementation strategies:
 - **Maintainable**: Clear separation between generic logic and domain-specific UI
 - **Generator Support**: Can generate complete implementations from entity definitions
 - **Permission Integration**: Built-in role-based access control
-- **Performance**: Leverages Angular 20 signals for optimal change detection
+- **Performance**: Leverages Angular 21 signals for optimal change detection
 
 **Cons:**
 - **Setup Overhead**: Requires more initial configuration than simple table components
@@ -327,7 +327,7 @@ protected readonly clientRefinedItems = computed(() => {
 See rationale section above for detailed comparison of approaches.
 
 ## Related Decisions
-- [ADR-001](ADR-001-adopt-angular20-standalone-zoneless-signals.md): Angular 20 signals adoption
+- [ADR-001](ADR-001-adopt-angular20-standalone-zoneless-signals.md): Angular 21 signals adoption
 - [ADR-002](ADR-002-grid-api-theme-foundations.md): Grid component architecture
 - [ADR-006](ADR-006-auth-architecture.md): Authentication and authorization
 

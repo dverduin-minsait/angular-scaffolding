@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { 
   ThemeStatusComponent,
   ThemeControlsComponent,
@@ -15,7 +15,6 @@ import {
   selector: 'app-theme-demo',
   standalone: true,
   imports: [
-    CommonModule,
     ThemeStatusComponent,
     ThemeControlsComponent,
     ThemePairDemoComponent,
@@ -24,7 +23,7 @@ import {
     StatusIndicatorsComponent,
     ResponsiveDemoComponent,
     ConfigPanelComponent
-  ],
+],
   template: `
     <div class="theme-demo theme-transition">
       <div class="demo-section">

@@ -16,8 +16,19 @@ export interface StoreError {
 }
 
 /**
- * Generic signal-based entity store that composes a CRUD data source.
- * Handles loading / error / selection / caching concerns.
+ * Generic signal-based entity store for CRUD operations.
+ * 
+ * @example
+ * ```typescript
+ * export class BookStore extends EntityStore<BookApi, number> {
+ *   constructor() {
+ *     super(inject(BookApiService));
+ *   }
+ * }
+ * ```
+ * 
+ * @template T - Entity type with `id` property
+ * @template ID - ID type (string | number)
  */
 export class EntityStore<T extends { id: ID }, ID = string | number> {
   private readonly _items = signal<T[]>([]);
@@ -114,6 +125,18 @@ export class EntityStore<T extends { id: ID }, ID = string | number> {
   }
   setSelected(entity: T | null): void { this._selected.set(entity); }
 
+  /**
+   * Updates an existing entity or inserts a new one into the store.
+   * 
+   * If the entity is null or undefined, the operation is skipped.
+   * If an entity with the same id exists, it will be replaced with the new entity.
+   * If no entity with the same id exists, the new entity will be added to the end of the list.
+   * 
+   * @param entity - The entity to upsert. Can be null, in which case no action is taken.
+   * @returns void
+   * 
+   * @private
+   */
   private upsert(entity: T | null): void {
     if (!entity) return;
     this._items.update(list => {

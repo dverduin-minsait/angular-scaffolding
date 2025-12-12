@@ -6,7 +6,7 @@ import { EntityStore } from '../../../core/store/entity-store';
 /**
  * Demo Book Store
  * Extends simplified Generic CRUD Store
- * Following Angular 20 + signals + zoneless patterns from AGENTS.md
+ * Following Angular 21 + signals + zoneless patterns from AGENTS.md
  */
 @Injectable()
 export class BookStore extends EntityStore<BookApi, number> {

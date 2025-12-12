@@ -1,14 +1,14 @@
-# ADR-001: Adopt Angular 20 Standalone + Zoneless Change Detection + Signals
+# ADR-001: Adopt Angular 21 Standalone + Zoneless Change Detection + Signals
 Status: Accepted  
 Date: 2025-09-26
 Supersedes: None  
 Superseded by: None
 
 ## Context
-The project requires: high performance, minimized bundle size, faster mental model, a11y focus, SSR/hydration readiness, and reduced framework boilerplate. Angular 20 provides mature standalone APIs, zoneless change detection via `provideZonelessChangeDetection`, and first-class signals for fine-grained reactivity. Traditional NgModule-based + Zone.js approach adds overhead, implicit change detection costs, and complexity.
+The project requires: high performance, minimized bundle size, faster mental model, a11y focus, SSR/hydration readiness, and reduced framework boilerplate. Angular 21 provides mature standalone APIs, zoneless change detection via `provideZonelessChangeDetection`, and first-class signals for fine-grained reactivity. Traditional NgModule-based + Zone.js approach adds overhead, implicit change detection costs, and complexity.
 
 ## Decision
-Use Angular 20 standalone component architecture everywhere for new code; enable zoneless change detection globally; adopt signals + computed values as primary reactive primitives; restrict RxJS usage to external async sources, HTTP interactions, or cross-component streams that require multicasting.
+Use Angular 21 standalone component architecture everywhere for new code; enable zoneless change detection globally; adopt signals + computed values as primary reactive primitives; restrict RxJS usage to external async sources, HTTP interactions, or cross-component streams that require multicasting.
 
 ## Options Considered
 1. Keep Zone.js + NgModules (Rejected: more boilerplate, less predictable perf)

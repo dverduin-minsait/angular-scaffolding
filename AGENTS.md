@@ -6,13 +6,13 @@ Complete context for AI agents (Copilot, Cursor, Claude) and developers about An
 
 ## 📋 Project Summary
 
-**Angular Architecture Blueprint** - Angular 20 reference application with modern patterns: standalone components, signals, zoneless change detection, SSR, WCAG AA accessibility, comprehensive testing, and i18n.
+**Angular Architecture Blueprint** - Angular 21 reference application with modern patterns: standalone components, signals, zoneless change detection, SSR, WCAG AA accessibility, comprehensive testing, and i18n.
 
-**Main Stack:** Angular 20 + TypeScript 5.9 + Jest + AG Grid + ngx-translate + SCSS + Express SSR
+**Main Stack:** Angular 21 + TypeScript 5.9 + Jest + AG Grid + ngx-translate + SCSS + Express SSR
 
 ## 🛠 Tech Stack
 
-- **Angular 20.3.x** - Standalone + signals + zoneless
+- **Angular 21.0.x** - Standalone + signals + zoneless
 - **TypeScript 5.9** - Strict mode
 - **RxJS 7.8** - HTTP/external events only
 - **AG Grid 34.2** - Enterprise tables
