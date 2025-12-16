@@ -23,9 +23,8 @@
     "dev:mock": "concurrently \"npm run api\" \"npm run start:mock\"",
     "dev:local": "concurrently \"npm run api\" \"npm run start:local\"",
     "check:i18n": "node tools/check-i18n.mjs",
-    "analyze": "ng build --configuration analyze && npx source-map-explorer dist/angular-architecture/browser/main-*.js --html dist/bundle-report.html",
-    "analyze:dev": "ng build && npx source-map-explorer dist/angular-architecture/browser/main-*.js",
-    "analyze:webpack": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/angular-architecture/stats.json --mode static --report dist/webpack-report.html",
+    "analyze": "ng build --configuration production --stats-json && npx webpack-bundle-analyzer dist/angular-architecture/stats.json --mode static --report dist/webpack-report.html",
+    "analyze:dev": "ng build --stats-json && npx webpack-bundle-analyzer dist/angular-architecture/stats.json --mode static --report dist/webpack-report-dev.html",
     "bundle:size": "npm run build:prod && node tools/bundle-size-check.mjs",
     "bundle:check": "node tools/bundle-size-check.mjs",
     "bundle:monitor": "npm run bundle:check && echo '📊 Run npm run analyze for detailed visualization'"
@@ -45,7 +44,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^21.0.5",
-    "@angular/cdk": "20.2.5",
+    "@angular/cdk": "^21.0.0",
     "@angular/common": "^21.0.5",
     "@angular/compiler": "^21.0.5",
     "@angular/core": "^21.0.5",
@@ -63,12 +62,12 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular-builders/jest": "^20.0.0",
-    "@angular-eslint/eslint-plugin": "^20.4.0",
-    "@angular-eslint/eslint-plugin-template": "^20.4.0",
+    "@angular-eslint/eslint-plugin": "^21.0.0",
+    "@angular-eslint/eslint-plugin-template": "^21.0.0",
     "@angular/build": "^21.0.3",
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.5",
+    "@angular/platform-browser-dynamic": "^21.0.5",
     "@axe-core/playwright": "^4.10.2",
     "@testing-library/angular": "^18.0.0",
     "@testing-library/jest-dom": "^6.8.0",
@@ -81,11 +80,11 @@
     "@typescript-eslint/parser": "^8.46.2",
     "concurrently": "^9.1.0",
     "eslint": "^9.38.0",
-    "jest": "^29.7.0",
+    "jest": "^30.0.0",
     "jest-axe": "^10.0.0",
-    "jest-preset-angular": "^14.4.0",
+    "jest-preset-angular": "^16.0.0",
     "json-server": "^0.17.4",
-    "source-map-explorer": "^2.5.3",
+    
     "typescript": "~5.9.2",
     "webpack-bundle-analyzer": "^4.10.2"
   }
