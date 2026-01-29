@@ -2,6 +2,7 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { GenericCrudComponent } from './generic-crud.component';
 import { GenericCrudService, CrudPreferences } from './generic-crud.service';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
@@ -41,16 +42,16 @@ describe('GenericCrudComponent - localStorage Integration', () => {
     // Mock localStorage
     const storage: Record<string, string> = {};
     mockLocalStorage = {
-      getItem: jest.fn((key: string) => storage[key] || null),
-      setItem: jest.fn((key: string, value: string) => {
+      getItem: vi.fn((key: string) => storage[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
         storage[key] = value;
       })
     };
 
     // Mock GenericCrudService
     mockCrudService = {
-      loadPreferences: jest.fn(),
-      savePreferences: jest.fn().mockReturnValue(of(void 0))
+      loadPreferences: vi.fn(),
+      savePreferences: vi.fn().mockReturnValue(of(void 0))
     };
 
     // Mock EntityStore
@@ -59,9 +60,9 @@ describe('GenericCrudComponent - localStorage Integration', () => {
       loading: signal({ isLoading: false, operation: undefined }),
       error: signal(null),
       selected: signal(null),
-      setSelected: jest.fn(),
-      refresh: jest.fn().mockReturnValue(of([])),
-      delete: jest.fn().mockReturnValue(of(void 0))
+      setSelected: vi.fn(),
+      refresh: vi.fn().mockReturnValue(of([])),
+      delete: vi.fn().mockReturnValue(of(void 0))
     };
 
     await TestBed.configureTestingModule({
@@ -78,7 +79,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
         {
           provide: ModalService,
           useValue: {
-            confirm: jest.fn().mockResolvedValue({ confirmed: true })
+            confirm: vi.fn().mockResolvedValue({ confirmed: true })
           }
         },
         ...provideStubTranslationService({
@@ -114,7 +115,9 @@ describe('GenericCrudComponent - localStorage Integration', () => {
     };
 
     // Mock service to return saved preferences
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(of(savedPreferences));
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      of(savedPreferences)
+    );
 
     // Set component inputs
     fixture.componentRef.setInput('config', testConfig);
@@ -135,7 +138,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
 
   it('should use default column visibility when no preferences exist', async () => {
     // Mock service to return no saved preferences
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(of(null));
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(of(null));
 
     // Set component inputs
     fixture.componentRef.setInput('config', testConfig);
@@ -153,7 +156,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
 
   it('should save preferences when column visibility changes', async () => {
     // Mock service to return no initial preferences
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(of(null));
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(of(null));
 
     // Set component inputs
     fixture.componentRef.setInput('config', testConfig);
@@ -179,7 +182,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
 
   it('should handle service errors gracefully', async () => {
     // Mock service to throw error
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
       throwError(() => new Error('Storage error'))
     );
 
@@ -201,7 +204,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
 
   it('should render column toggle controls in template', async () => {
     // Mock service to return no preferences
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(of(null));
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(of(null));
 
     // Set component inputs
     fixture.componentRef.setInput('config', testConfig);
@@ -223,7 +226,7 @@ describe('GenericCrudComponent - localStorage Integration', () => {
 
   it('should update visible columns when toggling', async () => {
     // Mock service to return no preferences
-    (mockCrudService.loadPreferences as jest.Mock).mockReturnValue(of(null));
+    (mockCrudService.loadPreferences as unknown as ReturnType<typeof vi.fn>).mockReturnValue(of(null));
 
     // Set component inputs
     fixture.componentRef.setInput('config', testConfig);

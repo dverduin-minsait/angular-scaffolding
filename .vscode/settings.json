@@ -7,5 +7,9 @@
   // Optional: surface as error (default) or downgrade to warn
   "eslint.rules.customizations": [
     { "rule": "no-unused-vars", "severity": "warn" }
-  ]
+  ],
+
+  // PowerShell Constrained Language Mode (CLM) breaks the global npm.ps1 shim.
+  // Default to Command Prompt so `npm test` works reliably.
+  "terminal.integrated.defaultProfile.windows": "Command Prompt"
 }

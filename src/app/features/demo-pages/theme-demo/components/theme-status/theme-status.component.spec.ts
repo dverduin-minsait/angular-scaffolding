@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { ThemeStatusComponent } from './theme-status.component';
 import { ThemeService } from '../../../../../core/services';
 
 // Mock ThemeService
 const mockThemeService = {
-  getThemeDisplayName: jest.fn(() => 'Light'),
-  getThemeIcon: jest.fn(() => '☀️'),
-  isDarkMode: jest.fn(() => false),
+  getThemeDisplayName: vi.fn(() => 'Light'),
+  getThemeIcon: vi.fn(() => '☀️'),
+  isDarkMode: vi.fn(() => false),
 };
 
 describe('ThemeStatusComponent', () => {
   let component: ThemeStatusComponent;
   let fixture: ComponentFixture<ThemeStatusComponent>;
-  let themeService: jest.Mocked<ThemeService>;
+  let themeService: typeof mockThemeService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -24,12 +25,12 @@ describe('ThemeStatusComponent', () => {
 
     fixture = TestBed.createComponent(ThemeStatusComponent);
     component = fixture.componentInstance;
-    themeService = TestBed.inject(ThemeService) as jest.Mocked<ThemeService>;
+    themeService = TestBed.inject(ThemeService) as unknown as typeof mockThemeService;
   });
 
   beforeEach(() => {
     // Reset mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -76,15 +77,15 @@ describe('ThemeStatusComponent', () => {
     // Mock window.matchMedia
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: jest.fn().mockImplementation(query => ({
+      value: vi.fn().mockImplementation(query => ({
         matches: query === '(prefers-color-scheme: dark)',
         media: query,
         onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
       })),
     });
 

@@ -65,7 +65,7 @@ Adopt a hybrid design system layer composed of:
 ## Future Enhancements
 - Add `FormControlStateDirective` to auto-manage `aria-invalid` & described-by wiring.
 - Introduce loading state (`[loading]`) & optional icon slot directive.
-- Add Jest a11y (jest-axe) smoke tests for button & form scenarios.
+- Add Vitest a11y (vitest-axe) smoke tests for button & form scenarios (implemented; see a11y specs and global matcher setup).
 - Themed size scale (compact vs. comfortable) via body class + size tokens.
 - Potential dark/high-contrast tune of error highlight using dual outline technique (color + shape).
 

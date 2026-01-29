@@ -14,10 +14,10 @@ describe('GridLoaderService', () => {
   let mockThemeService: {
     isDarkMode: ReturnType<typeof signal>;
     currentTheme: ReturnType<typeof signal>;
-    getCurrentThemePair: jest.Mock;
+    getCurrentThemePair: ReturnType<typeof vi.fn>;
   };
   let mockDeviceService: {
-    supportsGrids: jest.Mock;
+    supportsGrids: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
@@ -27,11 +27,11 @@ describe('GridLoaderService', () => {
     mockThemeService = {
       isDarkMode: signal(false),
       currentTheme: signal('light'),
-      getCurrentThemePair: jest.fn().mockReturnValue(1)
+      getCurrentThemePair: vi.fn().mockReturnValue(1)
     };
 
     mockDeviceService = {
-      supportsGrids: jest.fn().mockReturnValue(true)
+      supportsGrids: vi.fn().mockReturnValue(true)
     };
 
     TestBed.configureTestingModule({
@@ -157,7 +157,7 @@ describe('GridLoaderService', () => {
     });
 
     it('should set loading state then resolve success and cache module', async () => {
-      const performSpy = jest.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => Promise.resolve({ FakeModule: {} }));
+      const performSpy = vi.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => Promise.resolve({ FakeModule: {} }));
       const before = await firstValueFrom(service.loadState$);
       expect(before.isLoading).toBe(false);
       const promise = service.loadGridModule();
@@ -179,7 +179,7 @@ describe('GridLoaderService', () => {
 
     it('should reuse same promise if load already in progress', async () => {
       let resolveFn: (v: any) => void;
-      const performSpy = jest.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => new Promise(res => { resolveFn = res; }));
+      const performSpy = vi.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => new Promise(res => { resolveFn = res; }));
       const p1 = service.loadGridModule();
       const p2 = service.loadGridModule();
       // Identity check may fail if wrapper; ensure both pending then resolve
@@ -195,8 +195,8 @@ describe('GridLoaderService', () => {
 
     it('should handle failure and expose error state', async () => {
       const fakeError = new Error('Boom');
-      jest.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => Promise.reject(fakeError));
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      vi.spyOn<any, any>(service as any, 'performLoad').mockImplementation(() => Promise.reject(fakeError));
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       await expect(service.loadGridModule()).rejects.toThrow('Boom');
       const state = service['loadStateSubject'].value;
       expect(state.error).toBe(fakeError);
@@ -208,10 +208,10 @@ describe('GridLoaderService', () => {
     it('should retry cleanly after a failure (clearing previous error & loading states)', async () => {
       // First call fails
       const failError = new Error('Initial failure');
-      const performSpy = jest.spyOn<any, any>(service as any, 'performLoad')
+      const performSpy = vi.spyOn<any, any>(service as any, 'performLoad')
         .mockImplementationOnce(() => Promise.reject(failError))
         .mockImplementationOnce(() => Promise.resolve({ RetryModule: true }));
-      jest.spyOn(console, 'error').mockImplementation(() => {});
+      vi.spyOn(console, 'error').mockImplementation(() => {});
       await expect(service.loadGridModule()).rejects.toThrow('Initial failure');
       const afterFail = service['loadStateSubject'].value;
       expect(afterFail.error).toBe(failError);
@@ -247,7 +247,7 @@ describe('GridLoaderService', () => {
       const originalAll = Promise.all;
       // Force Promise.all used inside performLoad to reject, simulating import failure
       (Promise as any).all = () => Promise.reject(new Error('Simulated import failure'));
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       await expect((service as any).performLoad()).rejects.toThrow(/ag-Grid modules could not be loaded/);
       expect(consoleSpy).toHaveBeenCalled();
       // Restore
@@ -260,7 +260,7 @@ describe('GridLoaderService', () => {
       const initial = service['loadStateSubject'].value;
       const originalAll = Promise.all;
       (Promise as any).all = () => Promise.reject(new Error('Import boom'));
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       await expect((service as any).performLoad()).rejects.toThrow('ag-Grid modules could not be loaded');
       const after = service['loadStateSubject'].value;
       // Should be unchanged (performLoad alone shouldn't push state; loadGridModule orchestrates updates)
@@ -274,7 +274,7 @@ describe('GridLoaderService', () => {
     it('should not invoke load when already loaded', async () => {
       // Simulate loaded state
       (service as any).gridModule = { Cached: true };
-      const spy = jest.spyOn(service, 'loadGridModule');
+      const spy = vi.spyOn(service, 'loadGridModule');
       service.preload();
       expect(spy).not.toHaveBeenCalled();
     });
@@ -282,13 +282,13 @@ describe('GridLoaderService', () => {
     it('should not invoke load when device unsupported', () => {
       (service as any).gridModule = null;
       mockDeviceService.supportsGrids.mockReturnValue(false);
-      const spy = jest.spyOn(service, 'loadGridModule');
+      const spy = vi.spyOn(service, 'loadGridModule');
       service.preload();
       expect(spy).not.toHaveBeenCalled();
     });
 
     it('should call loadGridModule under optimal conditions', () => {
-      const spy = jest.spyOn(service, 'loadGridModule').mockResolvedValue({});
+      const spy = vi.spyOn(service, 'loadGridModule').mockResolvedValue({});
       service.preload();
       expect(spy).toHaveBeenCalledTimes(1);
     });

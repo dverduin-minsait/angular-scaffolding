@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { vi } from 'vitest';
 
 import { Navbar } from './navbar';
 import { NavigationItem, NavigationGroup, NavigationLeaf } from '../navigation.types';
@@ -23,11 +24,11 @@ class MockSettingsComponent { }
 
 // Mock document
 class MockDocument {
-  getElementById = jest.fn();
-  addEventListener = jest.fn();
-  removeEventListener = jest.fn();
-  querySelectorAll = jest.fn();
-  querySelector = jest.fn();
+  getElementById = vi.fn();
+  addEventListener = vi.fn();
+  removeEventListener = vi.fn();
+  querySelectorAll = vi.fn();
+  querySelector = vi.fn();
 }
 
 describe('Navbar', () => {
@@ -259,7 +260,7 @@ describe('Navbar', () => {
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       const authToggle = fixture.debugElement.query(By.css('button[aria-controls="grp-auth"]'));
       
-      const focusSpy = jest.spyOn(authToggle.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(authToggle.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
       Object.defineProperty(event, 'target', { value: dashboardLink.nativeElement });
@@ -273,7 +274,7 @@ describe('Navbar', () => {
       const authToggle = fixture.debugElement.query(By.css('button[aria-controls="grp-auth"]'));
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
-      const focusSpy = jest.spyOn(dashboardLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(dashboardLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'ArrowUp' });
       Object.defineProperty(event, 'target', { value: authToggle.nativeElement });
@@ -287,7 +288,7 @@ describe('Navbar', () => {
       const settingsLink = fixture.debugElement.query(By.css('a[href="/settings"]'));
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
-      const focusSpy = jest.spyOn(dashboardLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(dashboardLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'Home' });
       Object.defineProperty(event, 'target', { value: settingsLink.nativeElement });
@@ -301,7 +302,7 @@ describe('Navbar', () => {
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       const settingsLink = fixture.debugElement.query(By.css('a[href="/settings"]'));
       
-      const focusSpy = jest.spyOn(settingsLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(settingsLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'End' });
       Object.defineProperty(event, 'target', { value: dashboardLink.nativeElement });
@@ -356,33 +357,33 @@ describe('Navbar', () => {
       // Mock matchMedia for pointer:fine
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
-        value: jest.fn().mockImplementation(() => ({
+        value: vi.fn().mockImplementation(() => ({
           matches: true,
-          addListener: jest.fn(),
-          removeListener: jest.fn(),
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
         })),
       });
     });
 
     it('should open group on mouse enter with delay for top-level groups', () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       const authGroup = fixture.debugElement.query(By.css('.nav-group'));
       
       expect(component['isGroupOpen']('auth')).toBe(false);
       
       authGroup.nativeElement.dispatchEvent(new MouseEvent('mouseenter'));
-      jest.advanceTimersByTime(50); // Before delay
+      vi.advanceTimersByTime(50); // Before delay
       
       expect(component['isGroupOpen']('auth')).toBe(false);
       
-      jest.advanceTimersByTime(100); // After delay (120ms total)
+      vi.advanceTimersByTime(100); // After delay (120ms total)
       
       expect(component['isGroupOpen']('auth')).toBe(true);
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should close group on mouse leave with delay for top-level groups', () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       component['toggleGroup']('auth');
       fixture.detectChanges();
       
@@ -393,14 +394,14 @@ describe('Navbar', () => {
       const event = new MouseEvent('mouseleave');
       Object.defineProperty(event, 'relatedTarget', { value: document.body });
       authGroup.nativeElement.dispatchEvent(event);
-      jest.advanceTimersByTime(250); // Before delay
+      vi.advanceTimersByTime(250); // Before delay
       
       expect(component['isGroupOpen']('auth')).toBe(true);
       
-      jest.advanceTimersByTime(100); // After delay (300ms total)
+      vi.advanceTimersByTime(100); // After delay (300ms total)
       
       expect(component['isGroupOpen']('auth')).toBe(false);
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should not affect nested groups with hover', () => {
@@ -416,7 +417,7 @@ describe('Navbar', () => {
     });
 
     it('should not close group when mouse moves to panel', () => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       component['toggleGroup']('auth');
       fixture.detectChanges();
       
@@ -424,17 +425,17 @@ describe('Navbar', () => {
       
       // Mock relatedTarget as part of the panel
       const mockRelatedTarget = {
-        closest: jest.fn().mockReturnValue(true)
+        closest: vi.fn().mockReturnValue(true)
       };
       
       const event = new MouseEvent('mouseleave');
       Object.defineProperty(event, 'relatedTarget', { value: mockRelatedTarget });
       
       component['onGroupMouseLeave']('auth', 0, event as any);
-      jest.advanceTimersByTime(350);
+      vi.advanceTimersByTime(350);
       
       expect(component['isGroupOpen']('auth')).toBe(true);
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
   });
 
@@ -460,7 +461,7 @@ describe('Navbar', () => {
       expect(component['isGroupOpen']('auth')).toBe(true);
       
       const insideElelogint = {
-        closest: jest.fn().mockReturnValue(true)
+        closest: vi.fn().mockReturnValue(true)
       };
       const event = new Event('click');
       Object.defineProperty(event, 'target', { value: insideElelogint });
@@ -558,7 +559,7 @@ describe('Navbar', () => {
       // Create some hover timers
       component['onGroupMouseEnter']('auth', 0);
       
-      const clearTimeoutSpy = jest.spyOn(window, 'clearTimeout');
+      const clearTimeoutSpy = vi.spyOn(window, 'clearTimeout');
       
       component.ngOnDestroy();
       

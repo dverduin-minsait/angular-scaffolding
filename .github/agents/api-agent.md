@@ -525,21 +525,24 @@ getFormattedBooks(): Observable<FormattedBook[]> {
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { BookApiService, Book } from './book-api.service';
 
 describe('BookApiService', () => {
   let service: BookApiService;
-  let mockHttp: jest.Mocked<HttpClient>;
+  let mockHttp: Pick<HttpClient, 'get' | 'post' | 'put' | 'patch' | 'delete'>;
+  let getSpy: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    getSpy = vi.fn();
     mockHttp = {
-      get: jest.fn(),
-      post: jest.fn(),
-      put: jest.fn(),
-      patch: jest.fn(),
-      delete: jest.fn()
-    } as unknown as jest.Mocked<HttpClient>;
+      get: getSpy,
+      post: vi.fn(),
+      put: vi.fn(),
+      patch: vi.fn(),
+      delete: vi.fn()
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -551,47 +554,22 @@ describe('BookApiService', () => {
     service = TestBed.inject(BookApiService);
   });
 
-  it('should fetch all books', (done) => {
+  it('should fetch all books', async () => {
     const mockBooks: Book[] = [
       { id: 1, title: 'Book 1', author: 'Author 1', isbn: '123', publishedYear: 2020, available: true }
     ];
-    mockHttp.get.mockReturnValue(of(mockBooks));
+    getSpy.mockReturnValue(of(mockBooks));
 
-    service.getAll().subscribe(books => {
-      expect(books).toEqual(mockBooks);
-      expect(mockHttp.get).toHaveBeenCalledWith('http://localhost:3000/books');
-      done();
-    });
+    const books = await firstValueFrom(service.getAll());
+    expect(books).toEqual(mockBooks);
+    expect(mockHttp.get).toHaveBeenCalledWith('http://localhost:3000/books');
   });
 
-  it('should handle errors', (done) => {
+  it('should handle errors', async () => {
     const error = { status: 500, message: 'Server error' };
-    mockHttp.get.mockReturnValue(throwError(() => error));
+    getSpy.mockReturnValue(throwError(() => error));
 
-    service.getAll().subscribe({
-      error: (err) => {
-        expect(err).toBeDefined();
-        done();
-      }
-    });
-  });
-
-  it('should search by title', (done) => {
-    const mockResults: Book[] = [
-      { id: 1, title: 'Searched Book', author: 'Author', isbn: '123', publishedYear: 2020, available: true }
-    ];
-    mockHttp.get.mockReturnValue(of(mockResults));
-
-    service.searchByTitle('Searched').subscribe(books => {
-      expect(books).toEqual(mockResults);
-      expect(mockHttp.get).toHaveBeenCalledWith(
-        'http://localhost:3000/books/search',
-        expect.objectContaining({
-          params: { title: 'Searched' }
-        })
-      );
-      done();
-    });
+    await expect(firstValueFrom(service.getAll())).rejects.toEqual(error);
   });
 });
 ```

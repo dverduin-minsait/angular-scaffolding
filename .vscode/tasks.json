@@ -37,6 +37,575 @@
           }
         }
       }
+    },
+    {
+      "label": "ng:test (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:ng",
+        "--",
+        "--watch=false"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+        },
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm:test (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "test"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+        },
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:run (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+        },
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:help (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "--help"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+        },
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:run:json (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "--reporter",
+        "json",
+        "--outputFile",
+        "vitest-report.json"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+        },
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:summary (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/summarize-vitest-report.mjs"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:details auth-interceptor",
+      "type": "shell",
+      "command": "node.exe",
+                "cwd": "${workspaceFolder}",
+                "env": {
+                  "NPM_CONFIG_USERCONFIG": "${workspaceFolder}\\.npmrc"
+                },
+      "args": [
+        "tools/summarize-vitest-report.mjs",
+        "auth.interceptor.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:details multi-tab-sync",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/summarize-vitest-report.mjs",
+        "multi-tab-sync.service.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:details multi-tab-sync-ssr",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/summarize-vitest-report.mjs",
+        "multi-tab-sync.service.ssr.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:details responsive-grid",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/summarize-vitest-report.mjs",
+        "responsive-grid.component.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:report:details forbidden",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/summarize-vitest-report.mjs",
+        "forbidden.component.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:run:verbose (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "--reporter",
+        "verbose"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:run:bail1 (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "--reporter",
+        "verbose",
+        "--bail",
+        "1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single abstract-api (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/api/abstract-api.service.spec.ts",
+        "--reporter",
+        "verbose"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single abstract-api:default (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/api/abstract-api.service.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single theme-service-ssr (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/services/theme.service.ssr.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single multi-tab-sync-ssr (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/auth/services/multi-tab-sync.service.ssr.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single ssr-page (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/features/demo-pages/ssr-demo/pages/ssr-page/ssr-page.component.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single auth-interceptor (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/auth/interceptors/auth.interceptor.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single multi-tab-sync (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/core/auth/services/multi-tab-sync.service.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single forbidden (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/shared/components/forbidden/forbidden.component.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:single responsive-grid (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/shared/components/responsive-grid/responsive-grid.component.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "jest:run (cmd, CLM-safe)",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:jest"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:header-specs",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "src/app/shared/components/header/navbar/navbar.spec.ts",
+        "src/app/shared/components/header/sidebar/sidebar.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "vitest:header-specs:verbose",
+      "type": "shell",
+      "command": "npm.cmd",
+      "args": [
+        "run",
+        "test:vitest:run",
+        "--",
+        "--reporter",
+        "verbose",
+        "src/app/shared/components/header/navbar/navbar.spec.ts",
+        "src/app/shared/components/header/sidebar/sidebar.spec.ts"
+      ],
+      "options": {
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": []
     }
   ]
 }

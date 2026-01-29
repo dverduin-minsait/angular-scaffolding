@@ -116,7 +116,7 @@ Analysis of Angular 21 zoneless architecture project against ADRs and best pract
 
 5. **Testing Coverage** ✅ **IMPROVED**
    - ✅ Coverage thresholds enforced: 80% global, 85% core/, 70% shared/
-   - ✅ jest-axe integration for WCAG AA accessibility testing
+   - ✅ vitest-axe integration for WCAG AA accessibility testing
    - ✅ Custom axe-testing utilities with professional defaults
    - ⚠️ Current coverage gaps: branches 74.55%, functions 73% (below thresholds)
    - 🔄 Need example integration tests beyond accessibility
@@ -223,10 +223,10 @@ Lazy Chunks: Properly implemented ✅
    - [ ] Add inline documentation for complex services
 
 5. **Testing Improvements** ✅ **COMPLETED**
-   - [x] Add coverage thresholds to jest.config.js (80% global, 85% core/, 70% shared/)
-   - [x] Replace custom a11y testing with @axe-core/jest integration  
+   - [x] Add coverage thresholds to vitest.config.ts (80% global, 85% core/, 70% shared/)
+   - [x] Replace custom a11y testing with axe-core integration
    - [x] Consolidate testing utilities with professional axe-testing.ts
-   - [x] Create example accessibility tests showcasing jest-axe usage
+   - [x] Create example accessibility tests showcasing vitest-axe usage
    - ⚠️ **Gaps Identified**: Current coverage below thresholds (need improvements)
 
 6. **Type Safety Enhancement** ✅ **COMPLETED**

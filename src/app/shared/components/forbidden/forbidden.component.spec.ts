@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 
 import { ForbiddenComponent } from './forbidden.component';
 
@@ -72,7 +73,7 @@ describe('ForbiddenComponent', () => {
     });
 
     it('should navigate to dashboard when back link is clicked', async () => {
-      const navigateSpy = jest.spyOn(router, 'navigateByUrl');
+      const navigateSpy = vi.spyOn(router, 'navigateByUrl');
       const _backLink = fixture.debugElement.query(By.css('.back-link'));
       
       // Simulate router link click behavior
@@ -127,8 +128,7 @@ describe('ForbiddenComponent', () => {
 
   describe('Component Structure', () => {
     it('should be a standalone component', () => {
-      // Check that the component has the standalone property
-      expect(component.constructor.name).toBe('ForbiddenComponent');
+      expect((ForbiddenComponent as any).ɵcmp?.standalone).toBe(true);
     });
 
     it('should import necessary modules', () => {

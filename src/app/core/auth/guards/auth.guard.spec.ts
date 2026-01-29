@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { runInInjectionContext, Injector } from '@angular/core';
+import { vi } from 'vitest';
 import { authGuard } from './auth.guard';
 import { AuthStore } from '../stores/auth.store';
 import { UserProfile } from '../models/auth.models';
 
 describe('authGuard', () => {
   let store: AuthStore;
-  let router: jest.Mocked<Router>;
+  let router: { navigate: ReturnType<typeof vi.fn> };
   let injector: Injector;
 
   const mockUser: UserProfile = {
@@ -24,7 +25,7 @@ describe('authGuard', () => {
 
   beforeEach(async () => {
     const routerMock = {
-      navigate: jest.fn().mockResolvedValue(true)
+      navigate: vi.fn().mockResolvedValue(true)
     };
 
     await TestBed.configureTestingModule({
@@ -36,7 +37,7 @@ describe('authGuard', () => {
     }).compileComponents();
 
     store = TestBed.inject(AuthStore);
-    router = TestBed.inject(Router) as jest.Mocked<Router>;
+    router = TestBed.inject(Router) as unknown as { navigate: ReturnType<typeof vi.fn> };
     injector = TestBed.inject(Injector);
   });
 

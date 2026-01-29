@@ -1,14 +1,14 @@
 # Testing Agent
 
 ## Role
-Expert in writing and maintaining Jest tests for Angular 21 applications with Testing Library patterns.
+Expert in writing and maintaining Vitest tests for Angular 21 applications with Testing Library patterns.
 
 ## Responsibilities
 
 - Write comprehensive unit and integration tests
-- Ensure Jest (not Jasmine) patterns are used
+- Ensure Vitest (not Jasmine) patterns are used
 - Maintain test coverage standards
-- Test accessibility with jest-axe
+- Test accessibility with vitest-axe
 - Create tests for components, services, directives, pipes, and stores
 - Mock dependencies appropriately
 - Test both success and error scenarios
@@ -17,9 +17,9 @@ Expert in writing and maintaining Jest tests for Angular 21 applications with Te
 ## Key Testing Files
 
 ### Configuration
-- `jest.config.js` - Jest configuration
-- `src/setup-jest.ts` - Jest setup file
-- `src/jest-axe.d.ts` - TypeScript definitions for jest-axe
+- `vitest.config.ts` - Vitest configuration
+- `src/test-setup.ts` - Vitest setup file
+- `src/vitest-axe.d.ts` - TypeScript definitions for vitest-axe
 
 ### Test Utilities
 - `src/app/testing/i18n-testing.ts` - Translation test utilities
@@ -96,19 +96,20 @@ import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { MyService } from './my.service';
 
 describe('MyService', () => {
   let service: MyService;
-  let mockHttp: jest.Mocked<HttpClient>;
+  let mockHttp: HttpClient;
 
   beforeEach(() => {
     mockHttp = {
-      get: jest.fn(),
-      post: jest.fn(),
-      put: jest.fn(),
-      delete: jest.fn()
-    } as unknown as jest.Mocked<HttpClient>;
+      get: vi.fn(),
+      post: vi.fn(),
+      put: vi.fn(),
+      delete: vi.fn()
+    } as unknown as HttpClient;
 
     TestBed.configureTestingModule({
       providers: [
@@ -155,7 +156,8 @@ describe('MyService', () => {
 
 ```typescript
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { EntityStore } from '../../../core/store/entity-store';
 import { CrudDataSource } from '../../../core/api/abstract-api.service';
 
@@ -166,50 +168,44 @@ interface TestEntity {
 
 describe('EntityStore', () => {
   let store: EntityStore<TestEntity, number>;
-  let mockDataSource: jest.Mocked<CrudDataSource<TestEntity, number>>;
+  let mockDataSource: CrudDataSource<TestEntity, number>;
 
   beforeEach(() => {
     mockDataSource = {
-      getAll: jest.fn(),
-      getById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn()
-    };
+      getAll: vi.fn(),
+      getById: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn()
+    } as unknown as CrudDataSource<TestEntity, number>;
 
     store = new EntityStore(mockDataSource);
   });
 
   describe('loadAll', () => {
-    it('should load items and update state', (done) => {
+    it('should load items and update state', async () => {
       const mockData = [
         { id: 1, name: 'Item 1' },
         { id: 2, name: 'Item 2' }
       ];
       mockDataSource.getAll.mockReturnValue(of(mockData));
 
-      store.loadAll().subscribe(() => {
-        expect(store.items()).toEqual(mockData);
-        expect(store.hasData()).toBe(true);
-        expect(store.isEmpty()).toBe(false);
-        expect(store.isReady()).toBe(true);
-        expect(store.loading().isLoading).toBe(false);
-        done();
-      });
+      await firstValueFrom(store.loadAll());
+      expect(store.items()).toEqual(mockData);
+      expect(store.hasData()).toBe(true);
+      expect(store.isEmpty()).toBe(false);
+      expect(store.isReady()).toBe(true);
+      expect(store.loading().isLoading).toBe(false);
     });
 
-    it('should handle errors', (done) => {
+    it('should handle errors', async () => {
       const error = { message: 'Failed', code: '500', timestamp: Date.now() };
       mockDataSource.getAll.mockReturnValue(throwError(() => error));
 
-      store.loadAll().subscribe({
-        error: () => {
-          expect(store.error()).toEqual(error);
-          expect(store.isReady()).toBe(false);
-          expect(store.loading().isLoading).toBe(false);
-          done();
-        }
-      });
+      await expect(firstValueFrom(store.loadAll())).rejects.toEqual(error);
+      expect(store.error()).toEqual(error);
+      expect(store.isReady()).toBe(false);
+      expect(store.loading().isLoading).toBe(false);
     });
 
     it('should set loading state', () => {
@@ -369,7 +365,7 @@ describe('MiniCurrencyPipe', () => {
 ## Accessibility Testing
 
 ```typescript
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe, toHaveNoViolations } from 'vitest-axe';
 
 expect.extend(toHaveNoViolations);
 
@@ -422,17 +418,18 @@ describe('MyComponent Accessibility', () => {
 ```typescript
 import { LOCAL_STORAGE } from '../../core/tokens/local.storage.token';
 import { StorageService } from '../../core/tokens/local.storage.token';
+import { vi } from 'vitest';
 
 describe('SSR-safe Component', () => {
-  let mockStorage: jest.Mocked<StorageService>;
+  let mockStorage: StorageService;
 
   beforeEach(async () => {
     mockStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn()
-    };
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn()
+    } as unknown as StorageService;
 
     await TestBed.configureTestingModule({
       imports: [MyComponent],
@@ -468,23 +465,24 @@ describe('SSR-safe Component', () => {
 
 ```typescript
 import { ModalService, ModalRef } from '../../core/services/modal/modal.service';
+import { vi } from 'vitest';
 
 describe('Component with Modal', () => {
-  let mockModalService: jest.Mocked<Partial<ModalService>>;
-  let mockModalRef: jest.Mocked<Partial<ModalRef<any>>>;
+  let mockModalService: Partial<ModalService>;
+  let mockModalRef: Partial<ModalRef<any>>;
 
   beforeEach(async () => {
     mockModalRef = {
-      result: jest.fn().mockResolvedValue({ reason: 'close', data: true }),
-      close: jest.fn(),
-      cancel: jest.fn(),
-      dismiss: jest.fn(),
-      isSettled: jest.fn().mockReturnValue(false)
+      result: vi.fn().mockResolvedValue({ reason: 'close', data: true }),
+      close: vi.fn(),
+      cancel: vi.fn(),
+      dismiss: vi.fn(),
+      isSettled: vi.fn().mockReturnValue(false)
     };
 
     mockModalService = {
-      open: jest.fn().mockReturnValue(mockModalRef),
-      confirm: jest.fn().mockResolvedValue(true)
+      open: vi.fn().mockReturnValue(mockModalRef as ModalRef<any>),
+      confirm: vi.fn().mockResolvedValue(true)
     };
 
     await TestBed.configureTestingModule({
@@ -522,13 +520,15 @@ describe('Component with Modal', () => {
 });
 ```
 
-## Jest-Specific Patterns
+## Vitest-Specific Patterns
 
 ### Mocking Functions
 
 ```typescript
 // Create mock function
-const mockFn = jest.fn();
+import { vi } from 'vitest';
+
+const mockFn = vi.fn();
 
 // Mock return value
 mockFn.mockReturnValue('value');
@@ -553,7 +553,7 @@ expect(mockFn).not.toHaveBeenCalled();
 const service = TestBed.inject(MyService);
 
 // Create spy
-const spy = jest.spyOn(service, 'method');
+const spy = vi.spyOn(service, 'method');
 
 // Mock implementation
 spy.mockImplementation(() => 'mocked');
@@ -569,29 +569,29 @@ expect(spy).toHaveBeenCalled();
 
 ```typescript
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
 });
 
 afterEach(() => {
-  jest.useRealTimers();
+  vi.useRealTimers();
 });
 
 it('should handle setTimeout', () => {
-  const callback = jest.fn();
+  const callback = vi.fn();
   setTimeout(callback, 1000);
   
   expect(callback).not.toHaveBeenCalled();
   
-  jest.advanceTimersByTime(1000);
+  vi.advanceTimersByTime(1000);
   
   expect(callback).toHaveBeenCalled();
 });
 
 it('should handle setInterval', () => {
-  const callback = jest.fn();
+  const callback = vi.fn();
   setInterval(callback, 100);
   
-  jest.advanceTimersByTime(250);
+  vi.advanceTimersByTime(250);
   
   expect(callback).toHaveBeenCalledTimes(2);
 });
@@ -625,12 +625,12 @@ jasmine.clock()
 spyOn(obj, 'method').and.returnValue()
 ```
 
-### ✅ Use Jest Syntax
+### ✅ Use Vitest Syntax
 ```typescript
 // CORRECT
-jest.fn()
-jest.useFakeTimers()
-jest.spyOn(obj, 'method').mockReturnValue()
+vi.fn()
+vi.useFakeTimers()
+vi.spyOn(obj, 'method').mockReturnValue()
 ```
 
 ### ❌ Not Calling detectChanges
@@ -701,16 +701,16 @@ npm run test:watch
 npm run coverage
 
 # Run specific test file
-npx jest my.component.spec.ts
+npx vitest my.component.spec.ts
 
 # Run tests matching pattern
-npx jest --testNamePattern="should load data"
+npx vitest --testNamePattern="should load data"
 ```
 
 ## Test Checklist
 
 Before committing tests:
-- [ ] Uses Jest syntax (not Jasmine)
+- [ ] Uses Vitest syntax (not Jasmine)
 - [ ] Includes `provideZonelessChangeDetection()`
 - [ ] Uses `provideStubTranslationService()` for i18n
 - [ ] Mocks external dependencies
@@ -718,6 +718,6 @@ Before committing tests:
 - [ ] Includes accessibility tests
 - [ ] Has meaningful test descriptions
 - [ ] Calls `fixture.detectChanges()` appropriately
-- [ ] Uses `done()` callback for async tests
+- [ ] Uses `async/await` for async tests
 - [ ] No hardcoded delays or timeouts
 - [ ] Cleans up resources in `afterEach`

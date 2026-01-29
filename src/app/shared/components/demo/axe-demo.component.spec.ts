@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
-import { axe } from 'jest-axe';
+import { axe } from 'vitest-axe';
 import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -33,8 +33,8 @@ describe('AxeDemoComponent - Accessibility', () => {
     }).compileComponents();
   });
 
-  // Example 1: Using jest-axe directly
-  it('should have no accessibility violations (jest-axe)', async () => {
+  // Example 1: Using vitest-axe directly
+  it('should have no accessibility violations (vitest-axe)', async () => {
     const { container } = await render(AxeDemoComponent);
     const results = await axe(container);
     expect(results).toHaveNoViolations();

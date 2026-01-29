@@ -3,6 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { vi } from 'vitest';
 
 import { HeaderComponent } from './header.component';
 import { ThemeService } from '../../../core/services/theme.service';
@@ -46,9 +47,9 @@ describe('HeaderComponent', () => {
         { 
           provide: LOCAL_STORAGE, 
           useValue: { 
-            getItem: jest.fn(), 
-            setItem: jest.fn(), 
-            removeItem: jest.fn() 
+            getItem: vi.fn(), 
+            setItem: vi.fn(), 
+            removeItem: vi.fn() 
           } 
         }
       ]
@@ -125,7 +126,7 @@ describe('HeaderComponent', () => {
 
   it('should handle language change', () => {
     const translationService = TestBed.inject(TranslationService);
-    const useSpy = jest.spyOn(translationService, 'use');
+    const useSpy = vi.spyOn(translationService, 'use');
 
     const mockEvent = {
       target: { value: 'es' }

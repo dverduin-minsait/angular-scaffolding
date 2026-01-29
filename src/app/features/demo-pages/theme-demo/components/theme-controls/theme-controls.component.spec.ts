@@ -1,26 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { vi } from 'vitest';
 import { ThemeControlsComponent } from './theme-controls.component';
 import { ThemeService, Theme } from '../../../../../core/services';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Mock ThemeService
 const mockThemeService = {
-  currentTheme: jest.fn(() => 'light' as Theme),
-  isDarkMode: jest.fn(() => false),
-  useSystemPreference: jest.fn(() => false),
-  setTheme: jest.fn(),
-  toggleTheme: jest.fn(),
-  setUseSystemPreference: jest.fn(),
-  resetToDefaults: jest.fn(),
-  getCurrentThemePair: jest.fn(() => 1),
-  toggleThemePair: jest.fn(),
+  currentTheme: vi.fn(() => 'light' as Theme),
+  isDarkMode: vi.fn(() => false),
+  useSystemPreference: vi.fn(() => false),
+  setTheme: vi.fn(),
+  toggleTheme: vi.fn(),
+  setUseSystemPreference: vi.fn(),
+  resetToDefaults: vi.fn(),
+  getCurrentThemePair: vi.fn(() => 1),
+  toggleThemePair: vi.fn(),
 };
 
 describe('ThemeControlsComponent', () => {
   let component: ThemeControlsComponent;
   let fixture: ComponentFixture<ThemeControlsComponent>;
-  let themeService: jest.Mocked<ThemeService>;
+  let themeService: typeof mockThemeService;
 
   // Minimal i18n needed for this spec
   const enTranslations = {
@@ -60,7 +61,7 @@ describe('ThemeControlsComponent', () => {
 
     fixture = TestBed.createComponent(ThemeControlsComponent);
     component = fixture.componentInstance;
-    themeService = TestBed.inject(ThemeService) as jest.Mocked<ThemeService>;
+    themeService = TestBed.inject(ThemeService) as unknown as typeof mockThemeService;
 
     // Inject translations
     const translate = TestBed.inject(TranslateService);
@@ -70,7 +71,7 @@ describe('ThemeControlsComponent', () => {
 
   beforeEach(() => {
     // Reset mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

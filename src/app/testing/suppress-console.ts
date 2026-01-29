@@ -10,6 +10,8 @@
  *   // ... tests ...
  *   restore();
  */
+import { vi } from 'vitest';
+
 export interface SuppressConsoleConfig {
   log?: (RegExp | string)[];
   error?: (RegExp | string)[];
@@ -33,17 +35,17 @@ export function suppressConsole(cfg: SuppressConsoleConfig): () => void {
   const originalError = console.error;
   const originalWarn = console.warn;
 
-  const logSpy = jest.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
+  const logSpy = vi.spyOn(console, 'log').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressLog(args[0])) return;
-    void originalLog(...args);
+    originalLog(...args);
   });
-  const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
+  const errorSpy = vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressError(args[0])) return;
-    void originalError(...args);
+    originalError(...args);
   });
-  const warnSpy = jest.spyOn(console, 'warn').mockImplementation((...args: unknown[]) => {
+  const warnSpy = vi.spyOn(console, 'warn').mockImplementation((...args: unknown[]) => {
     if (shouldSuppressWarn(args[0])) return;
-    void originalWarn(...args);
+    originalWarn(...args);
   });
 
   return function restore(): void {

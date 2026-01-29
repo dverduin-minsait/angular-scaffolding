@@ -2,19 +2,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { of, throwError, Subject } from 'rxjs';
+import { vi } from 'vitest';
 
 import { ResponsiveGridComponent, ResponsiveGridConfig } from './responsive-grid.component';
 import { DeviceService } from '../../../core/services/device.service';
 import { GridLoaderService } from '../../../core/services/grid-loader.service';
 import { GridDataService, GridDataConfig } from '../../../core/services/grid-data.service';
+import { destroyFixtureWithTimers } from '../../../testing/test-teardown';
 
 // Mock ag-Grid module
 const mockGridModule = {
-  AgGridAngular: jest.fn(),
-  createGrid: jest.fn().mockReturnValue({
-    destroy: jest.fn(),
-    setGridOption: jest.fn(),
-    sizeColumnsToFit: jest.fn()
+  AgGridAngular: vi.fn(),
+  createGrid: vi.fn().mockReturnValue({
+    destroy: vi.fn(),
+    setGridOption: vi.fn(),
+    sizeColumnsToFit: vi.fn()
   })
 };
 
@@ -51,47 +53,47 @@ class TestHostComponent {
   // Optional direct data feed for signal-driven path
   directData = signal<any[] | null | undefined>(null);
 
-  onGridReady = jest.fn();
-  onDataLoaded = jest.fn();
-  onError = jest.fn();
+  onGridReady = vi.fn();
+  onDataLoaded = vi.fn();
+  onError = vi.fn();
 }
 
 describe('ResponsiveGridComponent', () => {
   let component: ResponsiveGridComponent;
   let hostComponent: TestHostComponent;
   let fixture: ComponentFixture<TestHostComponent>;
-  let mockDeviceService: jest.Mocked<DeviceService>;
-  let mockGridLoader: jest.Mocked<GridLoaderService>;
-  let mockGridDataService: jest.Mocked<GridDataService>;
+  let mockDeviceService: DeviceService;
+  let mockGridLoader: GridLoaderService;
+  let mockGridDataService: GridDataService;
   let loadStateSubject: Subject<any>;
 
   beforeEach(async () => {
     // Create fresh mocks for each test to avoid state pollution
     mockDeviceService = {
-      supportsGrids: jest.fn().mockReturnValue(true),
+      supportsGrids: vi.fn().mockReturnValue(true),
       isMobile: signal(false),
       isTablet: signal(false),
       isDesktop: signal(true),
       screenSize: signal('desktop' as any)
-    } as any;
+    } as unknown as DeviceService;
 
   loadStateSubject = new Subject();
     mockGridLoader = {
-      loadGridModule: jest.fn().mockResolvedValue(mockGridModule),
+      loadGridModule: vi.fn().mockResolvedValue(mockGridModule),
       loadState$: loadStateSubject.asObservable(),
-      preloadForRoute: jest.fn(),
-      getThemeClass: jest.fn().mockReturnValue('ag-theme-alpine')
-    } as any;
+      preloadForRoute: vi.fn(),
+      getThemeClass: vi.fn().mockReturnValue('ag-theme-alpine')
+    } as unknown as GridLoaderService;
 
     mockGridDataService = {
-      loadDataWithGrid: jest.fn().mockReturnValue(of({
+      loadDataWithGrid: vi.fn().mockReturnValue(of({
         data: [
           { id: 1, name: 'Item 1' },
           { id: 2, name: 'Item 2' }
         ],
         gridReady: true
       }))
-    } as any;
+    } as unknown as GridDataService;
 
     await TestBed.configureTestingModule({
       imports: [TestHostComponent, CommonModule],
@@ -111,8 +113,6 @@ describe('ResponsiveGridComponent', () => {
   });
 
   afterEach(() => {
-    // Use shared teardown utility to keep logic consistent across specs
-    const { destroyFixtureWithTimers } = require('../../../testing/test-teardown');
     destroyFixtureWithTimers({
       component,
       fixture,
@@ -328,16 +328,16 @@ describe('ResponsiveGridComponent', () => {
 
     it('should schedule ensureGridSetup retry when container missing', () => {
       fixture.detectChanges();
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       const original = (component as any).gridContainer;
       (component as any).gridContainer = undefined;
       (component as any).data.set([{ id: 1 }]);
       (component as any).agGridComponent = null;
       (component as any).ensureGridSetup();
       (component as any).gridContainer = original;
-      jest.runAllTimers();
+      vi.runAllTimers();
       expect(mockGridLoader.loadGridModule).toHaveBeenCalled();
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should handle setupDesktopGrid success path and create grid instance', async () => {
@@ -350,7 +350,7 @@ describe('ResponsiveGridComponent', () => {
     it('should handle setupDesktopGrid error when AgGridAngular missing', async () => {
       // Suppress expected console.error for this intentional error path
       const originalError = console.error;
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args: any[]) => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation((...args: any[]) => {
         if (typeof args[0] === 'string' && args[0].includes('Failed to setup desktop grid')) {
           return; // swallow expected grid setup error
         }
@@ -371,7 +371,7 @@ describe('ResponsiveGridComponent', () => {
       (component as any).data.set([{ id: 3 }]);
       await (component as any).setupDesktopGrid();
       const gridInstance = (component as any).agGridComponent.instance.api;
-      const setGridOptionSpy = jest.spyOn(gridInstance, 'setGridOption');
+      const setGridOptionSpy = vi.spyOn(gridInstance, 'setGridOption');
       (component as any).data.set([{ id: 3 }, { id: 4 }]);
       (component as any).updateGridData();
       expect(setGridOptionSpy).toHaveBeenCalledWith('rowData', expect.any(Array));
@@ -382,8 +382,8 @@ describe('ResponsiveGridComponent', () => {
       (component as any).data.set([{ id: 5 }]);
       await (component as any).setupDesktopGrid();
       const api = (component as any).agGridComponent.instance.api;
-      api.isDestroyed = jest.fn().mockReturnValue(true);
-      const setGridOptionSpy = jest.spyOn(api, 'setGridOption');
+      api.isDestroyed = vi.fn().mockReturnValue(true);
+      const setGridOptionSpy = vi.spyOn(api, 'setGridOption');
       (component as any).data.set([{ id: 6 }]);
       (component as any).updateGridData();
       expect(setGridOptionSpy).not.toHaveBeenCalled();
@@ -391,7 +391,7 @@ describe('ResponsiveGridComponent', () => {
 
     it('should clear pending timeouts on destroy', () => {
       fixture.detectChanges();
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       let executed = false;
       // Remove any timeouts scheduled by effects
       (component as any).clearPendingTimeouts();
@@ -401,14 +401,14 @@ describe('ResponsiveGridComponent', () => {
       expect(afterSize - beforeSize).toBe(1);
       component.ngOnDestroy();
       expect((component as any).pendingTimeouts.size).toBe(0);
-      jest.runAllTimers();
+      vi.runAllTimers();
       expect(executed).toBe(false);
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should handle grid module load rejection (Promise reject)', async () => {
       const originalError = console.error;
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation((...args: any[]) => {
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation((...args: any[]) => {
         if (typeof args[0] === 'string' && args[0].includes('Failed to setup desktop grid')) {
           return; // expected
         }
@@ -431,14 +431,14 @@ describe('ResponsiveGridComponent', () => {
       mockGridDataService.loadDataWithGrid.mockReturnValueOnce(slow$.asObservable());
       fixture.detectChanges();
       expect(component.isLoading()).toBe(true);
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       // Provide direct data via host binding
       hostComponent.directData.set([{ id: 500, name: 'DirectPath' }]);
       fixture.detectChanges();
       // Advance timers to trigger ensureGridSetup (80ms requested)
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       expect(mockGridLoader.loadGridModule).toHaveBeenCalled();
-      jest.useRealTimers();
+      vi.useRealTimers();
       slow$.complete();
     });
 
@@ -446,10 +446,10 @@ describe('ResponsiveGridComponent', () => {
       // Prevent initial grid creation from data service by returning empty gridReady false
       mockGridDataService.loadDataWithGrid.mockReturnValueOnce(of({ data: [], gridReady: false }));
       fixture.detectChanges();
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       hostComponent.directData.set([{ id: 600 }]);
       fixture.detectChanges();
-      jest.advanceTimersByTime(100);
+      vi.advanceTimersByTime(100);
       // Wait for async setupDesktopGrid completion
       let attempts = 0;
       while (!(component as any).agGridComponent && attempts < 5) {
@@ -460,9 +460,9 @@ describe('ResponsiveGridComponent', () => {
       expect(api).toBeTruthy();
       // Ensure previous tests didn't leave a destructive isDestroyed flag
       if ((api as any).isDestroyed) {
-        (api as any).isDestroyed = jest.fn().mockReturnValue(false);
+        (api as any).isDestroyed = vi.fn().mockReturnValue(false);
       }
-      const setGridOptionSpy = jest.spyOn(api, 'setGridOption');
+      const setGridOptionSpy = vi.spyOn(api, 'setGridOption');
       // Second direct data update triggers effect path calling updateGridData
       hostComponent.directData.set([{ id: 600 }, { id: 601 }]);
       fixture.detectChanges();
@@ -475,7 +475,7 @@ describe('ResponsiveGridComponent', () => {
         (component as any).updateGridData();
       }
       expect(setGridOptionSpy).toHaveBeenCalledWith('rowData', expect.any(Array));
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
   });
 });

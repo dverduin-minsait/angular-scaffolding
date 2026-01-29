@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { SsrPageComponent } from './ssr-page.component';
 import { 
@@ -97,7 +98,7 @@ describe('SsrPageComponent', () => {
       fixture.detectChanges();
       
       const component = fixture.componentInstance;
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
       
       component['fetchClientData']();
       
@@ -145,34 +146,35 @@ describe('SsrPageComponent', () => {
       expect(component['metrics']().renderType).toBe('client');
     });
 
-    it('should initialize browser features', (done) => {
+    it('should initialize browser features', async () => {
+      vi.useFakeTimers();
       const fixture = TestBed.createComponent(SsrPageComponent);
       fixture.detectChanges();
       
       const component = fixture.componentInstance;
       
       // Browser features are initialized asynchronously
-      setTimeout(() => {
-        expect(component['browserFeatures']()).not.toBeNull();
-        done();
-      }, 200);
+      await vi.advanceTimersByTimeAsync(200);
+      expect(component['browserFeatures']()).not.toBeNull();
+      vi.useRealTimers();
     });
 
-    it('should track hydration in browser', (done) => {
+    it('should track hydration in browser', async () => {
+      vi.useFakeTimers();
       const fixture = TestBed.createComponent(SsrPageComponent);
       fixture.detectChanges();
       
       const component = fixture.componentInstance;
       
       // Hydration tracking happens asynchronously
-      setTimeout(() => {
-        expect(component['metrics']().isHydrated).toBe(true);
-        expect(component['metrics']().hydrationTime).toBeDefined();
-        done();
-      }, 150);
+      await vi.advanceTimersByTimeAsync(150);
+      expect(component['metrics']().isHydrated).toBe(true);
+      expect(component['metrics']().hydrationTime).toBeDefined();
+      vi.useRealTimers();
     });
 
-    it('should allow client-side data fetch in browser', (done) => {
+    it('should allow client-side data fetch in browser', async () => {
+      vi.useFakeTimers();
       const fixture = TestBed.createComponent(SsrPageComponent);
       fixture.detectChanges();
       
@@ -182,11 +184,10 @@ describe('SsrPageComponent', () => {
       component['fetchClientData']();
       expect(component['loading']()).toBe(true);
       
-      setTimeout(() => {
-        expect(component['loading']()).toBe(false);
-        expect(component['clientData']()).not.toBeNull();
-        done();
-      }, 1100);
+      await vi.advanceTimersByTimeAsync(1100);
+      expect(component['loading']()).toBe(false);
+      expect(component['clientData']()).not.toBeNull();
+      vi.useRealTimers();
     });
 
     it('should access DOM in browser context', () => {

@@ -8,11 +8,11 @@ describe('WINDOW_DOCUMENT Token', () => {
 
   beforeEach(() => {
     mockDocument = {
-      createElement: jest.fn(),
-      querySelector: jest.fn(),
-      getElementById: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn()
+      createElement: vi.fn(),
+      querySelector: vi.fn(),
+      getElementById: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
     };
   });
 

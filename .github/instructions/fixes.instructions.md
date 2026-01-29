@@ -311,16 +311,18 @@ this.http.get<User[]>('/api/users').subscribe(users => {
 
 ## Testing Issues
 
-### Problem: Using Jasmine Syntax with Jest
+### Problem: Using Jasmine Syntax with Vitest
 
 ```typescript
 // ❌ WRONG - Jasmine syntax
 const spy = jasmine.createSpy('myMethod');
 jasmine.clock().tick(1000);
 
-// ✅ CORRECT - Jest syntax
-const spy = jest.fn();
-jest.advanceTimersByTime(1000);
+// ✅ CORRECT - Vitest syntax
+import { vi } from 'vitest';
+
+const spy = vi.fn();
+vi.advanceTimersByTime(1000);
 ```
 
 ### Problem: Not Providing Zoneless Change Detection in Tests
@@ -687,7 +689,7 @@ export class DashboardComponent {
 | Memory leak | Use `takeUntilDestroyed()` |
 | SSR error | Use `LOCAL_STORAGE` token, `isPlatformBrowser` |
 | Type errors | Add proper TypeScript interfaces |
-| Test failures | Use Jest syntax, not Jasmine |
+| Test failures | Use Vitest syntax, not Jasmine |
 | Missing translations | Run `npm run check:i18n` |
 | Accessibility violations | Add ARIA labels, use semantic HTML |
 | Large bundle | Use lazy loading, tree-shakeable imports |

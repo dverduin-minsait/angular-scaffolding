@@ -3,6 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { GenericCrudService, CrudPreferences } from './generic-crud.service';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 import { firstValueFrom } from 'rxjs';
+import { vi } from 'vitest';
 
 describe('GenericCrudService', () => {
   let service: GenericCrudService;
@@ -12,14 +13,14 @@ describe('GenericCrudService', () => {
     // Create a mock localStorage implementation
     const storage: Record<string, string> = {};
     mockLocalStorage = {
-      getItem: jest.fn((key: string) => storage[key] || null),
-      setItem: jest.fn((key: string, value: string) => {
+      getItem: vi.fn((key: string) => storage[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
         storage[key] = value;
       }),
-      removeItem: jest.fn((key: string) => {
+      removeItem: vi.fn((key: string) => {
         delete storage[key];
       }),
-      clear: jest.fn(() => {
+      clear: vi.fn(() => {
         Object.keys(storage).forEach(key => delete storage[key]);
       })
     };
@@ -72,7 +73,9 @@ describe('GenericCrudService', () => {
 
     // Pre-populate localStorage
     const allPreferences = { [entityName]: preferences };
-    (mockLocalStorage.getItem as jest.Mock).mockReturnValue(JSON.stringify(allPreferences));
+    (mockLocalStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      JSON.stringify(allPreferences)
+    );
 
     const result = await firstValueFrom(service.loadPreferences(entityName));
 
@@ -100,7 +103,9 @@ describe('GenericCrudService', () => {
       [entityName]: preferences,
       [otherEntity]: preferences
     };
-    (mockLocalStorage.getItem as jest.Mock).mockReturnValue(JSON.stringify(allPreferences));
+    (mockLocalStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      JSON.stringify(allPreferences)
+    );
 
     await firstValueFrom(service.clearPreferences(entityName));
 
@@ -127,10 +132,10 @@ describe('GenericCrudService', () => {
 
   it('should fallback to memory storage when localStorage fails', async () => {
     // Make localStorage throw an error
-    (mockLocalStorage.setItem as jest.Mock).mockImplementation(() => {
+    (mockLocalStorage.setItem as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
       throw new Error('localStorage not available');
     });
-    (mockLocalStorage.getItem as jest.Mock).mockImplementation(() => {
+    (mockLocalStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockImplementation(() => {
       throw new Error('localStorage not available');
     });
 
@@ -151,7 +156,7 @@ describe('GenericCrudService', () => {
     const entityName = 'Book';
     
     // Make localStorage return invalid JSON
-    (mockLocalStorage.getItem as jest.Mock).mockReturnValue('invalid json');
+    (mockLocalStorage.getItem as unknown as ReturnType<typeof vi.fn>).mockReturnValue('invalid json');
 
     const result = await firstValueFrom(service.loadPreferences(entityName));
 

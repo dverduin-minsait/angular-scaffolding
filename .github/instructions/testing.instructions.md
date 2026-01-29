@@ -2,7 +2,7 @@
 
 ## Testing Framework
 
-This project uses **Jest** (not Jasmine) with Angular Testing Library patterns.
+This project uses **Vitest** (not Jasmine) with Angular Testing Library patterns.
 
 ## Test File Structure
 
@@ -44,20 +44,22 @@ describe('ComponentName', () => {
 });
 ```
 
-## Jest Matchers (NOT Jasmine)
+## Vitest Matchers (NOT Jasmine)
 
-Use Jest syntax, not Jasmine:
+Use Vitest syntax, not Jasmine:
 
 ```typescript
-// ✅ CORRECT - Jest
+import { vi } from 'vitest';
+
+// ✅ CORRECT - Vitest
 expect(value).toBe(expected);
 expect(array).toHaveLength(3);
 expect(fn).toHaveBeenCalledWith(arg);
 expect(fn).toHaveBeenCalledTimes(2);
-const mockFn = jest.fn();
-const spy = jest.spyOn(service, 'method');
-jest.useFakeTimers();
-jest.advanceTimersByTime(1000);
+const mockFn = vi.fn();
+const spy = vi.spyOn(service, 'method');
+vi.useFakeTimers();
+vi.advanceTimersByTime(1000);
 
 // ❌ WRONG - Jasmine (do NOT use)
 expect(value).toEqual(jasmine.any(Type));
@@ -65,18 +67,20 @@ jasmine.createSpy();
 jasmine.clock();
 ```
 
-## Mock Services with Jest
+## Mock Services with Vitest
 
 ```typescript
+import { vi, type Mocked } from 'vitest';
+
 describe('ServiceTest', () => {
   let service: MyService;
-  let mockHttp: { get: jest.Mock; post: jest.Mock };
+  let mockHttp: Mocked<{ get: (url: string) => unknown; post: (url: string, body: unknown) => unknown }>;
 
   beforeEach(() => {
     mockHttp = {
-      get: jest.fn(),
-      post: jest.fn()
-    };
+      get: vi.fn(),
+      post: vi.fn()
+    } as unknown as typeof mockHttp;
 
     TestBed.configureTestingModule({
       providers: [
@@ -157,47 +161,42 @@ it('should update signal state', () => {
 
 ```typescript
 import { EntityStore } from '../core/store/entity-store';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
 describe('Component with EntityStore', () => {
   let store: EntityStore<MyEntity, number>;
-  let mockDataSource: jest.Mocked<CrudDataSource<MyEntity, number>>;
+  let mockDataSource: CrudDataSource<MyEntity, number>;
 
   beforeEach(() => {
     mockDataSource = {
-      getAll: jest.fn(),
-      getById: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn()
-    };
+      getAll: vi.fn(),
+      getById: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn()
+    } as unknown as CrudDataSource<MyEntity, number>;
 
     store = new EntityStore(mockDataSource);
   });
 
-  it('should load items and update state', (done) => {
+  it('should load items and update state', async () => {
     const mockData = [{ id: 1, name: 'Test' }];
     mockDataSource.getAll.mockReturnValue(of(mockData));
 
-    store.loadAll().subscribe(() => {
-      expect(store.items()).toEqual(mockData);
-      expect(store.hasData()).toBe(true);
-      expect(store.isReady()).toBe(true);
-      done();
-    });
+    await firstValueFrom(store.loadAll());
+    expect(store.items()).toEqual(mockData);
+    expect(store.hasData()).toBe(true);
+    expect(store.isReady()).toBe(true);
   });
 
-  it('should handle errors', (done) => {
+  it('should handle errors', async () => {
     const error = { message: 'Failed', code: '500', timestamp: Date.now() };
     mockDataSource.getAll.mockReturnValue(throwError(() => error));
 
-    store.loadAll().subscribe({
-      error: () => {
-        expect(store.error()).toEqual(error);
-        expect(store.isReady()).toBe(false);
-        done();
-      }
-    });
+    await expect(firstValueFrom(store.loadAll())).rejects.toEqual(error);
+    expect(store.error()).toEqual(error);
+    expect(store.isReady()).toBe(false);
   });
 });
 ```
@@ -210,15 +209,15 @@ When testing code that uses browser APIs:
 import { LOCAL_STORAGE } from '../core/tokens/local.storage.token';
 
 describe('SSR-safe component', () => {
-  let mockStorage: jest.Mocked<StorageService>;
+  let mockStorage: StorageService;
 
   beforeEach(async () => {
     mockStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn()
-    };
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn()
+    } as unknown as StorageService;
 
     await TestBed.configureTestingModule({
       imports: [MyComponent],
@@ -242,7 +241,7 @@ describe('SSR-safe component', () => {
 ## Accessibility Testing
 
 ```typescript
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe, toHaveNoViolations } from 'vitest-axe';
 
 expect.extend(toHaveNoViolations);
 
@@ -272,13 +271,13 @@ describe('Accessibility', () => {
 import { ModalService } from '../core/services/modal/modal.service';
 
 describe('Component with modals', () => {
-  let modalService: jest.Mocked<ModalService>;
+  let modalService: ModalService;
 
   beforeEach(() => {
     modalService = {
-      open: jest.fn(),
-      confirm: jest.fn()
-    } as unknown as jest.Mocked<ModalService>;
+      open: vi.fn(),
+      confirm: vi.fn()
+    } as unknown as ModalService;
 
     TestBed.configureTestingModule({
       providers: [
@@ -318,10 +317,11 @@ describe('Component with modals', () => {
 ```typescript
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { vi } from 'vitest';
 
 it('should navigate on button click', () => {
   const router = TestBed.inject(Router);
-  const navigateSpy = jest.spyOn(router, 'navigate');
+  const navigateSpy = vi.spyOn(router, 'navigate');
   
   const fixture = TestBed.createComponent(MyComponent);
   const button = fixture.nativeElement.querySelector('button');
@@ -334,17 +334,20 @@ it('should navigate on button click', () => {
 ### Testing Async Operations
 
 ```typescript
-it('should handle async data loading', (done) => {
+import { vi } from 'vitest';
+
+it('should handle async data loading', async () => {
   const mockData = { id: 1, name: 'Test' };
   service.getData.mockReturnValue(of(mockData));
   
   component.loadData();
   
-  // For signals + RxJS
-  setTimeout(() => {
-    expect(component.data()).toEqual(mockData);
-    done();
-  }, 0);
+  // For signals + RxJS timers
+  vi.useFakeTimers();
+  await vi.runAllTimersAsync();
+  vi.useRealTimers();
+
+  expect(component.data()).toEqual(mockData);
 });
 ```
 
@@ -368,13 +371,13 @@ it('should update form value', () => {
 
 ## Key Differences from Jasmine
 
-| Jasmine | Jest |
-|---------|------|
-| `jasmine.createSpy()` | `jest.fn()` |
-| `jasmine.createSpyObj()` | Manual object with `jest.fn()` |
-| `spyOn(obj, 'method')` | `jest.spyOn(obj, 'method')` |
-| `jasmine.clock()` | `jest.useFakeTimers()` |
-| `jasmine.clock().tick()` | `jest.advanceTimersByTime()` |
+| Jasmine | Vitest |
+|---------|-------|
+| `jasmine.createSpy()` | `vi.fn()` |
+| `jasmine.createSpyObj()` | Manual object with `vi.fn()` |
+| `spyOn(obj, 'method')` | `vi.spyOn(obj, 'method')` |
+| `jasmine.clock()` | `vi.useFakeTimers()` |
+| `jasmine.clock().tick()` | `vi.advanceTimersByTime()` |
 | `jasmine.any(Type)` | `expect.any(Type)` |
 
 ## Test Debugging
@@ -386,17 +389,17 @@ it('should debug', () => {
   console.log(fixture.nativeElement.innerHTML);
 });
 
-// Use Jest's debugging
-// Run: node --inspect-brk node_modules/.bin/jest --runInBand
+// Debug a single test file
+// Run: npx vitest path/to/file.spec.ts --runInBand
 ```
 
 ## DO ✅
 
-- Use Jest matchers and mocking functions
+- Use Vitest matchers and mocking functions
 - Test user-facing behavior, not implementation details
 - Use `provideStubTranslationService` for i18n
 - Mock external dependencies (HTTP, storage, etc.)
-- Test accessibility with jest-axe
+- Test accessibility with vitest-axe
 - Use signals for reactive state testing
 - Call `fixture.detectChanges()` after state changes
 

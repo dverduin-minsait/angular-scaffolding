@@ -249,7 +249,7 @@ export class AccessibilityTestUtils {
 }
 
 /**
- * Custom Jest matchers for accessibility testing
+ * Custom expect matchers for accessibility testing
  */
 export const accessibilityMatchers = {
   toBeAccessible(received: HTMLElement) {
