@@ -3,6 +3,7 @@ import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { signal } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { vi } from 'vitest';
 
 import { HeaderActions } from './header-actions';
 import { ThemeService } from '../../../../core/services/theme.service';
@@ -24,12 +25,12 @@ class MockTranslationService {
   currentLang = this._currentLang.asReadonly();
   availableLangs: SupportedLang[] = ['en', 'es', 'pt', 'ca', 'gl'];
   
-  use = jest.fn((lang: SupportedLang) => {
+  use = vi.fn((lang: SupportedLang) => {
     this._currentLang.set(lang);
     return Promise.resolve();
   });
   
-  instant = jest.fn((key: string, params?: Record<string, unknown>) => {
+  instant = vi.fn((key: string, params?: Record<string, unknown>) => {
     const translations: Record<string, string> = {
       'app.actions.changeLanguage': 'Change language',
       'app.actions.toggleTheme': params && typeof params['theme'] === 'string' ? `Switch to ${params['theme']} theme` : 'Toggle theme',
@@ -145,7 +146,7 @@ describe('HeaderActions', () => {
 
     it('should handle language change events', () => {
       const langSelect = fixture.debugElement.query(By.css('#lang-select'));
-      const useSpy = jest.spyOn(mockTranslationService, 'use');
+      const useSpy = vi.spyOn(mockTranslationService, 'use');
       
       // Simulate changing to Spanish
       langSelect.nativeElement.value = 'es';
@@ -166,7 +167,7 @@ describe('HeaderActions', () => {
       // For now, let's just verify that the component has the right current language from the service
       expect(translateService.currentLang || translateService.defaultLang).toBeDefined();
     });    it('should call onLanguageChange method when select changes', () => {
-      const spy = jest.spyOn(component, 'onLanguageChange' as any);
+      const spy = vi.spyOn(component, 'onLanguageChange' as any);
       const langSelect = fixture.debugElement.query(By.css('#lang-select'));
       
       const changeEvent = new Event('change');
@@ -218,7 +219,7 @@ describe('HeaderActions', () => {
     });
 
     it('should call theme service when button is clicked', () => {
-      const toggleSpy = jest.spyOn(mockThemeService, 'toggleTheme');
+      const toggleSpy = vi.spyOn(mockThemeService, 'toggleTheme');
       const themeButton = fixture.debugElement.query(By.css('.theme-toggle'));
       
       themeButton.nativeElement.click();
@@ -254,7 +255,7 @@ describe('HeaderActions', () => {
     });
 
     it('should call toggleTheme method when button is clicked', () => {
-      const spy = jest.spyOn(component, 'toggleTheme' as any);
+      const spy = vi.spyOn(component, 'toggleTheme' as any);
       const themeButton = fixture.debugElement.query(By.css('.theme-toggle'));
       
       themeButton.nativeElement.click();
@@ -325,7 +326,7 @@ describe('HeaderActions', () => {
     });
 
     it('should emit sidebarToggle event when clicked', () => {
-      const spy = jest.spyOn(component['sidebarToggle'], 'emit');
+      const spy = vi.spyOn(component['sidebarToggle'], 'emit');
       const burgerButton = fixture.debugElement.query(By.css('.burger-menu'));
       
       burgerButton.nativeElement.click();
@@ -334,7 +335,7 @@ describe('HeaderActions', () => {
     });
 
     it('should call toggleSidebar method when button is clicked', () => {
-      const spy = jest.spyOn(component, 'toggleSidebar' as any);
+      const spy = vi.spyOn(component, 'toggleSidebar' as any);
       const burgerButton = fixture.debugElement.query(By.css('.burger-menu'));
       
       burgerButton.nativeElement.click();
@@ -431,7 +432,7 @@ describe('HeaderActions', () => {
 
   describe('Output Events', () => {
     it('should emit sidebarToggle event', () => {
-      const spy = jest.spyOn(component['sidebarToggle'], 'emit');
+      const spy = vi.spyOn(component['sidebarToggle'], 'emit');
       
       component['toggleSidebar']();
       
@@ -439,7 +440,7 @@ describe('HeaderActions', () => {
     });
 
     it('should only emit sidebarToggle without parameters', () => {
-      const spy = jest.spyOn(component['sidebarToggle'], 'emit');
+      const spy = vi.spyOn(component['sidebarToggle'], 'emit');
       
       component['toggleSidebar']();
       
@@ -451,7 +452,7 @@ describe('HeaderActions', () => {
     it('should use ThemeService for theme operations', () => {
       expect(component['themeService']).toBe(mockThemeService);
       
-      const toggleSpy = jest.spyOn(mockThemeService, 'toggleTheme');
+      const toggleSpy = vi.spyOn(mockThemeService, 'toggleTheme');
       component['toggleTheme']();
       
       expect(toggleSpy).toHaveBeenCalled();
@@ -461,7 +462,7 @@ describe('HeaderActions', () => {
       const translationService = TestBed.inject(TranslationService);
       expect(component['i18n']).toEqual(translationService);
       
-      const useSpy = jest.spyOn(translationService, 'use').mockResolvedValue(undefined as any);
+      const useSpy = vi.spyOn(translationService, 'use').mockResolvedValue(undefined as any);
       const event = { target: { value: 'es' } } as any;
       component['onLanguageChange'](event);
       
@@ -526,7 +527,7 @@ describe('HeaderActions', () => {
 
     it('should not cause unnecessary re-computations', () => {
       const translationService = TestBed.inject(TranslationService);
-      const instantSpy = jest.spyOn(translationService, 'instant');
+      const instantSpy = vi.spyOn(translationService, 'instant');
       
       // Access the computed values multiple times
       component['themeAriaLabel']();
@@ -544,7 +545,7 @@ describe('HeaderActions', () => {
     it('should handle invalid language selection gracefully', () => {
       const event = { target: { value: 'invalid' } } as any;
       const translationService = TestBed.inject(TranslationService);
-      const useSpy = jest.spyOn(translationService, 'use').mockResolvedValue(undefined as any);
+      const useSpy = vi.spyOn(translationService, 'use').mockResolvedValue(undefined as any);
       
       expect(() => component['onLanguageChange'](event)).not.toThrow();
       expect(useSpy).toHaveBeenCalledWith('invalid');
@@ -559,7 +560,7 @@ describe('HeaderActions', () => {
 
     it('should handle theme service errors gracefully', () => {
       // Mock the toggleTheme method to throw an error
-      jest.spyOn(mockThemeService, 'toggleTheme').mockImplementation(() => {
+      vi.spyOn(mockThemeService, 'toggleTheme').mockImplementation(() => {
         throw new Error('Theme error');
       });
       

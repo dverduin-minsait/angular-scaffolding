@@ -1,6 +1,6 @@
 /**
  * Unit tests for DemoBookCrudComponent
- * Following Angular 20 + Jest testing patterns from AGENTS.md
+ * Following Angular testing patterns from AGENTS.md
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -9,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { DemoBookCrudComponent } from './demo-book-crud.component';
 import { BookStore } from './book.store';
 import { BookApi } from './book.types';
@@ -18,7 +19,7 @@ import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
 describe('DemoBookCrudComponent', () => {
   let component: DemoBookCrudComponent;
   let fixture: ComponentFixture<DemoBookCrudComponent>;
-  let mockStore: jest.Mocked<BookStore>;
+  let mockStore: BookStore;
 
   const mockBooks: BookApi[] = [
     {
@@ -68,26 +69,26 @@ describe('DemoBookCrudComponent', () => {
     let mockLastUpdated = signal<number | null>(null);
     
     mockStore = {
-      items: jest.fn(() => mockItems()),
-      selected: jest.fn(() => mockSelected()),
-      loading: jest.fn(() => mockLoading()),
-      error: jest.fn(() => mockError()),
-      lastUpdated: jest.fn(() => mockLastUpdated()),
-      hasData: jest.fn(() => mockItems().length > 0),
-      isEmpty: jest.fn(() => mockItems().length === 0 && !mockLoading().isLoading),
-      isReady: jest.fn(() => !mockLoading().isLoading && mockError() === null),
-      setSelected: jest.fn((book: BookApi | null) => {
+      items: vi.fn(() => mockItems()),
+      selected: vi.fn(() => mockSelected()),
+      loading: vi.fn(() => mockLoading()),
+      error: vi.fn(() => mockError()),
+      lastUpdated: vi.fn(() => mockLastUpdated()),
+      hasData: vi.fn(() => mockItems().length > 0),
+      isEmpty: vi.fn(() => mockItems().length === 0 && !mockLoading().isLoading),
+      isReady: vi.fn(() => !mockLoading().isLoading && mockError() === null),
+      setSelected: vi.fn((book: BookApi | null) => {
         mockSelected.set(book);
       }),
-      refresh: jest.fn().mockReturnValue(of(mockBooks)),
-      create: jest.fn().mockReturnValue(of(mockBooks[0])),
-      update: jest.fn().mockReturnValue(of(mockBooks[0])),
-      delete: jest.fn().mockReturnValue(of(undefined)),
-      getByCategory: jest.fn((category: string) => mockItems().filter(b => b.category === category)),
-      getBooksByCategory: jest.fn((category: string) => mockItems().filter(b => b.category === category)),
-      getInStockBooks: jest.fn(() => mockItems().filter(b => b.inStock)),
-      getHighRatedBooks: jest.fn((minRating = 4.0) => mockItems().filter(b => b.rating >= minRating))
-    } as unknown as jest.Mocked<BookStore>;
+      refresh: vi.fn().mockReturnValue(of(mockBooks)),
+      create: vi.fn().mockReturnValue(of(mockBooks[0])),
+      update: vi.fn().mockReturnValue(of(mockBooks[0])),
+      delete: vi.fn().mockReturnValue(of(undefined)),
+      getByCategory: vi.fn((category: string) => mockItems().filter(b => b.category === category)),
+      getBooksByCategory: vi.fn((category: string) => mockItems().filter(b => b.category === category)),
+      getInStockBooks: vi.fn(() => mockItems().filter(b => b.inStock)),
+      getHighRatedBooks: vi.fn((minRating = 4.0) => mockItems().filter(b => b.rating >= minRating))
+    } as unknown as BookStore;
 
     await TestBed.configureTestingModule({
       imports: [
@@ -101,7 +102,14 @@ describe('DemoBookCrudComponent', () => {
         { provide: BookStore, useValue: mockStore },
         {
           provide: LOCAL_STORAGE,
-          useValue: { getItem: jest.fn(), setItem: jest.fn(), removeItem: jest.fn(), clear: jest.fn(), key: jest.fn(), length: 0 }
+          useValue: {
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn(),
+            clear: vi.fn(),
+            key: vi.fn(),
+            length: 0
+          }
         },
         ...provideStubTranslationService({
           'demoBooks.form.errors.title.required': 'Title is required',
@@ -375,7 +383,7 @@ describe('DemoBookCrudComponent', () => {
     });
 
     it('should handle create error gracefully', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       mockStore.create.mockReturnValue(throwError(() => new Error('Create failed')));
 
       component.entityForm.patchValue({
@@ -396,7 +404,7 @@ describe('DemoBookCrudComponent', () => {
     });
 
     it('should handle update error gracefully', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       mockStore.setSelected(mockBooks[0]); // Set editing mode
       fixture.detectChanges();
       mockStore.update.mockReturnValue(throwError(() => new Error('Update failed')));
@@ -421,7 +429,7 @@ describe('DemoBookCrudComponent', () => {
 
   describe('CRUD Events Handling', () => {
     it('should reset form on entityCreated event', () => {
-      const resetSpy = jest.spyOn(component as any, 'resetForm');
+      const resetSpy = vi.spyOn(component as any, 'resetForm');
       
       component.handleCrudEvent({ entityCreated: mockBooks[0] });
 
@@ -429,7 +437,7 @@ describe('DemoBookCrudComponent', () => {
     });
 
     it('should reset form on entityUpdated event', () => {
-      const resetSpy = jest.spyOn(component as any, 'resetForm');
+      const resetSpy = vi.spyOn(component as any, 'resetForm');
       
       component.handleCrudEvent({ entityUpdated: mockBooks[0] });
 
@@ -446,7 +454,7 @@ describe('DemoBookCrudComponent', () => {
     });
 
     it('should handle multiple event properties', () => {
-      const resetSpy = jest.spyOn(component as any, 'resetForm');
+      const resetSpy = vi.spyOn(component as any, 'resetForm');
       
       component.handleCrudEvent({ 
         entityCreated: mockBooks[0],
@@ -551,7 +559,7 @@ describe('DemoBookCrudComponent', () => {
 
   describe('Error Handling', () => {
     it('should handle refresh error gracefully', () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
       mockStore.refresh.mockReturnValue(throwError(() => new Error('Network error')));
 
       (component as any).loadData();

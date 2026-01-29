@@ -1,5 +1,6 @@
 import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 
 /**
  * SSR Testing Utilities
@@ -110,31 +111,31 @@ export function testComponentInBothContexts<T>(
  */
 export function createMockWindow(overrides?: Partial<Window>): Partial<Window> {
   return {
-    matchMedia: jest.fn((query: string) => ({
+    matchMedia: vi.fn((query: string) => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn()
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn()
     })) as unknown as typeof window.matchMedia,
     localStorage: {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
       length: 0,
-      key: jest.fn()
+      key: vi.fn()
     },
     sessionStorage: {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
       length: 0,
-      key: jest.fn()
+      key: vi.fn()
     },
     navigator: {
       userAgent: 'Mozilla/5.0 (Test)',
@@ -152,16 +153,16 @@ export function createMockDocument(overrides?: Partial<Document>): Partial<Docum
   return {
     documentElement: {
       classList: {
-        add: jest.fn(),
-        remove: jest.fn(),
-        toggle: jest.fn(),
-        contains: jest.fn()
+        add: vi.fn(),
+        remove: vi.fn(),
+        toggle: vi.fn(),
+        contains: vi.fn()
       }
     } as unknown as HTMLElement,
-    createElement: jest.fn(),
-    querySelector: jest.fn(),
-    querySelectorAll: jest.fn(),
-    getElementById: jest.fn(),
+    createElement: vi.fn(),
+    querySelector: vi.fn(),
+    querySelectorAll: vi.fn(),
+    getElementById: vi.fn(),
     ...overrides
   };
 }
@@ -170,24 +171,24 @@ export function createMockDocument(overrides?: Partial<Document>): Partial<Docum
  * Mock localStorage for SSR tests
  */
 export const mockLocalStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
   length: 0,
-  key: jest.fn()
+  key: vi.fn()
 };
 
 /**
  * Mock sessionStorage for SSR tests
  */
 export const mockSessionStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
   length: 0,
-  key: jest.fn()
+  key: vi.fn()
 };
 
 /**
@@ -220,7 +221,7 @@ export function setupSSRMocks(): void {
  * Cleanup global mocks after SSR tests
  */
 export function cleanupSSRMocks(): void {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 }
 
 /**

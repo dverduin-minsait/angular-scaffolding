@@ -8,7 +8,7 @@ Complete context for AI agents (Copilot, Cursor, Claude) and developers about An
 
 **Angular Architecture Blueprint** - Angular 21 reference application with modern patterns: standalone components, signals, zoneless change detection, SSR, WCAG AA accessibility, comprehensive testing, and i18n.
 
-**Main Stack:** Angular 21 + TypeScript 5.9 + Jest + AG Grid + ngx-translate + SCSS + Express SSR
+**Main Stack:** Angular 21 + TypeScript 5.9 + Vitest + AG Grid + ngx-translate + SCSS + Express SSR
 
 ## 🛠 Tech Stack
 
@@ -17,7 +17,7 @@ Complete context for AI agents (Copilot, Cursor, Claude) and developers about An
 - **RxJS 7.8** - HTTP/external events only
 - **AG Grid 34.2** - Enterprise tables
 - **ngx-translate 17.0** - Runtime i18n
-- **Jest 29.7** + Testing Library - Testing
+- **Vitest** + Testing Library - Testing
 - **SCSS** - Design tokens + 4 themes
 - **Express 5.1** - SSR server
 
@@ -25,7 +25,7 @@ Complete context for AI agents (Copilot, Cursor, Claude) and developers about An
 ```bash
 npm install && npm run check:i18n
 npm run dev          # Mock API + dev server
-npm test             # Jest with coverage
+npm test             # Vitest
 npm run build        # Production + SSR
 ```
 
@@ -61,7 +61,7 @@ src/app/
 
 ### Automated  
 - **AI (Copilot/Cursor)**: Code following patterns, DO NOT modify core architecture
-- **Jest + Testing Library**: Unit/integration tests with coverage reports, Jest matchers
+- **Vitest + Testing Library**: Unit/integration tests with coverage reports, Vitest matchers
 - **Prettier/TypeScript**: Formatting and automatic validation
 
 ## 📚 Sources of truth
@@ -69,7 +69,7 @@ src/app/
 - **[README.md](README.md)**: Quick start + general information
 - **[docs/adr/](docs/adr/)**: Architectural decisions (ADR-001 to ADR-006)
 - **[package.json](package.json)**: Scripts and dependencies
-- **[jest.config.js](jest.config.js)**: Testing configuration + coverage
+- **[vitest.config.ts](vitest.config.ts)**: Testing configuration + coverage
 - **src/environments/**: APIs per environment + mock with db.json
 - **src/themes/**: CSS design tokens + ThemeService
 - **public/i18n/**: Translations + validator tools/check-i18n.mjs
@@ -136,12 +136,13 @@ export class MyService extends AbstractApiClient {
 }
 ```
 
-### Tests with Jest + Testing Library
+### Tests with Vitest + Testing Library
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { vi } from 'vitest';
 import { LOCAL_STORAGE } from '../core/tokens/local.storage.token';
 import { provideStubTranslationService } from '../testing/i18n-testing';
 
@@ -154,7 +155,7 @@ describe('MyComponent', () => {
         provideRouter([{ path: '', component: MockComponent }]),
         {
           provide: LOCAL_STORAGE,
-          useValue: { getItem: jest.fn(), setItem: jest.fn() }
+          useValue: { getItem: vi.fn(), setItem: vi.fn() }
         },
         ...provideStubTranslationService({ 'my.key': 'My Value' })
       ]
@@ -175,9 +176,9 @@ describe('MyComponent', () => {
   });
 
   it('should call service method with correct parameters', () => {
-    const mockService = { update: jest.fn() };
-    // Jest spies and mocks for isolated testing
-    const updateSpy = jest.spyOn(mockService, 'update');
+    const mockService = { update: vi.fn() };
+    // Vitest spies and mocks for isolated testing
+    const updateSpy = vi.spyOn(mockService, 'update');
     
     // Component logic
     
@@ -199,8 +200,8 @@ describe('MyComponent', () => {
 - **`isPlatformBrowser`**: For browser-specific code in SSR
 - **`takeUntilDestroyed()`**: If you MUST subscribe manually
 - **Semantic HTML**: `<button>`, `<nav>`, `<main>`, aria-labels
-- **Testing Library + Jest**: Queries by role/text before `data-testid`, Jest matchers
-- **Jest spies/mocks**: For isolated unit testing (`jest.fn()`, `jest.spyOn()`)
+- **Testing Library + Vitest**: Queries by role/text before `data-testid`, Vitest matchers
+- **Vitest spies/mocks**: For isolated unit testing (`vi.fn()`, `vi.spyOn()`)
 - **Tree shaking**: Specific imports `import { x } from 'lib/x'`
 
 ### DON'T ❌
@@ -211,7 +212,7 @@ describe('MyComponent', () => {
 - **Direct DOM manipulation**: Avoid except justified cases
 - **Async pipe with signals**: Use `{{signal()}}` directly
 - **Manual subscribe**: Without `takeUntilDestroyed()` or `toSignal()`
-- **Jasmine patterns**: We use Jest, not Jasmine (`jest.fn()` not `jasmine.createSpy()`)
+- **Jasmine patterns**: We use Vitest, not Jasmine (`vi.fn()` not `jasmine.createSpy()`)
 
 ### Technical limitations
 - **Zoneless**: Don't rely on automatic detection, use signals
@@ -254,12 +255,12 @@ Verify all reactive state uses signals, don't rely on automatic detection, use A
 - Use Angular DevTools for signals debugging
 
 ### Known errors / debugging
-- **Flaky tests**: Verify use of `fakeAsync` for timers, Jest fake timers with `jest.useFakeTimers()`
+- **Flaky tests**: Verify use of `fakeAsync` for timers, Vitest fake timers with `vi.useFakeTimers()`
 - **CSS variables not working**: Verify theme is initialized in ThemeService
 - **SSR hydration issues**: Guard side effects in browser-only guards
 - **Theme not switching**: Verify CSS custom properties are defined
 - **i18n keys missing**: Run `npm run check:i18n` to validate
-- **Jest mocking issues**: Use `jest.mock()` for modules, `jest.fn()` for functions, `jest.spyOn()` for methods
+- **Vitest mocking issues**: Use `vi.mock()` for modules, `vi.fn()` for functions, `vi.spyOn()` for methods
 
 ### Asking AI for help
 **Recommended format**: "Add [component] ([scope], [constraints], [tests]) following AI guidelines in AGENTS.md"

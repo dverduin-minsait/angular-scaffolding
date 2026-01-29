@@ -5,22 +5,22 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Mock ThemeService
 const mockThemeService = {
-  getThemeDisplayName: jest.fn(() => 'Light'),
-  getThemeIcon: jest.fn(() => '☀️'),
-  isDarkMode: jest.fn(() => false),
-  currentTheme: jest.fn(() => 'light'),
-  useSystemPreference: jest.fn(() => false),
-  getThemeConfig: jest.fn(() => ({
+  getThemeDisplayName: vi.fn(() => 'Light'),
+  getThemeIcon: vi.fn(() => '☀️'),
+  isDarkMode: vi.fn(() => false),
+  currentTheme: vi.fn(() => 'light'),
+  useSystemPreference: vi.fn(() => false),
+  getThemeConfig: vi.fn(() => ({
     theme: 'light',
     autoSwitch: false,
     useSystemPreference: false
   })),
-  setTheme: jest.fn(),
-  toggleTheme: jest.fn(),
-  setUseSystemPreference: jest.fn(),
-  resetToDefaults: jest.fn(),
-  getCurrentThemePair: jest.fn(() => 1),
-  toggleThemePair: jest.fn(),
+  setTheme: vi.fn(),
+  toggleTheme: vi.fn(),
+  setUseSystemPreference: vi.fn(),
+  resetToDefaults: vi.fn(),
+  getCurrentThemePair: vi.fn(() => 1),
+  toggleThemePair: vi.fn(),
 };
 
 describe('ThemeDemoComponent', () => {
@@ -61,7 +61,7 @@ describe('ThemeDemoComponent', () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

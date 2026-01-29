@@ -104,8 +104,8 @@ describe('ModalService', () => {
     it('should perform confirm -> preview API -> confirm -> final API -> final info modal (success path)', async () => {
       // Fake API layer
       const api = {
-        getImpact: jest.fn(() => new Promise(res => setTimeout(() => res({ count: 3, id: 'preview-1' }), 0))),
-        finalize: jest.fn(() => new Promise(res => setTimeout(() => res({ archivedChildren: 2 }), 0)))
+        getImpact: vi.fn(() => new Promise(res => setTimeout(() => res({ count: 3, id: 'preview-1' }), 0))),
+        finalize: vi.fn(() => new Promise(res => setTimeout(() => res({ archivedChildren: 2 }), 0)))
       };
 
       const runFlow = async () => {
@@ -145,7 +145,7 @@ describe('ModalService', () => {
     });
 
     it('should abort after first confirm cancellation (no APIs called)', async () => {
-      const api = { getImpact: jest.fn(), finalize: jest.fn() };
+      const api = { getImpact: vi.fn(), finalize: vi.fn() };
       const runFlow = async () => {
         const first = await service.confirm({ title: 'Archive', message: 'Proceed?', confirmLabel: 'Archive', cancelLabel: 'Cancel' });
         if (!first) return 'aborted-initial';

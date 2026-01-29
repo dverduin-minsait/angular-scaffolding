@@ -1,6 +1,6 @@
 /**
  * Unit tests for CRUD column helper utilities
- * Following Angular 20 + Jest testing patterns from AGENTS.md
+ * Following Angular testing patterns from AGENTS.md
  */
 
 import {

@@ -2,15 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { AuthService } from './auth.service';
 import { AuthStore } from '../stores/auth.store';
 import { LoginCredentials, UserProfile, RefreshResponse, MeResponse } from '../models/auth.models';
 import { ENVIRONMENT } from '../../../../environments/environment';
 
+type HttpClientMock = {
+  get: ReturnType<typeof vi.fn>;
+  post: ReturnType<typeof vi.fn>;
+};
+
 describe('AuthService', () => {
   let service: AuthService;
   let store: AuthStore;
-  let httpClient: jest.Mocked<HttpClient>;
+  let httpClient: HttpClientMock;
 
   const mockUser: UserProfile = {
     id: '1',
@@ -34,8 +40,8 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const httpClientMock = {
-      get: jest.fn(),
-      post: jest.fn()
+      get: vi.fn(),
+      post: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -49,12 +55,12 @@ describe('AuthService', () => {
 
     service = TestBed.inject(AuthService);
     store = TestBed.inject(AuthStore);
-    httpClient = TestBed.inject(HttpClient) as jest.Mocked<HttpClient>;
+    httpClient = TestBed.inject(HttpClient) as unknown as HttpClientMock;
   });
 
   describe('initializeSession', () => {
     it('should initialize session via refresh when refresh token is valid', async () => {
-      const storeSpy = jest.spyOn(store, 'setAuthenticated');
+      const storeSpy = vi.spyOn(store, 'setAuthenticated');
       httpClient.post.mockReturnValue(of(mockRefreshResponse));
 
       await service.initializeSession();
@@ -64,7 +70,7 @@ describe('AuthService', () => {
     });
 
     it('should initialize session via SSO when refresh fails but /me succeeds', async () => {
-      const storeSpy = jest.spyOn(store, 'setAuthenticated');
+      const storeSpy = vi.spyOn(store, 'setAuthenticated');
       httpClient.post
         .mockReturnValueOnce(throwError(() => new Error('No refresh token'))) // refresh fails
         .mockReturnValueOnce(of(mockRefreshResponse)); // second refresh after /me succeeds
@@ -78,7 +84,7 @@ describe('AuthService', () => {
     });
 
     it('should set unauthenticated when both refresh and SSO fail', async () => {
-      const storeSpy = jest.spyOn(store, 'setUnauthenticated');
+      const storeSpy = vi.spyOn(store, 'setUnauthenticated');
       httpClient.post.mockReturnValue(throwError(() => new Error('Refresh failed')));
       httpClient.get.mockReturnValue(throwError(() => new Error('Me failed')));
 
@@ -88,7 +94,7 @@ describe('AuthService', () => {
     });
 
     it('should handle initialization errors gracefully', async () => {
-      const storeSpy = jest.spyOn(store, 'setUnauthenticated');
+      const storeSpy = vi.spyOn(store, 'setUnauthenticated');
       httpClient.post.mockImplementation(() => {
         throw new Error('Network error');
       });
@@ -105,7 +111,7 @@ describe('AuthService', () => {
         username: 'testuser',
         password: 'password'
       };
-      const storeSpy = jest.spyOn(store, 'setAuthenticated');
+      const storeSpy = vi.spyOn(store, 'setAuthenticated');
       httpClient.post.mockReturnValue(of(mockLoginResponse));
 
       await service.login(credentials);
@@ -130,7 +136,7 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should logout successfully and clear store', async () => {
-      const storeSpy = jest.spyOn(store, 'clear');
+      const storeSpy = vi.spyOn(store, 'clear');
       httpClient.post.mockReturnValue(of({}));
 
       await service.logout();
@@ -140,7 +146,7 @@ describe('AuthService', () => {
     });
 
     it('should clear store even if logout request fails', async () => {
-      const storeSpy = jest.spyOn(store, 'clear');
+      const storeSpy = vi.spyOn(store, 'clear');
       httpClient.post.mockReturnValue(throwError(() => new Error('Server error')));
 
       await service.logout();
@@ -156,7 +162,7 @@ describe('AuthService', () => {
     });
 
     it('should refresh access token successfully', async () => {
-      const storeSpy = jest.spyOn(store, 'setAuthenticated');
+      const storeSpy = vi.spyOn(store, 'setAuthenticated');
       httpClient.post.mockReturnValue(of(mockRefreshResponse));
 
       const result = await service.refreshAccessToken();
@@ -166,7 +172,7 @@ describe('AuthService', () => {
     });
 
     it('should handle refresh failure and set unauthenticated', async () => {
-      const storeSpy = jest.spyOn(store, 'setUnauthenticated');
+      const storeSpy = vi.spyOn(store, 'setUnauthenticated');
       httpClient.post.mockReturnValue(throwError(() => new Error('Refresh failed')));
 
       const result = await service.refreshAccessToken();
@@ -203,7 +209,7 @@ describe('AuthService', () => {
       store.clear();
       store.setRefreshing();
       
-      const storeSpy = jest.spyOn(store, 'setAuthenticated');
+      const storeSpy = vi.spyOn(store, 'setAuthenticated');
       
       httpClient.post.mockReturnValue(of(refreshResponseWithoutUser));
       httpClient.get.mockReturnValue(of(mockUser as MeResponse));
@@ -225,7 +231,7 @@ describe('AuthService', () => {
       store.clear();
       store.setRefreshing();
       
-      const storeSpy = jest.spyOn(store, 'setUnauthenticated');
+      const storeSpy = vi.spyOn(store, 'setUnauthenticated');
       
       httpClient.post.mockReturnValue(of(refreshResponseWithoutUser));
       httpClient.get.mockReturnValue(throwError(() => new Error('Me failed')));
@@ -239,15 +245,15 @@ describe('AuthService', () => {
 
   describe('scheduleProactiveRefresh', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should schedule refresh before token expires', () => {
-      const refreshSpy = jest.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
+      const refreshSpy = vi.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
       
       // Set authenticated with token expiring in 60 seconds
       store.setAuthenticated(mockUser, 'token', 60);
@@ -255,25 +261,25 @@ describe('AuthService', () => {
       service.scheduleProactiveRefresh();
 
       // Fast-forward time to just before refresh should trigger (60s - 45s lead = 15s)
-      jest.advanceTimersByTime(14000);
+      vi.advanceTimersByTime(14000);
       expect(refreshSpy).not.toHaveBeenCalled();
 
       // Advance past the refresh point
-      jest.advanceTimersByTime(2000);
+      vi.advanceTimersByTime(2000);
       expect(refreshSpy).toHaveBeenCalled();
     });
 
     it('should not schedule refresh when not authenticated', () => {
-      const refreshSpy = jest.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
+      const refreshSpy = vi.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
       
       service.scheduleProactiveRefresh();
 
-      jest.advanceTimersByTime(60000);
+      vi.advanceTimersByTime(60000);
       expect(refreshSpy).not.toHaveBeenCalled();
     });
 
     it('should reschedule when token is refreshed', () => {
-      const refreshSpy = jest.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
+      const refreshSpy = vi.spyOn(service, 'refreshAccessToken').mockResolvedValue(true);
       
       // Initial token with 60s expiry
       store.setAuthenticated(mockUser, 'token1', 60);
@@ -283,11 +289,11 @@ describe('AuthService', () => {
       store.setAuthenticated(mockUser, 'token2', 120);
 
       // Original timer should be cleared and new one scheduled
-      jest.advanceTimersByTime(16000); // Original would have triggered at 15s
+      vi.advanceTimersByTime(16000); // Original would have triggered at 15s
       expect(refreshSpy).not.toHaveBeenCalled();
 
       // New timer should trigger at 75s (120s - 45s lead)
-      jest.advanceTimersByTime(60000); // Total 76s
+      vi.advanceTimersByTime(60000); // Total 76s
       expect(refreshSpy).toHaveBeenCalled();
     });
   });

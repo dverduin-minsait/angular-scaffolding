@@ -1,49 +1,62 @@
-import { fakeAsync, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ThemeService, Theme, ThemeConfig } from './theme.service';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { DOCUMENT } from '@angular/common';
 
 describe('ThemeService', () => {
   let service: ThemeService;
-  let mockStorage: jest.Mocked<Storage>;
+  let mockStorage: {
+    getItem: ReturnType<typeof vi.fn>;
+    setItem: ReturnType<typeof vi.fn>;
+    removeItem: ReturnType<typeof vi.fn>;
+    clear: ReturnType<typeof vi.fn>;
+    key: ReturnType<typeof vi.fn>;
+    length: number;
+  };
   let mockDocument: any;
-  let mockMediaQuery: jest.Mocked<MediaQueryList>;
+  let mockMediaQuery: MediaQueryList & {
+    addEventListener: ReturnType<typeof vi.fn>;
+    removeEventListener: ReturnType<typeof vi.fn>;
+    dispatchEvent: ReturnType<typeof vi.fn>;
+    addListener: ReturnType<typeof vi.fn>;
+    removeListener: ReturnType<typeof vi.fn>;
+  };
   let mockHtmlElement: any;
 
   beforeEach(() => {
     // Create mock objects
     mockStorage = {
-      getItem: jest.fn(),
-      setItem: jest.fn(),
-      removeItem: jest.fn(),
-      clear: jest.fn(),
-      key: jest.fn(),
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+      key: vi.fn(),
       length: 0
     };
 
     mockHtmlElement = {
       classList: {
-        add: jest.fn(),
-        remove: jest.fn(),
-        toggle: jest.fn(),
-        contains: jest.fn()
+        add: vi.fn(),
+        remove: vi.fn(),
+        toggle: vi.fn(),
+        contains: vi.fn()
       }
     };
 
     mockMediaQuery = {
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
       media: '(prefers-color-scheme: dark)',
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
       onchange: null,
       get matches() { return false; }
     } as any;
 
     mockDocument = {
       defaultView: {
-        matchMedia: jest.fn().mockReturnValue(mockMediaQuery)
+        matchMedia: vi.fn().mockReturnValue(mockMediaQuery)
       },
       documentElement: mockHtmlElement
     };
@@ -52,7 +65,7 @@ describe('ThemeService', () => {
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       configurable: true,
-      value: jest.fn().mockReturnValue(mockMediaQuery)
+      value: vi.fn().mockReturnValue(mockMediaQuery)
     });
 
     TestBed.configureTestingModule({
@@ -74,7 +87,11 @@ describe('ThemeService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    // Avoid leaving a running interval behind (autoSwitch uses setInterval).
+    if (service) {
+      service.setAutoSwitch(false);
+    }
+    vi.clearAllMocks();
   });
 
   describe('Initialization', () => {
@@ -117,7 +134,7 @@ describe('ThemeService', () => {
       });
       
       // Mock console.warn to suppress expected warning
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
       expect(() => {
         service = TestBed.inject(ThemeService);
@@ -335,12 +352,12 @@ describe('ThemeService', () => {
 
   describe('Auto Switch', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       service = TestBed.inject(ThemeService);
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should enable auto-switch', () => {
@@ -492,12 +509,12 @@ describe('ThemeService', () => {
 
   describe('Auto Switch Time-Based Logic', () => {
     beforeEach(() => {
-      jest.useFakeTimers({ now: new Date('2025-09-30T10:00:00Z').getTime() }); // 10 AM UTC
+      vi.useFakeTimers({ now: new Date('2025-09-30T10:00:00Z').getTime() }); // 10 AM UTC
       service = TestBed.inject(ThemeService);
       service.setUseSystemPreference(false); // allow override
     });
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     it('should set light theme during day when autoSwitch enabled', () => {
@@ -507,7 +524,7 @@ describe('ThemeService', () => {
     });
 
     it('should set dark theme at night when autoSwitch enabled', () => {
-      jest.setSystemTime(new Date('2025-09-30T23:00:00Z'));
+      vi.setSystemTime(new Date('2025-09-30T23:00:00Z'));
       service.setTheme('light');
       service.setAutoSwitch(true);
       expect(['dark', 'dark2', 'system']).toContain(service.currentTheme());

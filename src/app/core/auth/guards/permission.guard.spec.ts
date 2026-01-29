@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { vi } from 'vitest';
 import { permissionGuard } from './permission.guard';
 import { AuthStore } from '../stores/auth.store';
 import type { UserProfile } from '../models/auth.models';
@@ -8,7 +9,7 @@ import type { UserProfile } from '../models/auth.models';
 describe('permissionGuard', () => {
   let store: AuthStore;
   let router: Router;
-  let navigateSpy: jest.SpyInstance;
+  let navigateSpy: ReturnType<typeof vi.spyOn>;
 
   const mockUserWithReadPermission: UserProfile = {
     id: '1',
@@ -42,7 +43,7 @@ describe('permissionGuard', () => {
         {
           provide: Router,
           useValue: {
-            navigate: jest.fn().mockResolvedValue(true)
+            navigate: vi.fn().mockResolvedValue(true)
           }
         }
       ]
@@ -50,11 +51,11 @@ describe('permissionGuard', () => {
 
     store = TestBed.inject(AuthStore);
     router = TestBed.inject(Router);
-    navigateSpy = jest.spyOn(router, 'navigate');
+    navigateSpy = vi.spyOn(router, 'navigate');
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('when user is not authenticated', () => {

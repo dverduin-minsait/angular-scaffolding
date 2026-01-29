@@ -1,8 +1,6 @@
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { expect } from 'vitest';
+import { axe } from 'vitest-axe';
 import { ComponentFixture } from '@angular/core/testing';
-
-// Extend Jest with axe matchers
-expect.extend(toHaveNoViolations as never);
 
 /**
  * Enhanced accessibility testing utilities using axe-core

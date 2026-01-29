@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { vi } from 'vitest';
 import { AccessibilityTestUtils } from './testing/accessibility-test-utils';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { Router, UrlTree } from '@angular/router';
@@ -53,7 +54,7 @@ describe('App Accessibility Integration', () => {
           useValue: { 
             events: of(), 
             url: '/',
-            createUrlTree: jest.fn(() => {
+            createUrlTree: vi.fn(() => {
               const mockUrlTree: Partial<UrlTree> = {
                 toString: () => '/mocked-url',
                 root: {} as any,
@@ -63,7 +64,7 @@ describe('App Accessibility Integration', () => {
               };
               return mockUrlTree as UrlTree;
             }),
-            serializeUrl: jest.fn(() => '/mocked-url')
+            serializeUrl: vi.fn(() => '/mocked-url')
           }
         },
         {
@@ -73,10 +74,10 @@ describe('App Accessibility Integration', () => {
         {
           provide: LOCAL_STORAGE,
           useValue: {
-            getItem: jest.fn(),
-            setItem: jest.fn(),
-            removeItem: jest.fn(),
-            clear: jest.fn()
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn(),
+            clear: vi.fn()
           }
         },
         {
@@ -290,7 +291,7 @@ describe('Tabulation Flow Tests', () => {
           useValue: { 
             events: of(), 
             url: '/',
-            createUrlTree: jest.fn(() => {
+            createUrlTree: vi.fn(() => {
               const mockUrlTree: Partial<UrlTree> = {
                 toString: () => '/mocked-url',
                 root: {} as any,
@@ -300,7 +301,7 @@ describe('Tabulation Flow Tests', () => {
               };
               return mockUrlTree as UrlTree;
             }),
-            serializeUrl: jest.fn(() => '/mocked-url')
+            serializeUrl: vi.fn(() => '/mocked-url')
           }
         },
         {
@@ -310,10 +311,10 @@ describe('Tabulation Flow Tests', () => {
         {
           provide: LOCAL_STORAGE,
           useValue: {
-            getItem: jest.fn(),
-            setItem: jest.fn(),
-            removeItem: jest.fn(),
-            clear: jest.fn()
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn(),
+            clear: vi.fn()
           }
         },
         {

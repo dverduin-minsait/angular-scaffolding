@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { vi } from 'vitest';
 
 import { Sidebar } from './sidebar';
 import { NavigationItem } from '../navigation.types';
@@ -22,10 +23,10 @@ class MockSettingsComponent { }
 
 // Mock document
 class MockDocument {
-  addEventListener = jest.fn();
-  removeEventListener = jest.fn();
-  querySelector = jest.fn();
-  querySelectorAll = jest.fn();
+  addEventListener = vi.fn();
+  removeEventListener = vi.fn();
+  querySelector = vi.fn();
+  querySelectorAll = vi.fn();
 }
 
 describe('Sidebar', () => {
@@ -301,7 +302,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when close button is clicked', () => {
-      const spy = jest.spyOn(component['sidebarClose'], 'emit');
+      const spy = vi.spyOn(component['sidebarClose'], 'emit');
       const closeButton = fixture.debugElement.query(By.css('.close-button'));
       
       closeButton.nativeElement.click();
@@ -310,7 +311,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when overlay is clicked', () => {
-      const spy = jest.spyOn(component['sidebarClose'], 'emit');
+      const spy = vi.spyOn(component['sidebarClose'], 'emit');
       const overlay = fixture.debugElement.query(By.css('.sidebar-overlay'));
       
       overlay.nativeElement.click();
@@ -319,7 +320,7 @@ describe('Sidebar', () => {
     });
 
     it('should emit close event when navigation link is clicked', () => {
-      const spy = jest.spyOn(component['sidebarClose'], 'emit');
+      const spy = vi.spyOn(component['sidebarClose'], 'emit');
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
       dashboardLink.nativeElement.click();
@@ -328,7 +329,7 @@ describe('Sidebar', () => {
     });
 
     it('should call closeSidebar method', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       const closeButton = fixture.debugElement.query(By.css('.close-button'));
       
       closeButton.nativeElement.click();
@@ -337,7 +338,7 @@ describe('Sidebar', () => {
     });
 
     it('should call onLinkClick method when link is clicked', () => {
-      const spy = jest.spyOn(component, 'onLinkClick' as any);
+      const spy = vi.spyOn(component, 'onLinkClick' as any);
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
       dashboardLink.nativeElement.click();
@@ -396,7 +397,7 @@ describe('Sidebar', () => {
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       const clothesToggle = fixture.debugElement.query(By.css('button[aria-controls="mside-clothes"]'));
       
-      const focusSpy = jest.spyOn(clothesToggle.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(clothesToggle.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'ArrowDown' });
       Object.defineProperty(event, 'target', { value: dashboardLink.nativeElement });
@@ -410,7 +411,7 @@ describe('Sidebar', () => {
       const clothesToggle = fixture.debugElement.query(By.css('button[aria-controls="mside-clothes"]'));
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
-      const focusSpy = jest.spyOn(dashboardLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(dashboardLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'ArrowUp' });
       Object.defineProperty(event, 'target', { value: clothesToggle.nativeElement });
@@ -424,7 +425,7 @@ describe('Sidebar', () => {
       const settingsLink = fixture.debugElement.query(By.css('a[href="/settings"]'));
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       
-      const focusSpy = jest.spyOn(dashboardLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(dashboardLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'Home' });
       Object.defineProperty(event, 'target', { value: settingsLink.nativeElement });
@@ -438,7 +439,7 @@ describe('Sidebar', () => {
       const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard"]'));
       const settingsLink = fixture.debugElement.query(By.css('a[href="/settings"]'));
       
-      const focusSpy = jest.spyOn(settingsLink.nativeElement, 'focus');
+      const focusSpy = vi.spyOn(settingsLink.nativeElement, 'focus');
       
       const event = new KeyboardEvent('keydown', { key: 'End' });
       Object.defineProperty(event, 'target', { value: dashboardLink.nativeElement });
@@ -479,7 +480,7 @@ describe('Sidebar', () => {
     });
 
     it('should handle Escape key to close sidebar', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       
       // Create a proper mock target element
       const mockTarget = document.createElement('button');
@@ -516,7 +517,7 @@ describe('Sidebar', () => {
     });
 
     it('should close sidebar on document Escape key', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       
       const event = new KeyboardEvent('keydown', { key: 'Escape' });
       component['onDocumentKeydown'](event);
@@ -525,10 +526,10 @@ describe('Sidebar', () => {
     });
 
     it('should close sidebar on outside click', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       
       const outsideElement = document.createElement('div');
-      outsideElement.closest = jest.fn().mockReturnValue(null);
+      outsideElement.closest = vi.fn().mockReturnValue(null);
       
       const event = new Event('click');
       Object.defineProperty(event, 'target', { value: outsideElement });
@@ -539,10 +540,10 @@ describe('Sidebar', () => {
     });
 
     it('should not close sidebar when clicking inside sidebar', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       
       const sidebarElement = document.createElement('div');
-      sidebarElement.closest = jest.fn().mockImplementation((selector) => 
+      sidebarElement.closest = vi.fn().mockImplementation((selector) => 
         selector === '.sidebar' ? sidebarElement : null
       );
       
@@ -555,10 +556,10 @@ describe('Sidebar', () => {
     });
 
     it('should not close sidebar when clicking burger menu', () => {
-      const spy = jest.spyOn(component, 'closeSidebar' as any);
+      const spy = vi.spyOn(component, 'closeSidebar' as any);
       
       const burgerElement = document.createElement('button');
-      burgerElement.closest = jest.fn().mockImplementation((selector) => 
+      burgerElement.closest = vi.fn().mockImplementation((selector) => 
         selector === '.burger-menu' ? burgerElement : null
       );
       

@@ -7,26 +7,26 @@ import { configureSSRTestingModule, configureBrowserTestingModule } from '../../
 
 describe('MultiTabSyncService - SSR Safety', () => {
   let mockAuthStore: {
-    status: jest.Mock;
-    user: jest.Mock;
-    isAuthenticated: jest.Mock;
-    clear: jest.Mock;
+    status: ReturnType<typeof vi.fn>;
+    user: ReturnType<typeof vi.fn>;
+    isAuthenticated: ReturnType<typeof vi.fn>;
+    clear: ReturnType<typeof vi.fn>;
   };
   
   let mockAuthService: {
-    refreshAccessToken: jest.Mock;
+    refreshAccessToken: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
     mockAuthStore = {
-      status: jest.fn(() => 'unauthenticated'),
-      user: jest.fn(() => null),
-      isAuthenticated: jest.fn(() => false),
-      clear: jest.fn()
+      status: vi.fn(() => 'unauthenticated'),
+      user: vi.fn(() => null),
+      isAuthenticated: vi.fn(() => false),
+      clear: vi.fn()
     };
 
     mockAuthService = {
-      refreshAccessToken: jest.fn(() => Promise.resolve())
+      refreshAccessToken: vi.fn(() => Promise.resolve())
     };
   });
 
@@ -73,9 +73,9 @@ describe('MultiTabSyncService - SSR Safety', () => {
       const service = TestBed.inject(MultiTabSyncService);
       
       // Change auth state to trigger broadcast
-      mockAuthStore.status = jest.fn(() => 'authenticated');
-      mockAuthStore.user = jest.fn(() => ({ id: '123', email: 'test@test.com' }));
-      mockAuthStore.isAuthenticated = jest.fn(() => true);
+      mockAuthStore.status = vi.fn(() => 'authenticated');
+      mockAuthStore.user = vi.fn(() => ({ id: '123', email: 'test@test.com' }));
+      mockAuthStore.isAuthenticated = vi.fn(() => true);
       
       // This should not throw even though we're in SSR
       expect(() => {
@@ -88,35 +88,38 @@ describe('MultiTabSyncService - SSR Safety', () => {
       const service = TestBed.inject(MultiTabSyncService);
       
       expect(() => {
-        mockAuthStore.status = jest.fn(() => 'authenticated');
+        mockAuthStore.status = vi.fn(() => 'authenticated');
         TestBed.flushEffects();
       }).not.toThrow();
       
       expect(() => {
-        mockAuthStore.status = jest.fn(() => 'unauthenticated');
+        mockAuthStore.status = vi.fn(() => 'unauthenticated');
         TestBed.flushEffects();
       }).not.toThrow();
     });
   });
 
   describe('Browser Context', () => {
-    let mockBroadcastChannel: {
-      postMessage: jest.Mock;
-      addEventListener: jest.Mock;
-      removeEventListener: jest.Mock;
-      close: jest.Mock;
-    };
+    class MockBroadcastChannel {
+      static instances: MockBroadcastChannel[] = [];
+
+      constructor(public readonly name: string) {
+        MockBroadcastChannel.instances.push(this);
+      }
+
+      readonly postMessage = vi.fn();
+      readonly addEventListener = vi.fn();
+      readonly removeEventListener = vi.fn();
+      readonly close = vi.fn();
+
+      static reset(): void {
+        MockBroadcastChannel.instances = [];
+      }
+    }
 
     beforeEach(() => {
-      // Mock BroadcastChannel
-      mockBroadcastChannel = {
-        postMessage: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        close: jest.fn()
-      };
-
-      (global as { BroadcastChannel?: unknown }).BroadcastChannel = jest.fn(() => mockBroadcastChannel);
+      MockBroadcastChannel.reset();
+      vi.stubGlobal('BroadcastChannel', MockBroadcastChannel as unknown as typeof BroadcastChannel);
 
       configureBrowserTestingModule({
         providers: [
@@ -128,8 +131,8 @@ describe('MultiTabSyncService - SSR Safety', () => {
     });
 
     afterEach(() => {
-      delete (global as { BroadcastChannel?: unknown }).BroadcastChannel;
-      jest.clearAllMocks();
+      vi.unstubAllGlobals();
+      vi.clearAllMocks();
     });
 
     it('should create service in browser', () => {
@@ -139,30 +142,39 @@ describe('MultiTabSyncService - SSR Safety', () => {
 
     it('should initialize BroadcastChannel in browser', () => {
       const service = TestBed.inject(MultiTabSyncService);
-      expect(global.BroadcastChannel).toHaveBeenCalledWith('app-auth-channel');
-      expect(mockBroadcastChannel.addEventListener).toHaveBeenCalledWith('message', expect.any(Function));
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
+      expect(channel?.name).toBe('app-auth-channel');
+      expect(channel?.addEventListener).toHaveBeenCalledWith('message', expect.any(Function));
     });
 
     it('should broadcast auth state changes in browser', () => {
       const service = TestBed.inject(MultiTabSyncService);
       
       // Change auth state
-      mockAuthStore.status = jest.fn(() => 'authenticated');
-      mockAuthStore.user = jest.fn(() => ({ id: '123', email: 'test@test.com' }));
-      mockAuthStore.isAuthenticated = jest.fn(() => true);
+      mockAuthStore.status = vi.fn(() => 'authenticated');
+      mockAuthStore.user = vi.fn(() => ({ id: '123', email: 'test@test.com' }));
+      mockAuthStore.isAuthenticated = vi.fn(() => true);
       
       // Trigger effect
       TestBed.flushEffects();
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
       
       // Should have broadcasted the change
-      expect(mockBroadcastChannel.postMessage).toHaveBeenCalled();
+      expect(channel?.postMessage).toHaveBeenCalled();
     });
 
     it('should handle received authenticated message', async () => {
       const service = TestBed.inject(MultiTabSyncService);
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
       
       // Get the message handler
-      const messageHandler = mockBroadcastChannel.addEventListener.mock.calls.find(
+      const messageHandler = channel.addEventListener.mock.calls.find(
         call => call[0] === 'message'
       )?.[1];
       
@@ -182,11 +194,14 @@ describe('MultiTabSyncService - SSR Safety', () => {
     });
 
     it('should handle received unauthenticated message', async () => {
-      mockAuthStore.isAuthenticated = jest.fn(() => true);
+      mockAuthStore.isAuthenticated = vi.fn(() => true);
       
       const service = TestBed.inject(MultiTabSyncService);
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
       
-      const messageHandler = mockBroadcastChannel.addEventListener.mock.calls.find(
+      const messageHandler = channel.addEventListener.mock.calls.find(
         call => call[0] === 'message'
       )?.[1];
       
@@ -203,11 +218,14 @@ describe('MultiTabSyncService - SSR Safety', () => {
     });
 
     it('should handle received logout message', async () => {
-      mockAuthStore.isAuthenticated = jest.fn(() => true);
+      mockAuthStore.isAuthenticated = vi.fn(() => true);
       
       const service = TestBed.inject(MultiTabSyncService);
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
       
-      const messageHandler = mockBroadcastChannel.addEventListener.mock.calls.find(
+      const messageHandler = channel.addEventListener.mock.calls.find(
         call => call[0] === 'message'
       )?.[1];
       
@@ -225,27 +243,30 @@ describe('MultiTabSyncService - SSR Safety', () => {
 
     it('should cleanup BroadcastChannel on destroy', () => {
       const service = TestBed.inject(MultiTabSyncService);
+
+      const channel = MockBroadcastChannel.instances[0];
+      expect(channel).toBeTruthy();
       
       // Trigger destroy
       TestBed.resetTestingModule();
       
       // Channel cleanup should be called
-      expect(mockBroadcastChannel.removeEventListener).toHaveBeenCalled();
-      expect(mockBroadcastChannel.close).toHaveBeenCalled();
+      expect(channel?.removeEventListener).toHaveBeenCalled();
+      expect(channel?.close).toHaveBeenCalled();
     });
   });
 
   describe('Storage Fallback', () => {
     beforeEach(() => {
       // Remove BroadcastChannel to test storage fallback
-      delete (global as { BroadcastChannel?: unknown }).BroadcastChannel;
+      vi.stubGlobal('BroadcastChannel', undefined as unknown as typeof BroadcastChannel);
 
       // Mock localStorage
       const mockLocalStorage = {
-        setItem: jest.fn(),
-        getItem: jest.fn(),
-        removeItem: jest.fn(),
-        clear: jest.fn()
+        setItem: vi.fn(),
+        getItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn()
       };
 
       Object.defineProperty(window, 'localStorage', {
@@ -254,8 +275,8 @@ describe('MultiTabSyncService - SSR Safety', () => {
       });
 
       // Mock storage events
-      const mockAddEventListener = jest.fn();
-      const mockRemoveEventListener = jest.fn();
+      const mockAddEventListener = vi.fn();
+      const mockRemoveEventListener = vi.fn();
       
       Object.defineProperty(window, 'addEventListener', {
         value: mockAddEventListener,
@@ -276,6 +297,11 @@ describe('MultiTabSyncService - SSR Safety', () => {
       });
     });
 
+    afterEach(() => {
+      vi.unstubAllGlobals();
+      vi.clearAllMocks();
+    });
+
     it('should use storage events when BroadcastChannel is not available', () => {
       const service = TestBed.inject(MultiTabSyncService);
       
@@ -287,8 +313,8 @@ describe('MultiTabSyncService - SSR Safety', () => {
       const service = TestBed.inject(MultiTabSyncService);
       
       // Change auth state to trigger broadcast
-      mockAuthStore.status = jest.fn(() => 'authenticated');
-      mockAuthStore.user = jest.fn(() => ({ id: '123', email: 'test@test.com' }));
+      mockAuthStore.status = vi.fn(() => 'authenticated');
+      mockAuthStore.user = vi.fn(() => ({ id: '123', email: 'test@test.com' }));
       
       TestBed.flushEffects();
       
@@ -321,13 +347,20 @@ describe('MultiTabSyncService - SSR Safety', () => {
       TestBed.resetTestingModule();
 
       // Browser context with BroadcastChannel mock
-      const mockBC = {
-        postMessage: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        close: jest.fn()
-      };
-      (global as { BroadcastChannel?: unknown }).BroadcastChannel = jest.fn(() => mockBC);
+      class MockBroadcastChannel {
+        static instances: MockBroadcastChannel[] = [];
+
+        constructor(public readonly name: string) {
+          MockBroadcastChannel.instances.push(this);
+        }
+
+        readonly postMessage = vi.fn();
+        readonly addEventListener = vi.fn();
+        readonly removeEventListener = vi.fn();
+        readonly close = vi.fn();
+      }
+
+      vi.stubGlobal('BroadcastChannel', MockBroadcastChannel as unknown as typeof BroadcastChannel);
 
       configureBrowserTestingModule({
         providers: [
@@ -344,9 +377,10 @@ describe('MultiTabSyncService - SSR Safety', () => {
       expect(browserService).toBeTruthy();
       
       // BroadcastChannel should be created in browser
-      expect(global.BroadcastChannel).toHaveBeenCalled();
-      
-      delete (global as { BroadcastChannel?: unknown }).BroadcastChannel;
+      expect(MockBroadcastChannel.instances.length).toBe(1);
+      expect(MockBroadcastChannel.instances[0]?.name).toBe('app-auth-channel');
+
+      vi.unstubAllGlobals();
     });
   });
 });

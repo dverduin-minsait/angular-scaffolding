@@ -1,16 +1,15 @@
+import { Component } from '@angular/core';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { Component } from '@angular/core';
-import { App } from './app';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { provideRouter, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { TranslateStubPipe, provideStubTranslationService } from './testing/i18n-testing';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Component as NgComponent } from '@angular/core';
+import { vi } from 'vitest';
+import { App } from './app';
 
-@NgComponent({
+@Component({
   selector: 'app-language-switcher',
   standalone: true,
   template: '<!-- stub language switcher -->'
@@ -29,18 +28,18 @@ class MockComponent {}
 
 // Mock localStorage
 const mockLocalStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 };
 
 // Mock document
 const mockDocument = {
   documentElement: {
     classList: {
-      toggle: jest.fn(),
-      contains: jest.fn(),
+      toggle: vi.fn(),
+      contains: vi.fn(),
     }
   }
 };
@@ -76,7 +75,23 @@ describe('App', () => {
     // Override HeaderComponent to swap out language switcher and add translate stub pipe
     TestBed.overrideComponent(HeaderComponent, {
       set: {
+        template: '<!-- stub header -->',
         imports: [CommonModule, RouterLink, RouterLinkActive, StubLanguageSwitcherComponent, TranslateStubPipe]
+      }
+    });
+
+    // Vitest doesn't automatically resolve Angular external resources (templateUrl/styleUrl).
+    // Override with an inline template/styles so `compileComponents()` can run in plain Vitest.
+    TestBed.overrideComponent(App, {
+      set: {
+        template: `
+          <h1>Angular Architecture</h1>
+          <app-header></app-header>
+          <main id="main-content" role="main" tabindex="-1">
+            <router-outlet></router-outlet>
+          </main>
+        `,
+        styles: ['']
       }
     });
 

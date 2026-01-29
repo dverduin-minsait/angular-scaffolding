@@ -4,6 +4,7 @@ import { AbstractApiClient } from './abstract-api.service';
 import { EntityStore } from '../store/entity-store';
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { vi } from 'vitest';
 
 interface TestItem {
   id: number;
@@ -293,7 +294,7 @@ describe('AbstractApiClient + EntityStore integration', () => {
   describe('refresh()', () => {
     it('should call getAll()', () => {
       // Spy on getAll to ensure refresh delegates
-      const spy = jest.spyOn(api, 'getAll');
+      const spy = vi.spyOn(api, 'getAll');
       store.refresh().subscribe();
       const req = httpMock.expectOne('/api/items');
       req.flush(sampleItems);
@@ -391,7 +392,7 @@ describe('AbstractApiClient + EntityStore integration', () => {
       invokeHandleError(httpErr).subscribe({
         next: () => fail('expected error'),
         error: (apiError: any) => {
-          expect(apiError.message).toBe('An unexpected error occurred');
+          expect(apiError.message).toBe('Unexpected error');
           expect(apiError.code).toBe('UNKNOWN');
         }
       });

@@ -15,7 +15,7 @@ Modern, production-ready Angular 21 reference application: standalone APIs, sign
 * Angular 21 (standalone, no NgModules) + zoneless change detection.
 * Signals for UI state (RxJS reserved for external/event/HTTP boundary use).
 * SSR + hydration (`server.ts`, platform-server integration).
-* Jest + Testing Library + strict TypeScript.
+* Vitest + Testing Library + strict TypeScript.
 * SCSS design tokens + theme foundations.
 * Lightweight i18n strategy with fast translation stubs in unit tests.
 
@@ -45,9 +45,9 @@ Then visit http://localhost:4000 (or the configured port) if your server sets on
 | npm run dev | Run JSON mock API + dev server concurrently |
 | npm run dev:mock | Mock API + mock env dev server |
 | npm run dev:local | Mock API + local env dev server |
-| npm test | Run Jest test suite |
-| npm run test:watch | Jest in watch mode |
-| npm run coverage | Jest with coverage report |
+| npm test | Run Vitest test suite |
+| npm run test:watch | Vitest in watch mode |
+| npm run coverage | Vitest with coverage report |
 | npm run build | Production build |
 | npm run build:prod | Explicit production build (alias) |
 | npm run build:mock | Mock configuration build |
@@ -73,15 +73,17 @@ Then visit http://localhost:4000 (or the configured port) if your server sets on
 | SSR | Server build + hydration-ready entry points |
 | Accessibility | Semantic elements, accessible names, focus management strategy |
 | i18n | JSON translation files + fast testing stubs (no network) |
-| Testing | Jest + Testing Library; role/name-first queries |
+| Testing | Vitest + Testing Library |
 | Theming | SCSS tokens + theme toggle patterns |
 | Architecture | Documented via ADRs & enforced conventions |
 
 ## Testing & Quality
-* Framework: Jest + @testing-library/angular + jest-dom matchers.
+
+Note (Windows): if your PowerShell is running under Constrained Language Mode (CLM), the global `npm.ps1` shim can fail. Use Command Prompt (`cmd.exe`) or a VS Code terminal profile set to Command Prompt.
+* Framework: Vitest + @testing-library/angular + jest-dom matchers.
 * Each new component/service: happy path + at least one edge case.
 * Accessibility smoke assertions (role / name queries) encouraged.
-* Coverage command: `npm run coverage` (thresholds configurable in `jest.config.js`).
+* Coverage command: `npm run coverage` (thresholds configurable in `vitest.config.ts`).
 * i18n unit tests use translation stubs for speed & determinism.
 
 ## i18n Example (Unit Test Stub)
@@ -111,7 +113,7 @@ Use real translations by importing the production translation module instead of 
 ## Roadmap
 * [ ] Bundle size budgets + analyzer script
 * [ ] Playwright E2E tests
-* [ ] jest-axe a11y assertions
+* [ ] Expand vitest-axe a11y assertions
 * [ ] Expanded design system components
 * [ ] Logging / observability abstraction
 

@@ -1,9 +1,9 @@
 # GitHub Copilot Instructions
 
-**Angular 21**: standalone, signals, zoneless, SSR, WCAG AA, Jest, ngx-translate, AG Grid, 4 themes.
+**Angular 21**: standalone, signals, zoneless, SSR, WCAG AA, Vitest, ngx-translate, AG Grid, 4 themes.
 
 ## Rules
-- ✅ Signals, `provideZonelessChangeDetection()`, Jest, WCAG AA, i18n keys
+- ✅ Signals, `provideZonelessChangeDetection()`, Vitest, WCAG AA, i18n keys
 - ❌ NgModules, Zone.js, async pipe with signals, RxJS for local state, Jasmine, hardcoded text
 
 ## Component Pattern
@@ -44,6 +44,7 @@ export class DataService extends AbstractApiClient {
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { vi } from 'vitest';
 import { provideStubTranslationService } from '../testing/i18n-testing';
 
 describe('Component', () => {
@@ -60,7 +61,7 @@ describe('Component', () => {
 
   it('works', () => {
     const fixture = TestBed.createComponent(Component);
-    const spy = jest.fn();
+    const spy = vi.fn();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Value');
   });
@@ -101,7 +102,7 @@ storage.getItem('key'); // Works in both browser and SSR
 ## Commands
 ```bash
 npm run ng generate component features/name --standalone
-npm test              # Jest with coverage
+npm test              # Vitest
 npm run check:i18n    # Validate translations
 npm run bundle:check  # Size validation
 ```

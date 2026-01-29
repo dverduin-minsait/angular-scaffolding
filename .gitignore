@@ -38,8 +38,9 @@ package-lock.json
 testem.log
 /typings
 
-# Jest
-.jest-cache/
+# Vitest
+vitest-report.json
+vitest-stdout.log
 
 # System files
 .DS_Store

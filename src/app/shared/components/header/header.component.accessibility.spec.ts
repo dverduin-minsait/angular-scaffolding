@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { HeaderComponent } from './header.component';
 import { Navbar } from './navbar/navbar';
 import { HeaderActions } from './header-actions/header-actions';
@@ -23,7 +24,7 @@ describe('HeaderComponent Accessibility', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let mockThemeService: {
-    toggleTheme: jest.Mock;
+    toggleTheme: ReturnType<typeof vi.fn>;
     isDarkMode: any;
     getThemeIcon: any;
     currentTheme: any;
@@ -38,7 +39,7 @@ describe('HeaderComponent Accessibility', () => {
     const currentThemeSignal = signal('light');
 
     mockThemeService = {
-      toggleTheme: jest.fn(),
+      toggleTheme: vi.fn(),
       isDarkMode: isDarkModeSignal,
       getThemeIcon: getThemeIconSignal,
       currentTheme: currentThemeSignal
@@ -47,7 +48,7 @@ describe('HeaderComponent Accessibility', () => {
     mockRouter = { 
       url: '/dashboard',
       events: of(),
-      createUrlTree: jest.fn(() => {
+      createUrlTree: vi.fn(() => {
         const mockUrlTree: Partial<UrlTree> = {
           toString: () => '/mocked-url',
           root: {} as any,
@@ -57,7 +58,7 @@ describe('HeaderComponent Accessibility', () => {
         };
         return mockUrlTree as UrlTree;
       }),
-      serializeUrl: jest.fn(() => '/mocked-url')
+      serializeUrl: vi.fn(() => '/mocked-url')
     };
     mockDocument = document;
     mockActivatedRoute = {
@@ -85,10 +86,10 @@ describe('HeaderComponent Accessibility', () => {
         {
           provide: LOCAL_STORAGE,
           useValue: {
-            getItem: jest.fn(),
-            setItem: jest.fn(),
-            removeItem: jest.fn(),
-            clear: jest.fn()
+            getItem: vi.fn(),
+            setItem: vi.fn(),
+            removeItem: vi.fn(),
+            clear: vi.fn()
           }
         },
         ...provideStubTranslationService({ 

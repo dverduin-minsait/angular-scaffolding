@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { ColorPaletteComponent } from './color-palette.component';
 
 // Mock getComputedStyle
 const mockGetComputedStyle = {
-  getPropertyValue: jest.fn((property: string) => {
+  getPropertyValue: vi.fn((property: string) => {
     const mockColors: { [key: string]: string } = {
       '--primary-500': '#3b82f6',
       '--bg-primary': '#ffffff',
@@ -30,11 +31,11 @@ describe('ColorPaletteComponent', () => {
     component = fixture.componentInstance;
 
     // Mock getComputedStyle
-    global.getComputedStyle = jest.fn(() => mockGetComputedStyle as unknown as CSSStyleDeclaration);
+    global.getComputedStyle = vi.fn(() => mockGetComputedStyle as unknown as CSSStyleDeclaration);
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
@@ -122,7 +123,7 @@ describe('ColorPaletteComponent', () => {
 
   it('should handle getComputedStyle errors gracefully', () => {
     // Mock getComputedStyle to throw an error
-    global.getComputedStyle = jest.fn(() => {
+    global.getComputedStyle = vi.fn(() => {
       throw new Error('Test error');
     });
 
@@ -132,9 +133,9 @@ describe('ColorPaletteComponent', () => {
 
   it('should return "Not defined" for undefined color values', () => {
     const mockGetComputedStyleEmpty = {
-      getPropertyValue: jest.fn(() => '')
+      getPropertyValue: vi.fn(() => '')
     };
-    global.getComputedStyle = jest.fn(() => mockGetComputedStyleEmpty as unknown as CSSStyleDeclaration);
+    global.getComputedStyle = vi.fn(() => mockGetComputedStyleEmpty as unknown as CSSStyleDeclaration);
 
     const computed = component['getComputedColor']('undefined-color');
     expect(computed).toBe('Not defined');

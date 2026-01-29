@@ -10,7 +10,7 @@ This directory contains comprehensive documentation for AI agents (GitHub Copilo
 .github/
 ├── instructions/          # Detailed implementation guidelines
 │   ├── general.instructions.md   # Core patterns and conventions
-│   ├── testing.instructions.md   # Jest testing patterns
+│   ├── testing.instructions.md   # Vitest testing patterns
 │   ├── styles.instructions.md    # SCSS and theming
 │   └── fixes.instructions.md     # Common issues and solutions
 │
@@ -32,11 +32,11 @@ This directory contains comprehensive documentation for AI agents (GitHub Copilo
 - i18n with ngx-translate
 
 ### testing.instructions.md
-**Complete Jest testing guide**
-- Jest vs Jasmine differences
+**Complete Vitest testing guide**
+- Vitest vs Jasmine differences
 - Component, service, directive, pipe tests
 - EntityStore testing
-- Accessibility testing with jest-axe
+- Accessibility testing with vitest-axe
 - Mock services and dependencies
 - Translation testing utilities
 
@@ -58,7 +58,7 @@ This directory contains comprehensive documentation for AI agents (GitHub Copilo
 - RxJS subscription management
 - SSR compatibility fixes
 - EntityStore usage
-- Testing with Jest
+- Testing with Vitest
 - Accessibility fixes
 - i18n issues
 
@@ -76,7 +76,7 @@ This directory contains comprehensive documentation for AI agents (GitHub Copilo
 
 ### testing-agent.md
 **Testing specialist**
-- Jest configuration and patterns
+- Vitest configuration and patterns
 - Test templates for all types
 - EntityStore testing
 - Mock services and HTTP
@@ -163,7 +163,7 @@ Do NOT update for:
 
 ### Writing Tests
 
-1. Read [testing.instructions.md](instructions/testing.instructions.md) - Jest patterns
+1. Read [testing.instructions.md](instructions/testing.instructions.md) - Vitest patterns
 2. Follow [testing-agent.md](agents/testing-agent.md) - Test templates
 3. Check [fixes.instructions.md](instructions/fixes.instructions.md) - Test issues
 
@@ -185,7 +185,7 @@ Do NOT update for:
 | Project structure | architecture-agent.md |
 | EntityStore usage | api-agent.md |
 | Theme variables | styling-agent.md |
-| Jest vs Jasmine | testing.instructions.md |
+| Vitest vs Jasmine | testing.instructions.md |
 | Accessibility | styles.instructions.md + fixes.instructions.md |
 
 ## 💡 Best Practices

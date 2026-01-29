@@ -7,16 +7,18 @@ describe('LOCAL_STORAGE Token', () => {
 
   describe('browser environment', () => {
     let mockLocalStorage: Partial<Storage>;
+    let getItemMock: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
       // Mock localStorage for browser environment
+      getItemMock = vi.fn();
       mockLocalStorage = {
-        getItem: jest.fn(),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-        clear: jest.fn(),
+        getItem: getItemMock,
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn(),
         length: 0,
-        key: jest.fn()
+        key: vi.fn()
       };
 
       // Mock the global localStorage
@@ -47,7 +49,7 @@ describe('LOCAL_STORAGE Token', () => {
       const testKey = 'test-key';
       const expectedValue = 'test-value';
       
-      (mockLocalStorage.getItem as jest.Mock).mockReturnValue(expectedValue);
+      getItemMock.mockReturnValue(expectedValue);
       
       const result = storageService.getItem(testKey);
       
@@ -81,7 +83,7 @@ describe('LOCAL_STORAGE Token', () => {
     it('should return null when localStorage.getItem returns null', () => {
       const testKey = 'non-existent-key';
       
-      (mockLocalStorage.getItem as jest.Mock).mockReturnValue(null);
+      getItemMock.mockReturnValue(null);
       
       const result = storageService.getItem(testKey);
       

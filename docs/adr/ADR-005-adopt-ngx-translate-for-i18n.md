@@ -60,7 +60,7 @@ Negative / Mitigations:
 ## Follow Ups
 - Add automated test ensuring all languages share same key set (diff detector).
 - Consider integrating ICU pluralization where needed (ngx-translate supports messageformat plugin if required).
-- Potential integration of `jest-axe` for a11y + language attribute checks.
+- Potential integration of `vitest-axe` for a11y + language attribute checks (implemented via Vitest + vitest-axe matcher setup).
 - Add script to validate missing translations during CI.
 
 ---

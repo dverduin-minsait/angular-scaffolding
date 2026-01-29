@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { vi } from 'vitest';
 import { MultiTabSyncService } from './multi-tab-sync.service';
 import { AuthStore } from '../stores/auth.store';
 import { AuthService } from './auth.service';
@@ -9,7 +10,7 @@ import { UserProfile } from '../models/auth.models';
 // Mock BroadcastChannel for testing
 class MockBroadcastChannel {
   private readonly listeners: ((event: MessageEvent) => void)[] = [];
-  private static instances: MockBroadcastChannel[] = [];
+  static instances: MockBroadcastChannel[] = [];
 
   constructor(public name: string) {
     MockBroadcastChannel.instances.push(this);
@@ -49,52 +50,18 @@ class MockBroadcastChannel {
   }
 }
 
-// Mock localStorage for storage fallback testing
-class MockStorage {
-  private store: { [key: string]: string } = {};
-  private readonly listeners: ((event: any) => void)[] = [];
-
-  getItem(key: string): string | null {
-    return this.store[key] || null;
-  }
-
-  setItem(key: string, value: string): void {
-    const oldValue = this.store[key] || null;
-    this.store[key] = value;
-    
-    // Simulate storage event for other tabs
-    const event = {
-      type: 'storage',
-      key,
-      oldValue,
-      newValue: value,
-      storageArea: this
-    };
-    
-    this.listeners.forEach(listener => listener(event));
-  }
-
-  clear() {
-    this.store = {};
-  }
-
-  addEventListener(type: 'storage', listener: (event: any) => void) {
-    this.listeners.push(listener);
-  }
-
-  removeEventListener(type: 'storage', listener: (event: any) => void) {
-    const index = this.listeners.indexOf(listener);
-    if (index > -1) {
-      this.listeners.splice(index, 1);
-    }
-  }
-}
-
 describe('MultiTabSyncService', () => {
   let service: MultiTabSyncService;
   let store: AuthStore;
-  let authService: jest.Mocked<AuthService>;
-  let mockStorage: MockStorage;
+  type AuthServiceMock = {
+    refreshAccessToken: ReturnType<typeof vi.fn>;
+    initializeSession: ReturnType<typeof vi.fn>;
+    scheduleProactiveRefresh: ReturnType<typeof vi.fn>;
+    login: ReturnType<typeof vi.fn>;
+    logout: ReturnType<typeof vi.fn>;
+  };
+
+  let authService: AuthServiceMock;
 
   const mockUser: UserProfile = {
     id: '1',
@@ -104,31 +71,30 @@ describe('MultiTabSyncService', () => {
     permissions: ['read']
   };
 
-  const authServiceMock = {
-    refreshAccessToken: jest.fn().mockResolvedValue(true),
-    initializeSession: jest.fn().mockResolvedValue(undefined),
-    scheduleProactiveRefresh: jest.fn(),
-    login: jest.fn().mockResolvedValue(undefined),
-    logout: jest.fn().mockResolvedValue(undefined)
+  const authServiceMock: AuthServiceMock = {
+    refreshAccessToken: vi.fn().mockResolvedValue(true),
+    initializeSession: vi.fn().mockResolvedValue(undefined),
+    scheduleProactiveRefresh: vi.fn(),
+    login: vi.fn().mockResolvedValue(undefined),
+    logout: vi.fn().mockResolvedValue(undefined)
   };
 
   beforeEach(() => {
     MockBroadcastChannel.reset();
-    mockStorage = new MockStorage();
 
-    // Mock global objects
-    global.BroadcastChannel = MockBroadcastChannel as any;
-    global.localStorage = mockStorage as any;
-    global.window = {
-      addEventListener: mockStorage.addEventListener.bind(mockStorage),
-      removeEventListener: mockStorage.removeEventListener.bind(mockStorage)
-    } as any;
+    // Default to BroadcastChannel path unless a test overrides it.
+    vi.stubGlobal('BroadcastChannel', MockBroadcastChannel as any);
   });
 
   afterEach(() => {
-    delete (global as any).BroadcastChannel;
-    delete (global as any).localStorage;
-    delete (global as any).window;
+    try {
+      TestBed.resetTestingModule();
+    } catch {
+      // ignore
+    }
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+    MockBroadcastChannel.reset();
   });
 
   describe('in browser environment', () => {
@@ -145,7 +111,7 @@ describe('MultiTabSyncService', () => {
 
       service = TestBed.inject(MultiTabSyncService);
       store = TestBed.inject(AuthStore);
-      authService = TestBed.inject(AuthService) as jest.Mocked<AuthService>;
+      authService = TestBed.inject(AuthService) as unknown as AuthServiceMock;
     });
 
     describe('with BroadcastChannel support', () => {
@@ -156,7 +122,7 @@ describe('MultiTabSyncService', () => {
 
       it('should broadcast authentication status changes', () => {
         const otherService = TestBed.inject(MultiTabSyncService);
-        const broadcastSpy = jest.spyOn(MockBroadcastChannel.instances[0], 'postMessage');
+        const broadcastSpy = vi.spyOn(MockBroadcastChannel.instances[0], 'postMessage');
 
         store.setAuthenticated(mockUser, 'token', 3600);
         TestBed.flushEffects(); // Ensure effects run
@@ -172,7 +138,7 @@ describe('MultiTabSyncService', () => {
         store.setAuthenticated(mockUser, 'token', 3600);
         TestBed.flushEffects(); // Ensure effects run
         
-        const broadcastSpy = jest.spyOn(MockBroadcastChannel.instances[0], 'postMessage');
+        const broadcastSpy = vi.spyOn(MockBroadcastChannel.instances[0], 'postMessage');
         
         store.setUnauthenticated();
         TestBed.flushEffects(); // Ensure effects run
@@ -202,7 +168,7 @@ describe('MultiTabSyncService', () => {
         store.setAuthenticated(mockUser, 'token', 3600);
         expect(store.isAuthenticated()).toBe(true);
 
-        const clearSpy = jest.spyOn(store, 'clear');
+        const clearSpy = vi.spyOn(store, 'clear');
 
         // Simulate message from another tab - call the onMessage method directly
         const service = TestBed.inject(MultiTabSyncService);
@@ -216,7 +182,7 @@ describe('MultiTabSyncService', () => {
         store.setAuthenticated(mockUser, 'token', 3600);
         expect(store.isAuthenticated()).toBe(true);
 
-        const clearSpy = jest.spyOn(store, 'clear');
+        const clearSpy = vi.spyOn(store, 'clear');
 
         // Simulate logout message from another tab - call the onMessage method directly
         const service = TestBed.inject(MultiTabSyncService);
@@ -226,7 +192,7 @@ describe('MultiTabSyncService', () => {
       });
 
       it('should ignore invalid messages', async () => {
-        const clearSpy = jest.spyOn(store, 'clear');
+        const clearSpy = vi.spyOn(store, 'clear');
         
         // Reset mocks before test
         authServiceMock.refreshAccessToken.mockClear();
@@ -271,7 +237,7 @@ describe('MultiTabSyncService', () => {
       });
     });
 
-    // Note: Storage fallback tests are complex to mock in Jest due to window dependencies
+    // Note: Storage fallback tests are complex to mock reliably in jsdom due to window dependencies
     // The service implementation handles BroadcastChannel unavailability gracefully
     // by falling back to localStorage, but testing this requires complex DOM environment setup
   });
@@ -284,7 +250,7 @@ describe('MultiTabSyncService', () => {
           AuthStore,
           provideZonelessChangeDetection(),
           { provide: PLATFORM_ID, useValue: 'server' },
-          { provide: AuthService, useValue: authService }
+          { provide: AuthService, useValue: authServiceMock }
         ]
       }).compileComponents();
 
@@ -297,7 +263,7 @@ describe('MultiTabSyncService', () => {
     });
 
     it('should not broadcast or listen to events in server environment', () => {
-      const setItemSpy = jest.spyOn(mockStorage, 'setItem');
+      const setItemSpy = vi.spyOn(window.localStorage, 'setItem');
 
       store.setAuthenticated(mockUser, 'token', 3600);
 
@@ -313,7 +279,7 @@ describe('MultiTabSyncService', () => {
           AuthStore,
           provideZonelessChangeDetection(),
           { provide: PLATFORM_ID, useValue: 'browser' },
-          { provide: AuthService, useValue: authService }
+          { provide: AuthService, useValue: authServiceMock }
         ]
       }).compileComponents();
 
@@ -323,8 +289,8 @@ describe('MultiTabSyncService', () => {
 
     it('should properly clean up BroadcastChannel on destroy', () => {
       const channel = MockBroadcastChannel.instances[0];
-      const removeEventListenerSpy = jest.spyOn(channel, 'removeEventListener');
-      const closeSpy = jest.spyOn(channel, 'close');
+      const removeEventListenerSpy = vi.spyOn(channel, 'removeEventListener');
+      const closeSpy = vi.spyOn(channel, 'close');
 
       // Trigger destroy
       TestBed.resetTestingModule();
@@ -335,10 +301,10 @@ describe('MultiTabSyncService', () => {
 
     it('should handle cleanup errors gracefully', () => {
       const channel = MockBroadcastChannel.instances[0];
-      jest.spyOn(channel, 'removeEventListener').mockImplementation(() => {
+      vi.spyOn(channel, 'removeEventListener').mockImplementation(() => {
         throw new Error('Cleanup error');
       });
-      jest.spyOn(channel, 'close').mockImplementation(() => {
+      vi.spyOn(channel, 'close').mockImplementation(() => {
         throw new Error('Close error');
       });
 
@@ -355,7 +321,7 @@ describe('MultiTabSyncService', () => {
           AuthStore,
           provideZonelessChangeDetection(),
           { provide: PLATFORM_ID, useValue: 'browser' },
-          { provide: AuthService, useValue: authService }
+          { provide: AuthService, useValue: authServiceMock }
         ]
       }).compileComponents();
 
@@ -365,7 +331,7 @@ describe('MultiTabSyncService', () => {
 
     it('should broadcast when user changes between different users', () => {
       const channel = MockBroadcastChannel.instances[0];
-      const postMessageSpy = jest.spyOn(channel, 'postMessage');
+      const postMessageSpy = vi.spyOn(channel, 'postMessage');
 
       const user1: UserProfile = { ...mockUser, id: '1', username: 'user1' };
       const user2: UserProfile = { ...mockUser, id: '2', username: 'user2' };
@@ -393,7 +359,7 @@ describe('MultiTabSyncService', () => {
 
     it('should not broadcast when same user is set again', () => {
       const channel = MockBroadcastChannel.instances[0];
-      const postMessageSpy = jest.spyOn(channel, 'postMessage');
+      const postMessageSpy = vi.spyOn(channel, 'postMessage');
 
       // Set user
       store.setAuthenticated(mockUser, 'token1', 3600);

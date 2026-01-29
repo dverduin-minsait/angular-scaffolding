@@ -10,7 +10,7 @@ const appCustom = require('./eslint-rules/plugin');
 /** @type {import('eslint').Linter.FlatConfig[]} */
 module.exports = [
   {
-    files: ['**/*.ts'],
+    files: ['src/**/*.ts', 'eslint-rules/**/*.ts'],
     ignores: ['dist/**','coverage/**','node_modules/**', '**/*.spec.ts'],
     languageOptions: {
       parser: tsParser,
@@ -50,6 +50,27 @@ module.exports = [
       '@typescript-eslint/explicit-function-return-type': ['warn', {
         'allowExpressions': true,
         'allowTypedFunctionExpressions': true
+      }]
+    }
+  },
+  {
+    files: ['*.config.ts', 'vitest.config.ts'],
+    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        sourceType: 'module',
+        ecmaVersion: 2022
+      }
+    },
+    plugins: {
+      '@typescript-eslint': pluginTs
+    },
+    rules: {
+      ...pluginTs.configs['recommended'].rules,
+      '@typescript-eslint/no-unused-vars': ['error', {
+        'argsIgnorePattern': '^_',
+        'varsIgnorePattern': '^_'
       }]
     }
   },

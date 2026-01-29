@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DOCUMENT } from '@angular/common';
+import { vi } from 'vitest';
 import { ThemeService } from './theme.service';
 import { LOCAL_STORAGE } from '../tokens/local.storage.token';
 import { 
@@ -21,49 +22,49 @@ describe('ThemeService - SSR Safety', () => {
   describe('Browser Context', () => {
     let service: ThemeService;
     let mockStorage: {
-      getItem: jest.Mock;
-      setItem: jest.Mock;
-      removeItem: jest.Mock;
-      clear: jest.Mock;
+      getItem: ReturnType<typeof vi.fn>;
+      setItem: ReturnType<typeof vi.fn>;
+      removeItem: ReturnType<typeof vi.fn>;
+      clear: ReturnType<typeof vi.fn>;
     };
-    let mockMatchMedia: jest.Mock;
+    let mockMatchMedia: ReturnType<typeof vi.fn>;
     let mockDocument: {
       documentElement: {
         classList: {
-          add: jest.Mock;
-          remove: jest.Mock;
-          toggle: jest.Mock;
-          contains: jest.Mock;
+          add: ReturnType<typeof vi.fn>;
+          remove: ReturnType<typeof vi.fn>;
+          toggle: ReturnType<typeof vi.fn>;
+          contains: ReturnType<typeof vi.fn>;
         };
       };
     };
 
     beforeEach(() => {
       mockStorage = {
-        getItem: jest.fn(),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-        clear: jest.fn()
+        getItem: vi.fn(),
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn()
       };
 
-      mockMatchMedia = jest.fn((query: string) => ({
+      mockMatchMedia = vi.fn((query: string) => ({
         matches: query === '(prefers-color-scheme: dark)',
         media: query,
         onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn()
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn()
       }));
 
       mockDocument = {
         documentElement: {
           classList: {
-            add: jest.fn(),
-            remove: jest.fn(),
-            toggle: jest.fn(),
-            contains: jest.fn()
+            add: vi.fn(),
+            remove: vi.fn(),
+            toggle: vi.fn(),
+            contains: vi.fn()
           }
         }
       };
@@ -86,7 +87,7 @@ describe('ThemeService - SSR Safety', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should create service in browser', () => {
@@ -108,14 +109,12 @@ describe('ThemeService - SSR Safety', () => {
       expect(mockDocument.documentElement.classList.add).toHaveBeenCalled();
     });
 
-    it('should save theme to localStorage in browser', (done) => {
+    it('should save theme to localStorage in browser', async () => {
       service.setTheme('dark');
-      
+
       // Wait for debounced storage write
-      setTimeout(() => {
-        expect(mockStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
-        done();
-      }, 400);
+      await new Promise<void>((resolve) => setTimeout(resolve, 450));
+      expect(mockStorage.setItem).toHaveBeenCalledWith('theme', 'dark');
     });
 
     it('should load theme from localStorage in browser', () => {
@@ -123,16 +122,16 @@ describe('ThemeService - SSR Safety', () => {
       TestBed.resetTestingModule();
       
       const newMockStorage = {
-        getItem: jest.fn((key: string) => {
+        getItem: vi.fn((key: string) => {
           if (key === 'theme') return 'dark';
           if (key === 'theme-auto-switch') return 'false';
           if (key === 'theme-use-system') return 'false'; // Must be false to use saved theme
           if (key === 'theme-high-contrast') return 'false';
           return null;
         }),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-        clear: jest.fn()
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn()
       };
 
       configureBrowserTestingModule({
@@ -153,11 +152,11 @@ describe('ThemeService - SSR Safety', () => {
       mockMatchMedia.mockReturnValue({
         matches: true,
         media: '(prefers-color-scheme: dark)',
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
         onchange: null
       });
 
@@ -172,38 +171,38 @@ describe('ThemeService - SSR Safety', () => {
       const highContrastMock = {
         matches: true,
         media: '(prefers-contrast: high)',
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
         onchange: null
       };
 
       // New storage mock that returns null for high-contrast (allows system detection)
       const newMockStorage = {
-        getItem: jest.fn((key: string) => {
+        getItem: vi.fn((key: string) => {
           if (key === 'theme') return 'light';
           if (key === 'theme-auto-switch') return 'false';
           if (key === 'theme-use-system') return 'true';
           if (key === 'theme-high-contrast') return null; // null allows system preference detection
           return null;
         }),
-        setItem: jest.fn(),
-        removeItem: jest.fn(),
-        clear: jest.fn()
+        setItem: vi.fn(),
+        removeItem: vi.fn(),
+        clear: vi.fn()
       };
 
-      const newMockMatchMedia = jest.fn((query: string) => {
+      const newMockMatchMedia = vi.fn((query: string) => {
         if (query === '(prefers-contrast: high)') return highContrastMock;
         return {
           matches: false,
           media: query,
-          addEventListener: jest.fn(),
-          removeEventListener: jest.fn(),
-          addListener: jest.fn(),
-          removeListener: jest.fn(),
-          dispatchEvent: jest.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          dispatchEvent: vi.fn(),
           onchange: null
         };
       });
@@ -214,11 +213,11 @@ describe('ThemeService - SSR Safety', () => {
         return {
           matches: false,
           media: query,
-          addEventListener: jest.fn(),
-          removeEventListener: jest.fn(),
-          addListener: jest.fn(),
-          removeListener: jest.fn(),
-          dispatchEvent: jest.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+          dispatchEvent: vi.fn(),
           onchange: null
         };
       });

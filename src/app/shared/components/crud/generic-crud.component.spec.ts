@@ -1,6 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideZonelessChangeDetection, signal, Signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 import { GenericCrudComponent } from './generic-crud.component';
 import { GenericCrudService } from './generic-crud.service';
 import { LOCAL_STORAGE } from '../../../core/tokens/local.storage.token';
@@ -29,11 +30,11 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     loading: ReturnType<typeof signal<{ isLoading: boolean; operation?: string }>>;
     error: ReturnType<typeof signal<{ message: string } | null>>;
     selected: ReturnType<typeof signal<TestEntity | null>>;
-    setSelected: jest.Mock;
-    refresh: jest.Mock;
-    delete: jest.Mock;
-    create: jest.Mock;
-    update: jest.Mock;
+    setSelected: ReturnType<typeof vi.fn>;
+    refresh: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+    create: ReturnType<typeof vi.fn>;
+    update: ReturnType<typeof vi.fn>;
   };
   let mockModalService: Partial<ModalService>;
   let mockLocalStorage: Partial<Storage>;
@@ -70,16 +71,16 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     // Mock localStorage
     const storage: Record<string, string> = {};
     mockLocalStorage = {
-      getItem: jest.fn((key: string) => storage[key] || null),
-      setItem: jest.fn((key: string, value: string) => {
+      getItem: vi.fn((key: string) => storage[key] || null),
+      setItem: vi.fn((key: string, value: string) => {
         storage[key] = value;
       })
     };
 
     // Mock GenericCrudService
     mockCrudService = {
-      loadPreferences: jest.fn().mockReturnValue(of(null)),
-      savePreferences: jest.fn().mockReturnValue(of(void 0))
+      loadPreferences: vi.fn().mockReturnValue(of(null)),
+      savePreferences: vi.fn().mockReturnValue(of(void 0))
     };
 
     // Mock EntityStore
@@ -88,16 +89,16 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
       loading: signal({ isLoading: false, operation: undefined }),
       error: signal(null),
       selected: signal(null),
-      setSelected: jest.fn(),
-      refresh: jest.fn().mockReturnValue(of(testEntities)),
-      delete: jest.fn().mockReturnValue(of(void 0)),
-      create: jest.fn().mockReturnValue(of(testEntities[0])),
-      update: jest.fn().mockReturnValue(of(testEntities[0]))
+      setSelected: vi.fn(),
+      refresh: vi.fn().mockReturnValue(of(testEntities)),
+      delete: vi.fn().mockReturnValue(of(void 0)),
+      create: vi.fn().mockReturnValue(of(testEntities[0])),
+      update: vi.fn().mockReturnValue(of(testEntities[0]))
     };
 
     // Mock ModalService
     mockModalService = {
-      confirm: jest.fn().mockResolvedValue({ confirmed: true })
+      confirm: vi.fn().mockResolvedValue({ confirmed: true })
     };
 
     await TestBed.configureTestingModule({
@@ -394,7 +395,9 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     it('should delete entity when user confirms deletion', async () => {
       // Given: User confirms deletion
       const entityToDelete = testEntities[0];
-      (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+      (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+        confirmed: true
+      });
       fixture.componentRef.setInput('canDelete', true);
       fixture.detectChanges();
 
@@ -412,8 +415,10 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     it('should not delete entity when user cancels deletion', async () => {
       // Given: User cancels deletion
       const entityToDelete = testEntities[0];
-      (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: false });
-      const deleteCallCount = (mockEntityStore.delete as jest.Mock).mock.calls.length;
+      (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+        confirmed: false
+      });
+      const deleteCallCount = mockEntityStore.delete.mock.calls.length;
       fixture.detectChanges();
 
       // When: User cancels delete
@@ -430,10 +435,12 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
       const errorEvents: { operation: string; error: Error }[] = [];
       component.errorOccurred.subscribe((event) => errorEvents.push(event));
       
-      (mockEntityStore.delete as jest.Mock).mockReturnValue(
+      mockEntityStore.delete.mockReturnValue(
         throwError(() => new Error('Network error'))
       );
-      (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+      (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+        confirmed: true
+      });
       fixture.detectChanges();
 
       // When: User attempts to delete
@@ -855,7 +862,9 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     describe('Create Operations', () => {
       it('should use store create method when creating new entity', () => {
         // Given: Component is in create mode
-        const createSpy = jest.fn().mockReturnValue(of({ id: 4, title: 'New Book', author: 'New Author', isbn: '123', category: 'New', price: 19.99 }));
+        const createSpy = vi.fn().mockReturnValue(
+          of({ id: 4, title: 'New Book', author: 'New Author', isbn: '123', category: 'New', price: 19.99 })
+        );
         mockEntityStore.create = createSpy;
         component.startCreate();
         fixture.detectChanges();
@@ -868,44 +877,37 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         expect(createSpy).toHaveBeenCalledWith(newEntity);
       });
 
-      it('should update items signal after successful create', (done) => {
+      it('should update items signal after successful create', async () => {
         // Given: A successful create operation
         const newEntity: TestEntity = { id: 4, title: 'New Book', author: 'New Author', isbn: '123', category: 'New', price: 19.99 };
-        const createSpy = jest.fn().mockReturnValue(of(newEntity));
+        const createSpy = vi.fn().mockReturnValue(of(newEntity));
         mockEntityStore.create = createSpy;
 
         // When: Create is called
-        mockEntityStore.create({ title: 'New Book' }).subscribe(() => {
-          // Then: The new entity should be added to items
-          // Note: In real EntityStore, items signal is updated automatically
-          mockEntityStore.items.set([...testEntities, newEntity]);
-          expect(mockEntityStore.items().length).toBe(4);
-          expect(mockEntityStore.items()).toContain(newEntity);
-          done();
-        });
+        await firstValueFrom(mockEntityStore.create({ title: 'New Book' }));
+
+        // Then: The new entity should be added to items
+        // Note: In real EntityStore, items signal is updated automatically
+        mockEntityStore.items.set([...testEntities, newEntity]);
+        expect(mockEntityStore.items().length).toBe(4);
+        expect(mockEntityStore.items()).toContain(newEntity);
       });
 
-      it('should handle create errors gracefully', (done) => {
+      it('should handle create errors gracefully', async () => {
         // Given: Create operation will fail
         const createError = new Error('Create failed: Network error');
-        const createSpy = jest.fn().mockReturnValue(throwError(() => createError));
+        const createSpy = vi.fn().mockReturnValue(throwError(() => createError));
         mockEntityStore.create = createSpy;
 
         // When: Create is called
-        mockEntityStore.create({ title: 'Failed Book' }).subscribe({
-          error: (error: Error) => {
-            // Then: Error should be captured
-            expect(error).toBe(createError);
-            done();
-          }
-        });
+        await expect(firstValueFrom(mockEntityStore.create({ title: 'Failed Book' }))).rejects.toBe(createError);
       });
     });
 
     describe('Update Operations', () => {
       it('should use store update method when editing entity', () => {
         // Given: An entity is being edited
-        const updateSpy = jest.fn().mockReturnValue(of(testEntities[0]));
+        const updateSpy = vi.fn().mockReturnValue(of(testEntities[0]));
         mockEntityStore.update = updateSpy;
         mockEntityStore.selected.set(testEntities[0]);
         component.startEdit();
@@ -919,61 +921,55 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         expect(updateSpy).toHaveBeenCalledWith(testEntities[0].id, updates);
       });
 
-      it('should update items signal after successful update', (done) => {
+      it('should update items signal after successful update', async () => {
         // Given: A successful update operation
         const updatedEntity: TestEntity = { ...testEntities[0], title: 'Updated Title' };
-        const updateSpy = jest.fn().mockReturnValue(of(updatedEntity));
+        const updateSpy = vi.fn().mockReturnValue(of(updatedEntity));
         mockEntityStore.update = updateSpy;
 
         // When: Update is called
-        mockEntityStore.update(testEntities[0].id, { title: 'Updated Title' }).subscribe(() => {
-          // Then: The entity should be updated in items
-          mockEntityStore.items.set([updatedEntity, testEntities[1], testEntities[2]]);
-          const item = mockEntityStore.items().find(i => i.id === testEntities[0].id);
-          expect(item?.title).toBe('Updated Title');
-          done();
-        });
+        await firstValueFrom(mockEntityStore.update(testEntities[0].id, { title: 'Updated Title' }));
+
+        // Then: The entity should be updated in items
+        mockEntityStore.items.set([updatedEntity, testEntities[1], testEntities[2]]);
+        const item = mockEntityStore.items().find(i => i.id === testEntities[0].id);
+        expect(item?.title).toBe('Updated Title');
       });
 
-      it('should update selected entity after successful update', (done) => {
+      it('should update selected entity after successful update', async () => {
         // Given: An entity is selected and updated
         const updatedEntity: TestEntity = { ...testEntities[0], title: 'Updated Title' };
-        const updateSpy = jest.fn().mockReturnValue(of(updatedEntity));
+        const updateSpy = vi.fn().mockReturnValue(of(updatedEntity));
         mockEntityStore.update = updateSpy;
         mockEntityStore.selected.set(testEntities[0]);
 
         // When: Update is called
-        mockEntityStore.update(testEntities[0].id, { title: 'Updated Title' }).subscribe(() => {
-          // Then: Selected entity should be updated
-          mockEntityStore.selected.set(updatedEntity);
-          expect(mockEntityStore.selected()?.title).toBe('Updated Title');
-          done();
-        });
+        await firstValueFrom(mockEntityStore.update(testEntities[0].id, { title: 'Updated Title' }));
+
+        // Then: Selected entity should be updated
+        mockEntityStore.selected.set(updatedEntity);
+        expect(mockEntityStore.selected()?.title).toBe('Updated Title');
       });
 
-      it('should handle update errors gracefully', (done) => {
+      it('should handle update errors gracefully', async () => {
         // Given: Update operation will fail
         const updateError = new Error('Update failed: Validation error');
-        const updateSpy = jest.fn().mockReturnValue(throwError(() => updateError));
+        const updateSpy = vi.fn().mockReturnValue(throwError(() => updateError));
         mockEntityStore.update = updateSpy;
 
         // When: Update is called
-        mockEntityStore.update(1, { title: 'Failed Update' }).subscribe({
-          error: (error: Error) => {
-            // Then: Error should be captured
-            expect(error).toBe(updateError);
-            done();
-          }
-        });
+        await expect(firstValueFrom(mockEntityStore.update(1, { title: 'Failed Update' }))).rejects.toBe(updateError);
       });
     });
 
     describe('Delete Operations', () => {
       it('should call store delete method when deleting entity', async () => {
         // Given: User confirms deletion
-        const deleteSpy = jest.fn().mockReturnValue(of(void 0));
+        const deleteSpy = vi.fn().mockReturnValue(of(void 0));
         mockEntityStore.delete = deleteSpy;
-        (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+        (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+          confirmed: true
+        });
 
         // When: User deletes an entity
         await component.confirmDelete(testEntities[0]);
@@ -986,9 +982,11 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
       it('should remove entity from items after successful delete', async () => {
         // Given: A successful delete operation
         const entityToDelete = testEntities[0];
-        const deleteSpy = jest.fn().mockReturnValue(of(void 0));
+        const deleteSpy = vi.fn().mockReturnValue(of(void 0));
         mockEntityStore.delete = deleteSpy;
-        (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+        (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+          confirmed: true
+        });
 
         // When: Entity is deleted
         await component.confirmDelete(entityToDelete);
@@ -1006,9 +1004,11 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         // Given: Selected entity is deleted
         const entityToDelete = testEntities[0];
         mockEntityStore.selected.set(entityToDelete);
-        const deleteSpy = jest.fn().mockReturnValue(of(void 0));
+        const deleteSpy = vi.fn().mockReturnValue(of(void 0));
         mockEntityStore.delete = deleteSpy;
-        (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+        (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+          confirmed: true
+        });
 
         // When: Entity is deleted
         await component.confirmDelete(entityToDelete);
@@ -1024,9 +1024,11 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
       it('should emit entityDeleted event after successful delete', async () => {
         // Given: A successful delete operation
         const entityToDelete = testEntities[0];
-        const deleteSpy = jest.fn().mockReturnValue(of(void 0));
+        const deleteSpy = vi.fn().mockReturnValue(of(void 0));
         mockEntityStore.delete = deleteSpy;
-        (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+        (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+          confirmed: true
+        });
         emittedEvents = [];
 
         // When: Entity is deleted
@@ -1041,7 +1043,7 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     describe('Read/Refresh Operations', () => {
       it('should call store refresh method when refreshing data', () => {
         // Given: User wants to refresh data
-        const refreshSpy = jest.fn().mockReturnValue(of(testEntities));
+        const refreshSpy = vi.fn().mockReturnValue(of(testEntities));
         mockEntityStore.refresh = refreshSpy;
 
         // When: User clicks refresh
@@ -1051,23 +1053,22 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         expect(refreshSpy).toHaveBeenCalled();
       });
 
-      it('should update items after successful refresh', (done) => {
+      it('should update items after successful refresh', async () => {
         // Given: A successful refresh operation
         const newData: TestEntity[] = [
           ...testEntities,
           { id: 4, title: 'Refreshed Book', author: 'New Author', isbn: '999', category: 'New', price: 29.99 }
         ];
-        const refreshSpy = jest.fn().mockReturnValue(of(newData));
+        const refreshSpy = vi.fn().mockReturnValue(of(newData));
         mockEntityStore.refresh = refreshSpy;
 
         // When: Data is refreshed
         component.refreshData();
-        mockEntityStore.refresh().subscribe(() => {
-          // Then: Items should be updated
-          mockEntityStore.items.set(newData);
-          expect(mockEntityStore.items().length).toBe(4);
-          done();
-        });
+        await firstValueFrom(mockEntityStore.refresh());
+
+        // Then: Items should be updated
+        mockEntityStore.items.set(newData);
+        expect(mockEntityStore.items().length).toBe(4);
       });
 
       it('should handle refresh errors with error event', () => {
@@ -1166,7 +1167,7 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         expect(errorElement?.getAttribute('aria-live')).toBe('assertive');
       });
 
-      it('should clear error on successful operation', (done) => {
+      it('should clear error on successful operation', () => {
         // Given: An error exists
         mockEntityStore.error.set({ message: 'Previous error' });
         
@@ -1179,12 +1180,9 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         fixture.detectChanges();
 
         // Then: Error should be cleared
-        setTimeout(() => {
-          const compiled = fixture.nativeElement as HTMLElement;
-          const errorElement = compiled.querySelector('.status-item.error');
-          expect(errorElement).toBeFalsy();
-          done();
-        }, 0);
+        const compiled = fixture.nativeElement as HTMLElement;
+        const errorElement = compiled.querySelector('.status-item.error');
+        expect(errorElement).toBeFalsy();
       });
     });
 
@@ -1234,28 +1232,28 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
     });
 
     describe('Store Integration Edge Cases', () => {
-      it('should handle empty response from store gracefully', (done) => {
+      it('should handle empty response from store gracefully', async () => {
         // Given: Store returns empty array
         mockEntityStore.refresh.mockReturnValue(of([]));
 
         // When: Refresh is called
         component.refreshData();
-        mockEntityStore.refresh().subscribe(() => {
-          mockEntityStore.items.set([]);
-          fixture.detectChanges();
+        await firstValueFrom(mockEntityStore.refresh());
+        mockEntityStore.items.set([]);
+        fixture.detectChanges();
 
-          // Then: Should display empty state
-          const displayedItems = component.displayItems();
-          expect(displayedItems.length).toBe(0);
-          done();
-        });
+        // Then: Should display empty state
+        const displayedItems = component.displayItems();
+        expect(displayedItems.length).toBe(0);
       });
 
       it('should handle concurrent operations', () => {
         // Given: Multiple operations are triggered
-        const createSpy = jest.fn().mockReturnValue(of({ id: 4, title: 'New', author: 'A', isbn: '1', category: 'C', price: 1 }));
-        const updateSpy = jest.fn().mockReturnValue(of({ ...testEntities[0], title: 'Updated' }));
-        const deleteSpy = jest.fn().mockReturnValue(of(void 0));
+        const createSpy = vi.fn().mockReturnValue(
+          of({ id: 4, title: 'New', author: 'A', isbn: '1', category: 'C', price: 1 })
+        );
+        const updateSpy = vi.fn().mockReturnValue(of({ ...testEntities[0], title: 'Updated' }));
+        const deleteSpy = vi.fn().mockReturnValue(of(void 0));
         
         mockEntityStore.create = createSpy;
         mockEntityStore.update = updateSpy;
@@ -1277,7 +1275,9 @@ describe('GenericCrudComponent - Behavior Driven Tests', () => {
         const entityToDelete = testEntities[0];
         mockEntityStore.selected.set(entityToDelete);
         mockEntityStore.delete.mockReturnValue(of(void 0));
-        (mockModalService.confirm as jest.Mock).mockResolvedValue({ confirmed: true });
+        (mockModalService.confirm as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+          confirmed: true
+        });
 
         // When: Entity is deleted
         await component.confirmDelete(entityToDelete);

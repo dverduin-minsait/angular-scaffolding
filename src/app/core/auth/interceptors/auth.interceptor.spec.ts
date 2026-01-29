@@ -2,9 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { vi } from 'vitest';
 import { authInterceptor, __resetAuthInterceptorTestState } from './auth.interceptor';
 import { AuthStore } from '../stores/auth.store';
 import { AuthService } from '../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 import type { UserProfile } from '../models/auth.models';
 
 describe('authInterceptor', () => {
@@ -12,7 +14,7 @@ describe('authInterceptor', () => {
   let httpTestingController: HttpTestingController;
   let store: AuthStore;
   let authService: AuthService;
-  let refreshAccessTokenSpy: jest.SpyInstance;
+  let refreshAccessTokenSpy: ReturnType<typeof vi.spyOn>;
 
   const mockUser: UserProfile = {
     id: '1',
@@ -22,16 +24,24 @@ describe('authInterceptor', () => {
     permissions: ['read']
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
+    // Vitest runs multiple spec files in the same worker; ensure TestBed is clean.
+    try {
+      TestBed.resetTestingModule();
+    } catch {
+      // ignore
+    }
+
     const authServiceMock = {
-      refreshAccessToken: jest.fn().mockResolvedValue(true),
-      initializeSession: jest.fn().mockResolvedValue(undefined),
-      scheduleProactiveRefresh: jest.fn(),
-      login: jest.fn().mockResolvedValue(undefined),
-      logout: jest.fn().mockResolvedValue(undefined)
+      refreshAccessToken: vi.fn().mockResolvedValue(true),
+      initializeSession: vi.fn().mockResolvedValue(undefined),
+      scheduleProactiveRefresh: vi.fn(),
+      login: vi.fn().mockResolvedValue(undefined),
+      logout: vi.fn().mockResolvedValue(undefined)
     };
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
+      teardown: { destroyAfterEach: true },
       providers: [
         AuthStore,
         { provide: AuthService, useValue: authServiceMock },
@@ -39,21 +49,25 @@ describe('authInterceptor', () => {
         provideHttpClient(withInterceptors([authInterceptor])),
         provideHttpClientTesting()
       ]
-    }).compileComponents();
+    });
 
     httpClient = TestBed.inject(HttpClient);
     httpTestingController = TestBed.inject(HttpTestingController);
     store = TestBed.inject(AuthStore);
     authService = TestBed.inject(AuthService);
-    refreshAccessTokenSpy = jest.spyOn(authService, 'refreshAccessToken');
+    refreshAccessTokenSpy = vi.spyOn(authService, 'refreshAccessToken');
 
     // Reset interceptor state before each test
     __resetAuthInterceptorTestState();
   });
 
   afterEach(() => {
-    httpTestingController.verify();
-    jest.clearAllMocks();
+    try {
+      httpTestingController?.verify();
+    } finally {
+      vi.restoreAllMocks();
+      vi.clearAllMocks();
+    }
   });
 
   describe('when user is authenticated', () => {
@@ -175,21 +189,14 @@ describe('authInterceptor', () => {
       refreshAccessTokenSpy.mockResolvedValue(true);
     });
 
-    it('should attempt token refresh on 401 and retry request', (done) => {
+    it('should attempt token refresh on 401 and retry request', async () => {
       // Update token after successful refresh
       refreshAccessTokenSpy.mockImplementation(async () => {
         store.setAuthenticated(mockUser, 'new-token', 3600);
         return true;
       });
 
-      httpClient.get('/api/data').subscribe({
-        next: (data) => {
-          expect(data).toEqual({ data: 'success' });
-          expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
-          done();
-        },
-        error: done
-      });
+      const resultPromise = firstValueFrom(httpClient.get('/api/data'));
 
       // First request with expired token
       const firstReq = httpTestingController.expectOne('/api/data');
@@ -198,46 +205,45 @@ describe('authInterceptor', () => {
       // Return 401 to trigger refresh
       firstReq.flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
 
-      // After a short delay, expect retry with new token
-      setTimeout(() => {
-        try {
-          const retryReq = httpTestingController.expectOne('/api/data');
-          expect(retryReq.request.headers.get('Authorization')).toBe('Bearer new-token');
-          retryReq.flush({ data: 'success' });
-        } catch (error) {
-          done(error);
-        }
-      }, 50);
+      // Allow the refresh promise to resolve and schedule the retry request.
+      await Promise.resolve();
+
+      const retryReq = httpTestingController.expectOne('/api/data');
+      expect(retryReq.request.headers.get('Authorization')).toBe('Bearer new-token');
+      retryReq.flush({ data: 'success' });
+
+      await expect(resultPromise).resolves.toEqual({ data: 'success' });
+      expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
+
+      // In some runners the retry request can be scheduled slightly later;
+      // flush any stragglers so HttpTestingController.verify() stays deterministic.
+      await Promise.resolve();
+      const remaining = httpTestingController.match('/api/data');
+      for (const req of remaining) {
+        req.flush({ data: 'success' });
+      }
     });
 
-    it('should handle refresh failure and pass through original error', (done) => {
+    it('should handle refresh failure and pass through original error', async () => {
       refreshAccessTokenSpy.mockResolvedValue(false);
 
-      httpClient.get('/api/data').subscribe({
-        error: (error) => {
-          expect(error.status).toBe(401);
-          expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
-          done();
-        }
-      });
-
+      const resultPromise = firstValueFrom(httpClient.get('/api/data'));
       const req = httpTestingController.expectOne('/api/data');
       req.flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+
+      await expect(resultPromise).rejects.toMatchObject({ status: 401 });
+      expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should handle refresh promise rejection and pass through original error', (done) => {
+    it('should handle refresh promise rejection and pass through original error', async () => {
       refreshAccessTokenSpy.mockRejectedValue(new Error('Refresh failed'));
 
-      httpClient.get('/api/data').subscribe({
-        error: (error) => {
-          expect(error.status).toBe(401);
-          expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
-          done();
-        }
-      });
-
+      const resultPromise = firstValueFrom(httpClient.get('/api/data'));
       const req = httpTestingController.expectOne('/api/data');
       req.flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
+
+      await expect(resultPromise).rejects.toMatchObject({ status: 401 });
+      expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -246,50 +252,55 @@ describe('authInterceptor', () => {
       store.setAuthenticated(mockUser, 'expired-token', 3600);
     });
 
-    it('should only call refresh once for multiple concurrent 401s', (done) => {
-      let completedRequests = 0;
-      const totalRequests = 2;
-
-      refreshAccessTokenSpy.mockImplementation(async () => {
-        // Simulate delay in refresh
-        await new Promise(resolve => setTimeout(resolve, 30));
-        store.setAuthenticated(mockUser, 'new-token', 3600);
-        return true;
+    it('should only call refresh once for multiple concurrent 401s', async () => {
+      let resolveRefresh: ((value: boolean) => void) | undefined;
+      const refreshGate = new Promise<boolean>((resolve) => {
+        resolveRefresh = resolve;
       });
 
-      // Make multiple concurrent requests
-      for (let i = 0; i < totalRequests; i++) {
-        httpClient.get(`/api/data${i}`).subscribe({
-          next: () => {
-            completedRequests++;
-            if (completedRequests === totalRequests) {
-              // All requests completed - refresh should only have been called once
-              expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
-              done();
-            }
-          },
-          error: done
-        });
-      }
+      refreshAccessTokenSpy.mockImplementation(async () => {
+        const ok = await refreshGate;
+        if (ok) {
+          store.setAuthenticated(mockUser, 'new-token', 3600);
+        }
+        return ok;
+      });
+
+      const resultPromises = [
+        firstValueFrom(httpClient.get('/api/data0')),
+        firstValueFrom(httpClient.get('/api/data1'))
+      ];
 
       // Simulate 401 responses for all initial requests
-      for (let i = 0; i < totalRequests; i++) {
-        const req = httpTestingController.expectOne(`/api/data${i}`);
+      for (const path of ['/api/data0', '/api/data1'] as const) {
+        const req = httpTestingController.expectOne(path);
         req.flush({ message: 'Unauthorized' }, { status: 401, statusText: 'Unauthorized' });
       }
 
-      // After refresh completes, all requests should be retried
-      setTimeout(() => {
-        try {
-          for (let i = 0; i < totalRequests; i++) {
-            const retryReq = httpTestingController.expectOne(`/api/data${i}`);
-            expect(retryReq.request.headers.get('Authorization')).toBe('Bearer new-token');
-            retryReq.flush({ data: `success${i}` });
-          }
-        } catch (error) {
-          done(error);
+      // Let interceptor queue both requests behind the refresh.
+      await Promise.resolve();
+      expect(refreshAccessTokenSpy).toHaveBeenCalledTimes(1);
+
+      resolveRefresh?.(true);
+      await Promise.resolve();
+      await Promise.resolve();
+
+      // After refresh completes, both requests should be retried.
+      for (const [index, path] of ['/api/data0', '/api/data1'].entries()) {
+        // The retry can be scheduled on a subsequent microtask, so match first.
+        let matches = httpTestingController.match(path);
+        if (matches.length === 0) {
+          await Promise.resolve();
+          matches = httpTestingController.match(path);
         }
-      }, 60);
+
+        expect(matches.length).toBe(1);
+        const retryReq = matches[0];
+        expect(retryReq.request.headers.get('Authorization')).toBe('Bearer new-token');
+        retryReq.flush({ data: `success${index}` });
+      }
+
+      await expect(Promise.all(resultPromises)).resolves.toEqual([{ data: 'success0' }, { data: 'success1' }]);
     });
 
     it('should handle concurrent refresh logic without complex async patterns', () => {

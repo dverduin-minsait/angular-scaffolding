@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { ThemeControlsComponent } from './theme-controls.component';
 import { ThemeService } from '../../../../../core/services';
 import { AccessibilityTestUtils } from '../../../../../testing/accessibility-test-utils';
@@ -12,12 +13,12 @@ describe('ThemeControlsComponent Accessibility', () => {
     currentTheme: unknown;
     isDarkMode: unknown;
     useSystemPreference: unknown;
-    setTheme: jest.Mock;
-    toggleTheme: jest.Mock;
-    setUseSystemPreference: jest.Mock;
-    resetToDefaults: jest.Mock;
-    getCurrentThemePair: jest.Mock;
-    toggleThemePair: jest.Mock;
+    setTheme: ReturnType<typeof vi.fn>;
+    toggleTheme: ReturnType<typeof vi.fn>;
+    setUseSystemPreference: ReturnType<typeof vi.fn>;
+    resetToDefaults: ReturnType<typeof vi.fn>;
+    getCurrentThemePair: ReturnType<typeof vi.fn>;
+    toggleThemePair: ReturnType<typeof vi.fn>;
   };
 
   // Minimal translations for labels used in ThemeControlsComponent template
@@ -53,12 +54,12 @@ describe('ThemeControlsComponent Accessibility', () => {
       currentTheme: signal('light'),
       isDarkMode: signal(false),
       useSystemPreference: signal(false),
-      setTheme: jest.fn(),
-      toggleTheme: jest.fn(),
-      setUseSystemPreference: jest.fn(),
-      resetToDefaults: jest.fn(),
-      getCurrentThemePair: jest.fn(() => 1),
-      toggleThemePair: jest.fn()
+      setTheme: vi.fn(),
+      toggleTheme: vi.fn(),
+      setUseSystemPreference: vi.fn(),
+      resetToDefaults: vi.fn(),
+      getCurrentThemePair: vi.fn(() => 1),
+      toggleThemePair: vi.fn()
     };
 
     await TestBed.configureTestingModule({

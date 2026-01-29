@@ -3,14 +3,14 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "jest",
+      "vitest/globals",
       "@testing-library/jest-dom",
-      "jest-axe"
+      "node"
     ]
   },
   "include": [
     "src/**/*.ts",
-    "src/setup-jest.ts",
-    "src/jest-axe.d.ts"
+    "src/test-setup.ts",
+    "src/vitest-axe.d.ts"
   ]
 }

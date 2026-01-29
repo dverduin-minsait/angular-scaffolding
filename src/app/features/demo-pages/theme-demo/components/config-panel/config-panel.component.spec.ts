@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { ConfigPanelComponent } from './config-panel.component';
 import { ThemeService, ThemeConfig } from '../../../../../core/services';
 
 // Mock ThemeService
 const mockThemeService = {
-  getThemeConfig: jest.fn((): ThemeConfig => ({
+  getThemeConfig: vi.fn((): ThemeConfig => ({
     theme: 'light',
     autoSwitch: false,
     useSystemPreference: false
@@ -14,7 +15,7 @@ const mockThemeService = {
 describe('ConfigPanelComponent', () => {
   let component: ConfigPanelComponent;
   let fixture: ComponentFixture<ConfigPanelComponent>;
-  let themeService: jest.Mocked<ThemeService>;
+  let themeService: typeof mockThemeService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,11 +27,11 @@ describe('ConfigPanelComponent', () => {
 
     fixture = TestBed.createComponent(ConfigPanelComponent);
     component = fixture.componentInstance;
-    themeService = TestBed.inject(ThemeService) as jest.Mocked<ThemeService>;
+    themeService = TestBed.inject(ThemeService) as unknown as typeof mockThemeService;
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should create', () => {
