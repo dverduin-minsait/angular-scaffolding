@@ -10,7 +10,8 @@
         "_": "Demos",
         "themeDemo": "Demo Tema",
         "crudDemo": "Demo CRUD",
-        "ssrDemo": "Demo SSR"
+        "ssrDemo": "Demo SSR",
+        "signalFormsDemo": "Demo Signal Forms"
       },
       "auth": {
         "_": "Autenticació",
@@ -470,6 +471,147 @@
         "issue4Title": "Manca de Proves SSR",
         "issue4Description": "Sense proves SSR, aquests problemes només apareixerien en producció quan SSR estigui habilitat.",
         "compareWithSSR": "Comparar amb Pàgina SSR"
+      }
+    },
+    "homeSavings": {
+      "title": "Demo de Signal Forms: Estalvi per a l'habitatge",
+      "subtitle": "Estima els costos inicials i el temps necessari per estalviar.",
+      "summary": {
+        "aria": "Resum",
+        "upfrontTotal": "Total inicial",
+        "monthlyPayment": "Quota mensual estimada",
+        "hasErrors": "{{count}} problemes de validació"
+      },
+      "actions": {
+        "focusFirstInvalid": {
+          "aria": "Anar al primer camp invàlid",
+          "label": "Anar al primer invàlid"
+        },
+        "addOtherCost": "Afegir un altre cost",
+        "removeOtherCost": {
+          "aria": "Eliminar un altre cost {{index}}",
+          "label": "Eliminar"
+        },
+        "resetDefaults": "Restablir"
+      },
+      "sections": {
+        "purchase": "Compra",
+        "home": "Habitatge",
+        "financing": "Finançament",
+        "taxesAndFees": "Impostos i despeses",
+        "extra": "Extra"
+      },
+      "form": {
+        "fields": {
+          "purchaseKind": {
+            "label": "Tipus de compra",
+            "options": {
+              "firstHand": "Primera mà (obra nova)",
+              "secondHand": "Segona mà"
+            },
+            "hint": "Canvia l'IVA/ITP i les regles de comissió."
+          },
+          "region": {
+            "label": "Regió",
+            "options": {
+              "madrid": "Madrid",
+              "catalonia": "Catalunya",
+              "valencia": "València",
+              "andalusia": "Andalusia",
+              "other": "Altra"
+            }
+          },
+          "purchaseDate": {
+            "label": "Data de compra"
+          },
+          "isPrimaryResidence": {
+            "label": "Habitatge habitual"
+          },
+          "homePrice": {
+            "label": "Preu de l'habitatge (€)",
+            "hint": "S'utilitza per estimar impostos i despeses."
+          },
+          "downPaymentPercent": {
+            "label": "Entrada (%)",
+            "value": "{{percent}}% (~{{amount}} €)"
+          },
+          "loanYears": {
+            "label": "Termini (anys)"
+          },
+          "interestType": {
+            "label": "Tipus d'interès",
+            "options": {
+              "fixed": "Fix",
+              "variable": "Variable"
+            }
+          },
+          "interestRate": {
+            "label": "Interès (%)"
+          },
+          "commissionRate": {
+            "label": "Comissió de promotora (%)",
+            "hint": "Només disponible per a compres de primera mà."
+          },
+          "realEstateCommissionRate": {
+            "label": "Comissió de la immobiliària (%)",
+            "hint": "Només disponible per a compres de segona mà."
+          },
+          "taxRate": {
+            "ivaLabel": "IVA (%)",
+            "itpLabel": "ITP (%)",
+            "hint": "S'ajusta per tipus de compra i regió ({{kind}})."
+          },
+          "notaryFee": {
+            "label": "Notaria (€)"
+          },
+          "registryFee": {
+            "label": "Registre (€)"
+          },
+          "appraisalFee": {
+            "label": "Taxació (€)"
+          },
+          "otherCosts": {
+            "aria": "Altres costos",
+            "label": "Altres costos",
+            "fields": {
+              "label": {
+                "label": "Concepte"
+              },
+              "amount": {
+                "label": "Import (€)"
+              },
+              "paidAt": {
+                "label": "Pagat el"
+              }
+            }
+          },
+          "buyerEmail": {
+            "label": "Correu electrònic"
+          },
+          "postalCode": {
+            "label": "Codi postal"
+          },
+          "notes": {
+            "label": "Notes",
+            "hint": "Opcional. Màxim 200 caràcters."
+          },
+          "acceptDisclaimer": {
+            "label": "Entenc que això és una estimació."
+          }
+        }
+      },
+      "errors": {
+        "required": "Aquest camp és obligatori.",
+        "min": "El valor és massa baix.",
+        "max": "El valor és massa alt.",
+        "minLength": "Massa curt.",
+        "maxLength": "Massa llarg.",
+        "pattern": "Format invàlid.",
+        "email": "Correu electrònic invàlid.",
+        "minDownPaymentFirstHand": "La primera mà requereix com a mínim un 10% d'entrada.",
+        "requiredTrue": "Has d'acceptar l'avís.",
+        "loanTooHigh": "El préstec superaria el 90% del preu.",
+        "unknown": "Valor invàlid."
       }
     }
   }

@@ -250,6 +250,38 @@
       "problemMatcher": []
     },
     {
+      "label": "styles:check-css-vars (Problems)",
+      "type": "shell",
+      "command": "node.exe",
+      "args": [
+        "tools/check-css-vars.mjs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "C:\\Windows\\System32\\cmd.exe",
+          "args": [
+            "/d",
+            "/s",
+            "/c"
+          ]
+        }
+      },
+      "problemMatcher": [
+        {
+          "owner": "cssvars",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": "^(.+?):(\\d+):(\\d+) - (.+)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "message": 4
+          }
+        }
+      ]
+    },
+    {
       "label": "vitest:report:details responsive-grid",
       "type": "shell",
       "command": "node.exe",

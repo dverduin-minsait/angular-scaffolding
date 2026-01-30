@@ -10,7 +10,8 @@
         "_": "Demos",
         "themeDemo": "Demo Tema",
         "crudDemo": "Demo CRUD",
-        "ssrDemo": "Demo SSR"
+        "ssrDemo": "Demo SSR",
+        "signalFormsDemo": "Demo Signal Forms"
       },
       "auth": {
         "_": "Autenticación",
@@ -470,6 +471,147 @@
         "issue4Title": "Falta de Pruebas SSR",
         "issue4Description": "Sin pruebas SSR, estos problemas solo aparecerían en producción cuando SSR esté habilitado.",
         "compareWithSSR": "Comparar con Página SSR"
+      }
+    },
+    "homeSavings": {
+      "title": "Demo de Signal Forms: Ahorro para vivienda",
+      "subtitle": "Estima los costes iniciales y el tiempo necesario para ahorrar.",
+      "summary": {
+        "aria": "Resumen",
+        "upfrontTotal": "Total inicial",
+        "monthlyPayment": "Cuota mensual estimada",
+        "hasErrors": "{{count}} problemas de validación"
+      },
+      "actions": {
+        "focusFirstInvalid": {
+          "aria": "Ir al primer campo inválido",
+          "label": "Ir al primer inválido"
+        },
+        "addOtherCost": "Añadir otro gasto",
+        "removeOtherCost": {
+          "aria": "Eliminar otro gasto {{index}}",
+          "label": "Eliminar"
+        },
+        "resetDefaults": "Restablecer"
+      },
+      "sections": {
+        "purchase": "Compra",
+        "home": "Vivienda",
+        "financing": "Financiación",
+        "taxesAndFees": "Impuestos y gastos",
+        "extra": "Extra"
+      },
+      "form": {
+        "fields": {
+          "purchaseKind": {
+            "label": "Tipo de compra",
+            "options": {
+              "firstHand": "Primera mano (obra nueva)",
+              "secondHand": "Segunda mano"
+            },
+            "hint": "Cambia IVA/ITP y las reglas de comisión."
+          },
+          "region": {
+            "label": "Región",
+            "options": {
+              "madrid": "Madrid",
+              "catalonia": "Cataluña",
+              "valencia": "Valencia",
+              "andalusia": "Andalucía",
+              "other": "Otra"
+            }
+          },
+          "purchaseDate": {
+            "label": "Fecha de compra"
+          },
+          "isPrimaryResidence": {
+            "label": "Vivienda habitual"
+          },
+          "homePrice": {
+            "label": "Precio de la vivienda (€)",
+            "hint": "Se usa para estimar impuestos y gastos."
+          },
+          "downPaymentPercent": {
+            "label": "Entrada (%)",
+            "value": "{{percent}}% (~{{amount}} €)"
+          },
+          "loanYears": {
+            "label": "Plazo (años)"
+          },
+          "interestType": {
+            "label": "Tipo de interés",
+            "options": {
+              "fixed": "Fijo",
+              "variable": "Variable"
+            }
+          },
+          "interestRate": {
+            "label": "Interés (%)"
+          },
+          "commissionRate": {
+            "label": "Comisión de promotora (%)",
+            "hint": "Solo disponible para compras de primera mano."
+          },
+          "realEstateCommissionRate": {
+            "label": "Comisión de inmobiliaria (%)",
+            "hint": "Solo disponible para compras de segunda mano."
+          },
+          "taxRate": {
+            "ivaLabel": "IVA (%)",
+            "itpLabel": "ITP (%)",
+            "hint": "Se ajusta por tipo de compra y región ({{kind}})."
+          },
+          "notaryFee": {
+            "label": "Notaría (€)"
+          },
+          "registryFee": {
+            "label": "Registro (€)"
+          },
+          "appraisalFee": {
+            "label": "Tasación (€)"
+          },
+          "otherCosts": {
+            "aria": "Otros gastos",
+            "label": "Otros gastos",
+            "fields": {
+              "label": {
+                "label": "Concepto"
+              },
+              "amount": {
+                "label": "Importe (€)"
+              },
+              "paidAt": {
+                "label": "Pagado el"
+              }
+            }
+          },
+          "buyerEmail": {
+            "label": "Correo electrónico"
+          },
+          "postalCode": {
+            "label": "Código postal"
+          },
+          "notes": {
+            "label": "Notas",
+            "hint": "Opcional. Máximo 200 caracteres."
+          },
+          "acceptDisclaimer": {
+            "label": "Entiendo que esto es una estimación."
+          }
+        }
+      },
+      "errors": {
+        "required": "Este campo es obligatorio.",
+        "min": "El valor es demasiado bajo.",
+        "max": "El valor es demasiado alto.",
+        "minLength": "Demasiado corto.",
+        "maxLength": "Demasiado largo.",
+        "pattern": "Formato inválido.",
+        "email": "Correo electrónico inválido.",
+        "minDownPaymentFirstHand": "La primera mano requiere al menos un 10% de entrada.",
+        "requiredTrue": "Debes aceptar el aviso.",
+        "loanTooHigh": "El préstamo superaría el 90% del precio.",
+        "unknown": "Valor inválido."
       }
     }
   }

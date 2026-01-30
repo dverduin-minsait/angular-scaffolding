@@ -1,0 +1,361 @@
+<main class="signal-forms-demo" aria-labelledby="signalFormsTitle">
+  <header class="signal-forms-demo__header">
+    <h1 id="signalFormsTitle">{{ 'app.homeSavings.title' | translate }}</h1>
+    <p class="signal-forms-demo__subtitle">{{ 'app.homeSavings.subtitle' | translate }}</p>
+  </header>
+
+  <section class="signal-forms-demo__summary" aria-label="{{ 'app.homeSavings.summary.aria' | translate }}">
+    <div class="signal-forms-demo__summary-grid">
+      <div class="signal-forms-demo__metric" role="status">
+        <div class="signal-forms-demo__metric-label">{{ 'app.homeSavings.summary.upfrontTotal' | translate }}</div>
+        <div class="signal-forms-demo__metric-value">{{ upfrontTotal() | number: '1.0-0' }} €</div>
+      </div>
+      <div class="signal-forms-demo__metric" role="status">
+        <div class="signal-forms-demo__metric-label">{{ 'app.homeSavings.summary.monthlyPayment' | translate }}</div>
+        <div class="signal-forms-demo__metric-value">{{ estimatedMonthlyPayment() | number: '1.0-0' }} €</div>
+      </div>
+    </div>
+
+    @if (hasErrors()) {
+      <div class="signal-forms-demo__errors" role="alert" aria-live="polite">
+        <div class="signal-forms-demo__errors-title">{{ 'app.homeSavings.summary.hasErrors' | translate:{ count: errorCount() } }}</div>
+        <button
+          type="button"
+          appButton
+          variant="secondary"
+          size="sm"
+          (click)="focusFirstInvalid()"
+          aria-label="{{ 'app.homeSavings.actions.focusFirstInvalid.aria' | translate }}">
+          {{ 'app.homeSavings.actions.focusFirstInvalid.label' | translate }}
+        </button>
+      </div>
+    }
+  </section>
+
+  <form class="signal-forms-demo__form" novalidate>
+    <fieldset class="signal-forms-demo__fieldset">
+      <legend class="signal-forms-demo__legend">{{ 'app.homeSavings.sections.purchase' | translate }}</legend>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label id="purchaseKindLabel">{{ 'app.homeSavings.form.fields.purchaseKind.label' | translate }}</label>
+          <div
+            class="signal-forms-demo__toggle"
+            role="radiogroup"
+            aria-labelledby="purchaseKindLabel"
+            aria-describedby="purchaseKindHint purchaseKindError"
+            [attr.aria-invalid]="hasFieldError(houseForm.purchaseKind) ? 'true' : null">
+            <div class="signal-forms-demo__toggle-item">
+              <input
+                id="purchaseKind-firstHand"
+                class="signal-forms-demo__toggle-input"
+                type="radio"
+                [formField]="houseForm.purchaseKind"
+                value="firstHand" />
+              <label class="signal-forms-demo__toggle-option" for="purchaseKind-firstHand">
+                {{ 'app.homeSavings.form.fields.purchaseKind.options.firstHand' | translate }}
+              </label>
+            </div>
+
+            <div class="signal-forms-demo__toggle-item">
+              <input
+                id="purchaseKind-secondHand"
+                class="signal-forms-demo__toggle-input"
+                type="radio"
+                [formField]="houseForm.purchaseKind"
+                value="secondHand" />
+              <label class="signal-forms-demo__toggle-option" for="purchaseKind-secondHand">
+                {{ 'app.homeSavings.form.fields.purchaseKind.options.secondHand' | translate }}
+              </label>
+            </div>
+          </div>
+          <div id="purchaseKindHint" class="signal-forms-demo__hint">{{ 'app.homeSavings.form.fields.purchaseKind.hint' | translate }}</div>
+          <div id="purchaseKindError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.purchaseKind); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="region">{{ 'app.homeSavings.form.fields.region.label' | translate }}</label>
+          <select
+            id="region"
+            [formField]="houseForm.region"
+            class="form-control"
+            aria-describedby="regionError"
+            [attr.aria-invalid]="hasFieldError(houseForm.region) ? 'true' : null">
+            <option value="madrid">{{ 'app.homeSavings.form.fields.region.options.madrid' | translate }}</option>
+            <option value="catalonia">{{ 'app.homeSavings.form.fields.region.options.catalonia' | translate }}</option>
+            <option value="valencia">{{ 'app.homeSavings.form.fields.region.options.valencia' | translate }}</option>
+            <option value="andalusia">{{ 'app.homeSavings.form.fields.region.options.andalusia' | translate }}</option>
+            <option value="other">{{ 'app.homeSavings.form.fields.region.options.other' | translate }}</option>
+          </select>
+          <div id="regionError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.region); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="purchaseDate">{{ 'app.homeSavings.form.fields.purchaseDate.label' | translate }}</label>
+          <input
+            id="purchaseDate"
+            type="date"
+            [formField]="houseForm.purchaseDate"
+            class="form-control"
+            aria-describedby="purchaseDateError"
+            [attr.aria-invalid]="hasFieldError(houseForm.purchaseDate) ? 'true' : null" />
+          <div id="purchaseDateError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.purchaseDate); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field signal-forms-demo__field--checkbox">
+          <label>
+            <input type="checkbox" [formField]="houseForm.isPrimaryResidence" />
+            {{ 'app.homeSavings.form.fields.isPrimaryResidence.label' | translate }}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="signal-forms-demo__fieldset">
+      <legend class="signal-forms-demo__legend">{{ 'app.homeSavings.sections.home' | translate }}</legend>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="homePrice">{{ 'app.homeSavings.form.fields.homePrice.label' | translate }}</label>
+          <input
+            id="homePrice"
+            type="number"
+            inputmode="decimal"
+            [formField]="houseForm.homePrice"
+            class="form-control"
+            aria-describedby="homePriceHint homePriceError"
+            [attr.aria-invalid]="hasFieldError(houseForm.homePrice) ? 'true' : null" />
+          <div id="homePriceHint" class="signal-forms-demo__hint">{{ 'app.homeSavings.form.fields.homePrice.hint' | translate }}</div>
+          <div id="homePriceError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.homePrice); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="downPayment">{{ 'app.homeSavings.form.fields.downPaymentPercent.label' | translate }}</label>
+          <input
+            id="downPayment"
+            type="range"
+            step="1"
+            [formField]="houseForm.downPaymentPercent"
+            aria-valuemin="0"
+            aria-valuemax="60"
+            [attr.aria-valuenow]="model().downPaymentPercent"
+            aria-describedby="downPaymentHint downPaymentError"
+            [attr.aria-invalid]="hasFieldError(houseForm.downPaymentPercent) ? 'true' : null" />
+          <div id="downPaymentHint" class="signal-forms-demo__hint">
+            {{ 'app.homeSavings.form.fields.downPaymentPercent.value' | translate:{ percent: model().downPaymentPercent, amount: (downPaymentAmount() | number: '1.0-0') } }}
+          </div>
+          <div id="downPaymentError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.downPaymentPercent); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="signal-forms-demo__fieldset">
+      <legend class="signal-forms-demo__legend">{{ 'app.homeSavings.sections.financing' | translate }}</legend>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="loanYears">{{ 'app.homeSavings.form.fields.loanYears.label' | translate }}</label>
+          <input
+            id="loanYears"
+            type="number"
+            step="1"
+            [formField]="houseForm.loanYears"
+            class="form-control"
+            aria-describedby="loanYearsError"
+            [attr.aria-invalid]="hasFieldError(houseForm.loanYears) ? 'true' : null" />
+          <div id="loanYearsError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.loanYears); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="interestType">{{ 'app.homeSavings.form.fields.interestType.label' | translate }}</label>
+          <select
+            id="interestType"
+            [formField]="houseForm.interestType"
+            class="form-control"
+            aria-describedby="interestTypeError"
+            [attr.aria-invalid]="hasFieldError(houseForm.interestType) ? 'true' : null">
+            <option value="fixed">{{ 'app.homeSavings.form.fields.interestType.options.fixed' | translate }}</option>
+            <option value="variable">{{ 'app.homeSavings.form.fields.interestType.options.variable' | translate }}</option>
+          </select>
+          <div id="interestTypeError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.interestType); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="interestRate">{{ 'app.homeSavings.form.fields.interestRate.label' | translate }}</label>
+          <input
+            id="interestRate"
+            type="number"
+            step="0.01"
+            inputmode="decimal"
+            [formField]="houseForm.interestRate"
+            class="form-control"
+            aria-describedby="interestRateError"
+            [attr.aria-invalid]="hasFieldError(houseForm.interestRate) ? 'true' : null" />
+          <div id="interestRateError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.interestRate); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="commissionRate">{{ 'app.homeSavings.form.fields.commissionRate.label' | translate }}</label>
+          <input
+            id="commissionRate"
+            type="number"
+            step="0.1"
+            inputmode="decimal"
+            [formField]="houseForm.commissionRate"
+            class="form-control"
+            aria-describedby="commissionRateHint commissionRateError"
+            [attr.aria-invalid]="hasFieldError(houseForm.commissionRate) ? 'true' : null" />
+          <div id="commissionRateHint" class="signal-forms-demo__hint">
+            {{ 'app.homeSavings.form.fields.commissionRate.hint' | translate }}
+          </div>
+          <div id="commissionRateError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.commissionRate); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="realEstateCommissionRate">{{ 'app.homeSavings.form.fields.realEstateCommissionRate.label' | translate }}</label>
+          <input
+            id="realEstateCommissionRate"
+            type="number"
+            step="0.1"
+            inputmode="decimal"
+            [formField]="houseForm.realEstateCommissionRate"
+            class="form-control"
+            aria-describedby="realEstateCommissionRateHint realEstateCommissionRateError"
+            [attr.aria-invalid]="hasFieldError(houseForm.realEstateCommissionRate) ? 'true' : null" />
+          <div id="realEstateCommissionRateHint" class="signal-forms-demo__hint">
+            {{ 'app.homeSavings.form.fields.realEstateCommissionRate.hint' | translate }}
+          </div>
+          <div id="realEstateCommissionRateError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.realEstateCommissionRate); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="signal-forms-demo__fieldset">
+      <legend class="signal-forms-demo__legend">{{ 'app.homeSavings.sections.taxesAndFees' | translate }}</legend>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="taxRate">{{ taxRateLabelKey() | translate }}</label>
+          <input
+            id="taxRate"
+            type="number"
+            step="0.01"
+            inputmode="decimal"
+            [formField]="houseForm.taxRate"
+            class="form-control"
+            aria-describedby="taxRateHint taxRateError"
+            [attr.aria-invalid]="hasFieldError(houseForm.taxRate) ? 'true' : null" />
+          <div id="taxRateHint" class="signal-forms-demo__hint">{{ 'app.homeSavings.form.fields.taxRate.hint' | translate:{ kind: taxKind() } }}</div>
+          <div id="taxRateError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.taxRate); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="notaryFee">{{ 'app.homeSavings.form.fields.notaryFee.label' | translate }}</label>
+          <input
+            id="notaryFee"
+            type="number"
+            inputmode="decimal"
+            [formField]="houseForm.notaryFee"
+            class="form-control"
+            aria-describedby="notaryFeeError"
+            [attr.aria-invalid]="hasFieldError(houseForm.notaryFee) ? 'true' : null" />
+          <div id="notaryFeeError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.notaryFee); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="signal-forms-demo__row">
+        <div class="signal-forms-demo__field">
+          <label for="registryFee">{{ 'app.homeSavings.form.fields.registryFee.label' | translate }}</label>
+          <input
+            id="registryFee"
+            type="number"
+            inputmode="decimal"
+            [formField]="houseForm.registryFee"
+            class="form-control"
+            aria-describedby="registryFeeError"
+            [attr.aria-invalid]="hasFieldError(houseForm.registryFee) ? 'true' : null" />
+          <div id="registryFeeError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.registryFee); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+
+        <div class="signal-forms-demo__field">
+          <label for="appraisalFee">{{ 'app.homeSavings.form.fields.appraisalFee.label' | translate }}</label>
+          <input
+            id="appraisalFee"
+            type="number"
+            inputmode="decimal"
+            [formField]="houseForm.appraisalFee"
+            class="form-control"
+            aria-describedby="appraisalFeeError"
+            [attr.aria-invalid]="hasFieldError(houseForm.appraisalFee) ? 'true' : null" />
+          <div id="appraisalFeeError" class="signal-forms-demo__error" aria-live="polite">
+            @if (getErrorKey(houseForm.appraisalFee); as errKey) {
+              {{ errKey | translate }}
+            }
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="signal-forms-demo__footer">
+      <button type="button" appButton variant="secondary" (click)="resetDefaults()">
+        {{ 'app.homeSavings.actions.resetDefaults' | translate }}
+      </button>
+    </div>
+  </form>
+</main>

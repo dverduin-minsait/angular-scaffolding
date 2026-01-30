@@ -84,7 +84,7 @@
     &.active {
       @include button-style('primary');
       transform: scale(1.05);
-      box-shadow: 0 4px 12px var(--shadow-medium);
+      box-shadow: 0 4px 12px var(--shadow-md);
     }
 
     &.warm {
