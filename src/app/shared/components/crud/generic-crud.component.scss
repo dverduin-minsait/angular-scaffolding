@@ -4,72 +4,72 @@
  */
 
 .generic-crud-container {
-  padding: var(--spacing-md, 1rem);
+  padding: var(--spacing-md);
   
   .crud-header {
-    margin-bottom: var(--spacing-lg, 1.5rem);
+    margin-bottom: var(--spacing-lg);
     
     h2 {
-      color: var(--text-primary, #333);
-      margin-bottom: var(--spacing-sm, 0.5rem);
-      font-size: var(--font-size-xl, 1.5rem);
-      font-weight: var(--font-weight-semibold, 600);
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-sm);
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-semibold);
     }
   }
 
   .status-bar {
     display: flex;
-    gap: var(--spacing-md, 1rem);
-    margin-bottom: var(--spacing-md, 1rem);
-    padding: var(--spacing-sm, 0.5rem);
-    background: var(--surface-secondary, #f8f9fa);
-    border-radius: var(--border-radius-sm, 0.25rem);
-    border: 1px solid var(--border-color, #e0e0e0);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-primary);
 
     .status-item {
-      font-size: var(--font-size-sm, 0.875rem);
-      color: var(--text-secondary, #666);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
 
       &.loading {
-        color: var(--primary, #007bff);
-        font-weight: var(--font-weight-medium, 500);
+        color: var(--primary-600);
+        font-weight: var(--font-weight-medium);
       }
 
       &.error {
-        color: var(--danger, #dc3545);
-        font-weight: var(--font-weight-medium, 500);
+        color: var(--error);
+        font-weight: var(--font-weight-medium);
       }
     }
   }
 
   .filter-section {
-    margin-bottom: var(--spacing-lg, 1.5rem);
-    padding: var(--spacing-md, 1rem);
-    background: var(--surface-primary, #fff);
-    border: 1px solid var(--border-color, #e0e0e0);
-    border-radius: var(--border-radius-md, 0.5rem);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
 
     h3 {
-      margin-bottom: var(--spacing-md, 1rem);
-      font-size: var(--font-size-lg, 1.125rem);
-      font-weight: var(--font-weight-medium, 500);
-      color: var(--text-primary, #333);
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
     }
 
     // Use global form styles - no need to duplicate them
     // Components projecting content should use .form-field, .form-label, .form-control classes
     
     .filter-actions {
-      margin-top: var(--spacing-md, 1rem);
+      margin-top: var(--spacing-md);
       display: flex;
-      gap: var(--spacing-sm, 0.5rem);
+      gap: var(--spacing-sm);
     }
   }
 
   .grid-actions {
     display: flex;
-    gap: var(--spacing-sm, 0.5rem);
-    margin-bottom: var(--spacing-md, 1rem);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
     flex-wrap: wrap;
     align-items: center;
 
@@ -78,11 +78,11 @@
       
       summary {
         cursor: pointer;
-        padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+        padding: var(--spacing-xs) var(--spacing-sm);
         background: transparent;
-        border: 1px solid var(--border-color, #e0e0e0);
-        border-radius: var(--border-radius-sm, 0.25rem);
-        font-size: var(--font-size-sm, 0.875rem);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-sm);
+        font-size: var(--font-size-sm);
 
         &:hover {
           background: var(--hover-bg, #e9ecef);
@@ -94,10 +94,10 @@
         right: 0;
         z-index: 10;
         background: var(--bg-secondary, #fff);
-        border: 1px solid var(--border-color, #e0e0e0);
-        border-radius: var(--border-radius-md, 0.5rem);
-        padding: var(--spacing-md, 1rem);
-        margin-top: var(--spacing-xs, 0.25rem);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-md);
+        margin-top: var(--spacing-xs);
         box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
         min-width: 200px;
       }
@@ -105,103 +105,103 @@
       .col-toggle {
         display: flex;
         align-items: center;
-        gap: var(--spacing-xs, 0.25rem);
-        padding: var(--spacing-xs, 0.25rem) 0;
+        gap: var(--spacing-xs);
+        padding: var(--spacing-xs) 0;
         cursor: pointer;
-        font-size: var(--font-size-sm, 0.875rem);
+        font-size: var(--font-size-sm);
 
         input[type="checkbox"] {
           margin: 0;
         }
 
         &:hover {
-          color: var(--primary, #007bff);
+          color: var(--primary-600);
         }
       }
     }
   }
 
   .grid-section {
-    margin-bottom: var(--spacing-lg, 1.5rem);
+    margin-bottom: var(--spacing-lg);
   }
 
   .mobile-cards {
     display: grid;
-    gap: var(--spacing-md, 1rem);
+    gap: var(--spacing-md);
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
     .mobile-card {
-      background: var(--surface-primary, #fff);
-      border: 1px solid var(--border-color, #e0e0e0);
-      border-radius: var(--border-radius-md, 0.5rem);
-      padding: var(--spacing-md, 1rem);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
       cursor: pointer;
       transition: all 0.2s ease;
 
       &:hover {
-        border-color: var(--primary, #007bff);
+        border-color: var(--primary-600);
         box-shadow: var(--shadow-sm, 0 2px 4px rgba(0, 0, 0, 0.1));
       }
 
       &.selected {
-        border-color: var(--primary, #007bff);
-        background: var(--primary-light, #e3f2fd);
+        border-color: var(--primary-600);
+        background: var(--primary-100);
       }
 
       &:focus {
-        outline: 2px solid var(--primary, #007bff);
+        outline: 2px solid var(--primary-600);
         outline-offset: 2px;
       }
 
       .card-field {
         display: flex;
-        margin-bottom: var(--spacing-xs, 0.25rem);
-        font-size: var(--font-size-sm, 0.875rem);
+        margin-bottom: var(--spacing-xs);
+        font-size: var(--font-size-sm);
 
         strong {
-          color: var(--text-secondary, #666);
-          margin-right: var(--spacing-xs, 0.25rem);
+          color: var(--text-secondary);
+          margin-right: var(--spacing-xs);
           min-width: 80px;
         }
 
         span {
-          color: var(--text-primary, #333);
+          color: var(--text-primary);
           flex: 1;
         }
       }
 
       .card-actions {
-        margin-top: var(--spacing-md, 1rem);
+        margin-top: var(--spacing-md);
         display: flex;
-        gap: var(--spacing-xs, 0.25rem);
-        border-top: 1px solid var(--border-color, #e0e0e0);
-        padding-top: var(--spacing-sm, 0.5rem);
+        gap: var(--spacing-xs);
+        border-top: 1px solid var(--border-primary);
+        padding-top: var(--spacing-sm);
       }
     }
   }
 
   .entity-form-section {
-    background: var(--surface-primary, #fff);
-    border: 1px solid var(--border-color, #e0e0e0);
-    border-radius: var(--border-radius-md, 0.5rem);
-    padding: var(--spacing-lg, 1.5rem);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
 
     h3 {
-      margin-bottom: var(--spacing-md, 1rem);
-      font-size: var(--font-size-lg, 1.125rem);
-      font-weight: var(--font-weight-medium, 500);
-      color: var(--text-primary, #333);
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
     }
 
     // Use global form styles - no need to duplicate them
     // Components projecting content should use .form-field, .form-label, .form-control classes
 
     .form-actions {
-      margin-top: var(--spacing-lg, 1.5rem);
+      margin-top: var(--spacing-lg);
       display: flex;
-      gap: var(--spacing-sm, 0.5rem);
-      padding-top: var(--spacing-md, 1rem);
-      border-top: 1px solid var(--border-color, #e0e0e0);
+      gap: var(--spacing-sm);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--border-primary);
     }
   }
 }
@@ -209,7 +209,7 @@
 // Responsive design
 @media (max-width: 768px) {
   .generic-crud-container {
-    padding: var(--spacing-sm, 0.5rem);
+    padding: var(--spacing-sm);
 
     .grid-actions {
       flex-direction: column;
@@ -231,25 +231,25 @@
 @media (prefers-color-scheme: dark) {
   .generic-crud-container {
     .crud-header h2 {
-      color: var(--text-primary-dark, #f0f0f0);
+      color: var(--text-primary);
     }
 
     .status-bar {
-      background: var(--surface-secondary-dark, #2d3748);
-      border-color: var(--border-color-dark, #4a5568);
+      background: var(--bg-secondary);
+      border-color: var(--border-primary);
 
       .status-item {
-        color: var(--text-secondary-dark, #a0aec0);
+        color: var(--text-secondary);
       }
     }
 
     .filter-section,
     .entity-form-section {
-      background: var(--surface-primary-dark, #1a202c);
-      border-color: var(--border-color-dark, #4a5568);
+      background: var(--bg-primary);
+      border-color: var(--border-primary);
 
       h3 {
-        color: var(--text-primary-dark, #f0f0f0);
+        color: var(--text-primary);
       }
 
       // Global form styles handle dark theme automatically
@@ -257,16 +257,16 @@
     }
 
     .mobile-cards .mobile-card {
-      background: var(--surface-primary-dark, #1a202c);
-      border-color: var(--border-color-dark, #4a5568);
+      background: var(--bg-primary);
+      border-color: var(--border-primary);
 
       .card-field {
         strong {
-          color: var(--text-secondary-dark, #a0aec0);
+          color: var(--text-secondary);
         }
 
         span {
-          color: var(--text-primary-dark, #f0f0f0);
+          color: var(--text-primary);
         }
       }
     }

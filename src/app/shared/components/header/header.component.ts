@@ -29,6 +29,7 @@ export class HeaderComponent {
     { id: 'dashboard', label: 'app.navigation.dashboard', path: '/dashboard', icon: '📊' },
     { id: 'demos', label: 'app.navigation.demos._', icon: '🎨', children: [
       { id: 'theme-demo', label: 'app.navigation.demos.themeDemo', path: '/demo/theme-demo' },
+      { id: 'signal-forms-demo', label: 'app.navigation.demos.signalFormsDemo', path: '/demo/signal-forms-demo' },
       { id: 'demo-books', label: 'app.navigation.demos.crudDemo', path: '/demo-books' },
       { id: 'ssr-demo', label: 'app.navigation.demos.ssrDemo', path: '/demo/ssr-demo' }
     ] },

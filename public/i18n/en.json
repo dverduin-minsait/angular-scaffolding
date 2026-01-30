@@ -10,7 +10,8 @@
         "_": "Demos",
         "themeDemo": "Theme Demo",
         "crudDemo": "CRUD Demo",
-        "ssrDemo": "SSR Demo"
+        "ssrDemo": "SSR Demo",
+        "signalFormsDemo": "Signal Forms Demo"
       },
       "auth": {
         "_": "Authentication",
@@ -470,6 +471,147 @@
         "issue4Title": "Missing SSR Testing",
         "issue4Description": "Without SSR testing, these issues would only appear in production when SSR is enabled.",
         "compareWithSSR": "Compare with SSR Page"
+      }
+    },
+    "homeSavings": {
+      "title": "Signal Forms Demo: House Savings",
+      "subtitle": "Estimate upfront costs and the time needed to save.",
+      "summary": {
+        "aria": "Summary",
+        "upfrontTotal": "Upfront total",
+        "monthlyPayment": "Estimated monthly payment",
+        "hasErrors": "{{count}} validation issues"
+      },
+      "actions": {
+        "focusFirstInvalid": {
+          "aria": "Focus first invalid field",
+          "label": "Focus first invalid"
+        },
+        "addOtherCost": "Add other cost",
+        "removeOtherCost": {
+          "aria": "Remove other cost {{index}}",
+          "label": "Remove"
+        },
+        "resetDefaults": "Reset defaults"
+      },
+      "sections": {
+        "purchase": "Purchase",
+        "home": "Home",
+        "financing": "Financing",
+        "taxesAndFees": "Taxes & fees",
+        "extra": "Extra"
+      },
+      "form": {
+        "fields": {
+          "purchaseKind": {
+            "label": "Purchase type",
+            "options": {
+              "firstHand": "First-hand (new build)",
+              "secondHand": "Second-hand"
+            },
+            "hint": "Changes IVA/ITP and commission rules."
+          },
+          "region": {
+            "label": "Region",
+            "options": {
+              "madrid": "Madrid",
+              "catalonia": "Catalonia",
+              "valencia": "Valencia",
+              "andalusia": "Andalusia",
+              "other": "Other"
+            }
+          },
+          "purchaseDate": {
+            "label": "Purchase date"
+          },
+          "isPrimaryResidence": {
+            "label": "Primary residence"
+          },
+          "homePrice": {
+            "label": "Home price (€)",
+            "hint": "Used to estimate taxes and fees."
+          },
+          "downPaymentPercent": {
+            "label": "Down payment (%)",
+            "value": "{{percent}}% (~{{amount}} €)"
+          },
+          "loanYears": {
+            "label": "Loan term (years)"
+          },
+          "interestType": {
+            "label": "Interest type",
+            "options": {
+              "fixed": "Fixed",
+              "variable": "Variable"
+            }
+          },
+          "interestRate": {
+            "label": "Interest rate (%)"
+          },
+          "commissionRate": {
+            "label": "Developer commission (%)",
+            "hint": "Only available for first-hand purchases."
+          },
+          "realEstateCommissionRate": {
+            "label": "Real estate agency commission (%)",
+            "hint": "Only available for second-hand purchases."
+          },
+          "taxRate": {
+            "ivaLabel": "IVA rate (%)",
+            "itpLabel": "ITP rate (%)",
+            "hint": "Defaulted by purchase type and region ({{kind}})."
+          },
+          "notaryFee": {
+            "label": "Notary fee (€)"
+          },
+          "registryFee": {
+            "label": "Registry fee (€)"
+          },
+          "appraisalFee": {
+            "label": "Appraisal fee (€)"
+          },
+          "otherCosts": {
+            "aria": "Other costs",
+            "label": "Other costs",
+            "fields": {
+              "label": {
+                "label": "Label"
+              },
+              "amount": {
+                "label": "Amount (€)"
+              },
+              "paidAt": {
+                "label": "Paid at"
+              }
+            }
+          },
+          "buyerEmail": {
+            "label": "Email"
+          },
+          "postalCode": {
+            "label": "Postal code"
+          },
+          "notes": {
+            "label": "Notes",
+            "hint": "Optional. Max 200 characters."
+          },
+          "acceptDisclaimer": {
+            "label": "I understand this is an estimate."
+          }
+        }
+      },
+      "errors": {
+        "required": "This field is required.",
+        "min": "Value is too low.",
+        "max": "Value is too high.",
+        "minLength": "Too short.",
+        "maxLength": "Too long.",
+        "pattern": "Invalid format.",
+        "email": "Invalid email address.",
+        "minDownPaymentFirstHand": "First-hand purchases require at least 10% down payment.",
+        "requiredTrue": "You must accept the disclaimer.",
+        "loanTooHigh": "Loan would exceed 90% of price.",
+        "unknown": "Invalid value."
       }
     }
   }
