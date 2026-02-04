@@ -146,5 +146,56 @@
       "key": "users.manage",
       "description": "Manage platform users"
     }
-  ]
+  ],
+  "auth_me": {
+    "id": "admin",
+    "username": "admin",
+    "displayName": "Admin User",
+    "email": "admin@example.com",
+    "roles": [
+      "admin"
+    ],
+    "permissions": [
+      "dashboard.view",
+      "users.manage"
+    ]
+  },
+  "auth_refresh": {
+    "accessToken": "mock-access-token",
+    "expiresIn": 900,
+    "user": {
+      "id": "admin",
+      "username": "admin",
+      "displayName": "Admin User",
+      "email": "admin@example.com",
+      "roles": [
+        "admin"
+      ],
+      "permissions": [
+        "dashboard.view",
+        "users.manage"
+      ]
+    }
+  },
+  "auth_login": {
+    "accessToken": "mock-access-token",
+    "expiresIn": 900,
+    "user": {
+      "id": "admin",
+      "username": "admin",
+      "displayName": "Admin User",
+      "email": "admin@example.com",
+      "password": "Password123!",
+      "roles": [
+        "admin"
+      ],
+      "permissions": [
+        "dashboard.view",
+        "users.manage"
+      ]
+    }
+  },
+  "auth_logout": {
+    "success": true
+  }
 }

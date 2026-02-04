@@ -39,7 +39,7 @@ export const appConfig: ApplicationConfig = {
     // Auth initialization (silent session / SSO) runs in parallel with translation
     provideAppInitializer(() => {
       const auth = inject(AuthService);
-      return auth.initializeSession().then(() => auth.scheduleProactiveRefresh());
+      return auth.ensureInitialized().then(() => auth.scheduleProactiveRefresh());
     }),
     // Initialize multi-tab sync (constructor side-effects)
     provideAppInitializer(() => {

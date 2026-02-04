@@ -103,6 +103,16 @@ describe('AuthService', () => {
 
       expect(storeSpy).toHaveBeenCalled();
     });
+
+    it('should set unauthenticated when refresh returns 404', async () => {
+      const storeSpy = vi.spyOn(store, 'setUnauthenticated');
+      httpClient.post.mockReturnValue(throwError(() => ({ status: 404 })));
+      httpClient.get.mockReturnValue(throwError(() => ({ status: 404 })));
+
+      await service.initializeSession();
+
+      expect(storeSpy).toHaveBeenCalled();
+    });
   });
 
   describe('login', () => {
@@ -131,6 +141,16 @@ describe('AuthService', () => {
       httpClient.post.mockReturnValue(throwError(() => new Error('Invalid credentials')));
 
       await expect(service.login(credentials)).rejects.toThrow('Invalid credentials');
+    });
+
+    it('should handle 404 error during login', async () => {
+      const credentials: LoginCredentials = {
+        username: 'test',
+        password: 'test'
+      };
+      httpClient.post.mockReturnValue(throwError(() => ({ status: 404, message: 'Not Found' })));
+
+      await expect(service.login(credentials)).rejects.toEqual({ status: 404, message: 'Not Found' });
     });
   });
 
