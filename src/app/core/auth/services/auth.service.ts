@@ -18,6 +18,7 @@ export class AuthService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly platformId = inject(PLATFORM_ID);
 
+  private initInFlight: Promise<void> | null = null;
   private refreshInFlight: Promise<void> | null = null;
 
   // Endpoint base; adapt paths to your backend conventions.
@@ -60,6 +61,24 @@ export class AuthService {
        
       console.log('[AuthService] initializeSession error', e);
       this.store.setUnauthenticated();
+    }
+  }
+
+  /**
+   * Ensures session initialization runs at most once concurrently.
+   * Useful for route guards that want to trigger a silent token fetch.
+   */
+  async ensureInitialized(): Promise<void> {
+    if (this.initInFlight) {
+      await this.initInFlight;
+      return;
+    }
+
+    this.initInFlight = this.initializeSession();
+    try {
+      await this.initInFlight;
+    } finally {
+      this.initInFlight = null;
     }
   }
 
@@ -117,7 +136,12 @@ export class AuthService {
   private async performRefresh(): Promise<RefreshResponse | null> {
     try {
       return await firstValueFrom(this.http.post<RefreshResponse>(`${this.base}/auth/refresh`, {}));
-    } catch {
+    } catch (error: unknown) {
+      // All HTTP errors (401, 404, 500, etc.) should block auth
+      const httpError = error as { status?: number };
+      if (httpError?.status) {
+        console.log('[AuthService] Refresh failed with HTTP', httpError.status);
+      }
       return null;
     }
   }
@@ -125,7 +149,14 @@ export class AuthService {
   private async fetchMeSafe(): Promise<MeResponse | null> {
     try {
       return await firstValueFrom(this.http.get<MeResponse>(`${this.base}/auth/me`));
-    } catch { return null; }
+    } catch (error: unknown) {
+      // All HTTP errors (401, 404, 500, etc.) should block auth
+      const httpError = error as { status?: number };
+      if (httpError?.status) {
+        console.log('[AuthService] /auth/me failed with HTTP', httpError.status);
+      }
+      return null;
+    }
   }
 
   private async tryRefresh(): Promise<boolean> {

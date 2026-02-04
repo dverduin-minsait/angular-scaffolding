@@ -1,0 +1,6 @@
+{
+  "/auth/me": "/auth_me",
+  "/auth/refresh": "/auth_refresh",
+  "/auth/login": "/auth_login",
+  "/auth/logout": "/auth_logout"
+}

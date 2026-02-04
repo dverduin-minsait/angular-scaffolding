@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -15,15 +16,13 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     data: { breadcrumb: 'Dashboard' },
-    canMatch: [() => import('./core/auth/guards/auth.guard').then(m => m.authGuard)],
+    canMatch: [authGuard],
     loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
   },
   {
     path: 'demo',
     data: { breadcrumb: 'Demos' },
-    canMatch: [
-      () => import('./core/auth/guards/auth.guard').then(m => m.authGuard)
-    ],
+    canMatch: [authGuard],
     loadChildren: () => import('./features/demo-pages/demo.routes').then(m => m.DEMO_ROUTES)
   },
   {
@@ -34,7 +33,7 @@ export const routes: Routes = [
   {
     path: 'demo-books',
     data: { breadcrumb: 'CRUD Demo' },
-    canMatch: [() => import('./core/auth/guards/auth.guard').then(m => m.authGuard)],
+    canMatch: [authGuard],
     loadChildren: () => import('./features/demo-pages/demo-books/demo-books.routes').then(m => m.DEMO_BOOKS_ROUTES)
   },
   {

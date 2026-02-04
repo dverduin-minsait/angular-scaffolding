@@ -23,7 +23,7 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "generate:component": "node tools/generate-component.mjs",
     "serve:ssr:angular-architecture": "node dist/angular-architecture/server/server.mjs",
-    "api": "json-server db.json --port 3000",
+    "api": "json-server db.json --port 3000 --routes routes.json --middlewares tools/json-server-auth-middleware.cjs",
     "dev": "concurrently \"npm run api\" \"npm start\"",
     "dev:mock": "concurrently \"npm run api\" \"npm run start:mock\"",
     "dev:local": "concurrently \"npm run api\" \"npm run start:local\"",

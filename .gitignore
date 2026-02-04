@@ -41,6 +41,7 @@ testem.log
 # Vitest
 vitest-report.json
 vitest-stdout.log
+vitest-results.json
 
 # System files
 .DS_Store

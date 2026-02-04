@@ -14,9 +14,9 @@ import { AuthStore } from '../../../core/auth';
   }
   `,
   styles: [`
-    .splash { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100dvh; gap:1rem; font: 600 1rem/1.2 system-ui; color: var(--color-fg, #222); }
-    .spinner { width:48px; height:48px; border-radius:50%; border:4px solid #ccc; border-top-color:#0d6efd; animation:spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .splash { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100dvh; gap:1rem; font: 600 1rem/1.2 system-ui; color: var(--text-primary); }
+    .spinner { width:3rem; height:3rem; border-radius:50%; border:4px solid #ccc; border-top-color:#0d6efd; animation:spin 3s cubic-bezier(0.4, 0.1, 0.3, 0.9) infinite; }
+    @keyframes spin { to { transform: rotate(720deg); } }
   `]
 })
 export class SplashComponent {

@@ -7,6 +7,8 @@ import { LoginCredentials, UserProfile } from '../models/auth.models';
 export class AuthServiceMock {
   private readonly store = inject(AuthStore);
 
+  private initInFlight: Promise<void> | null = null;
+
   // Mock users data - moved from separate MockAuthService
   private readonly mockUsers: UserProfile[] = [
     {
@@ -75,6 +77,20 @@ export class AuthServiceMock {
       permissions: mockUser.permissions 
     });
     return Promise.resolve();
+  }
+
+  /** Guard-friendly single-flight init (matches AuthService API). */
+  async ensureInitialized(): Promise<void> {
+    if (this.initInFlight) {
+      await this.initInFlight;
+      return;
+    }
+    this.initInFlight = this.initializeSession();
+    try {
+      await this.initInFlight;
+    } finally {
+      this.initInFlight = null;
+    }
   }
 
   /** Mock login - validates against predefined users */
