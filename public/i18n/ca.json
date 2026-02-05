@@ -521,6 +521,16 @@
               "other": "Altra"
             }
           },
+          "compareRegions": {
+            "label": "Regions a comparar",
+            "aria": "Regions a comparar",
+            "hint": "Selecciona una o més regions per comparar.",
+            "placeholder": "Selecciona regions…",
+            "searchPlaceholder": "Cerca regions",
+            "noResults": "Sense resultats",
+            "selectAll": "Selecciona-ho tot",
+            "selectNone": "Cap"
+          },
           "purchaseDate": {
             "label": "Data de compra"
           },

@@ -14,6 +14,7 @@ import {
 import type { ValidationError } from '@angular/forms/signals';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonDirective } from '../../../shared/directives';
+import { SelectMultipleComponent } from '../../../shared/components/form/select-multiple/select-multiple.component';
 import {
   type HouseSavingsModel,
   SignalFormsDemoService
@@ -24,7 +25,7 @@ import { clamp } from './signal-forms-demo.utils';
 @Component({
   selector: 'app-signal-forms-demo',
   standalone: true,
-  imports: [TranslateModule, FormField, ButtonDirective, DecimalPipe],
+  imports: [TranslateModule, FormField, ButtonDirective, DecimalPipe, SelectMultipleComponent],
   providers: [SignalFormsDemoService],
   templateUrl: './signal-forms-demo.component.html',
   styleUrl: './signal-forms-demo.component.scss'
@@ -70,6 +71,7 @@ export class SignalFormsDemoComponent {
   private readonly formSchema: SchemaFn<HouseSavingsModel> = p => {
     required(p.purchaseKind);
     required(p.region);
+    validate(p.compareRegions, () => undefined);
     required(p.purchaseDate);
 
     required(p.homePrice);

@@ -521,6 +521,16 @@
               "other": "Other"
             }
           },
+          "compareRegions": {
+            "label": "Compare regions",
+            "aria": "Compare regions",
+            "hint": "Select one or more regions to compare.",
+            "placeholder": "Select regions…",
+            "searchPlaceholder": "Search regions",
+            "noResults": "No results",
+            "selectAll": "Select all",
+            "selectNone": "None"
+          },
           "purchaseDate": {
             "label": "Purchase date"
           },
