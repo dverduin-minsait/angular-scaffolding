@@ -31,6 +31,16 @@ describe('SignalFormsDemoComponent', () => {
                 region: {
                   label: 'Region'
                 },
+                compareRegions: {
+                  label: 'Compare regions',
+                  aria: 'Compare regions',
+                  hint: 'Select regions to compare.',
+                  placeholder: 'Select regions…',
+                  searchPlaceholder: 'Search regions',
+                  noResults: 'No results',
+                  selectAll: 'Select all',
+                  selectNone: 'None'
+                },
                 homePrice: {
                   label: 'Home price',
                   hint: 'Total purchase price'

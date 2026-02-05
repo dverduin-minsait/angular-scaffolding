@@ -1,0 +1,104 @@
+<div class="select-multiple" [class.select-multiple--multi]="columnDisplay() === 'multi'" (focusout)="onFocusOut($event)">
+  <button
+    #trigger
+    type="button"
+    class="select-multiple__trigger form-control"
+    [class.select-multiple__trigger--open]="isOpen()"
+    [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel()"
+    [attr.aria-labelledby]="ariaLabelledBy()"
+    [attr.aria-describedby]="ariaDescribedBy()"
+    [attr.aria-haspopup]="'listbox'"
+    [attr.aria-expanded]="isOpen() ? 'true' : 'false'"
+    [attr.aria-controls]="isOpen() ? listboxId() : null"
+    [attr.aria-disabled]="isDisabled() ? 'true' : null"
+    [disabled]="isDisabled()"
+    (click)="toggleOpen()"
+    (keydown)="handleTriggerKeydown($event)">
+    <span class="select-multiple__value" [class.select-multiple__value--placeholder]="!selectedLabels()">
+      @if (selectedLabels(); as labelText) {
+        {{ labelText }}
+      } @else {
+        {{ placeholder() }}
+      }
+    </span>
+
+    <span class="select-multiple__chevron" aria-hidden="true">▾</span>
+  </button>
+
+  @if (isOpen()) {
+    <div class="select-multiple__panel" (keydown)="handlePanelKeydown($event)">
+      @if (showSelectAll() || showSelectNone()) {
+        <div class="select-multiple__actions" role="group" [attr.aria-label]="ariaLabel()">
+          @if (showSelectAll()) {
+            <button
+              type="button"
+              appButton
+              variant="ghost"
+              size="sm"
+              class="select-multiple__action"
+              (click)="selectAllVisible()">
+              {{ selectAllLabel() }}
+            </button>
+          }
+
+          @if (showSelectNone()) {
+            <button
+              type="button"
+              appButton
+              variant="ghost"
+              size="sm"
+              class="select-multiple__action"
+              (click)="clearSelection()">
+              {{ selectNoneLabel() }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (searchBar()) {
+        <div class="select-multiple__search">
+          <input
+            #searchInput
+            type="text"
+            class="select-multiple__search-input form-control"
+            [value]="searchTerm()"
+            [attr.placeholder]="searchPlaceholder()"
+            [attr.aria-label]="searchPlaceholder()"
+            [attr.aria-controls]="listboxId()"
+            (input)="handleSearchInput($event)" />
+        </div>
+      }
+
+      <div
+        class="select-multiple__list"
+        [class.select-multiple__list--multi]="columnDisplay() === 'multi'"
+        role="listbox"
+        [id]="listboxId()"
+        [attr.aria-label]="ariaLabelledBy() ? null : ariaLabel()"
+        [attr.aria-labelledby]="ariaLabelledBy()"
+        aria-multiselectable="true">
+        @for (item of visibleItems(); track itemId(item)) {
+          <button
+            #optionButton
+            type="button"
+            class="select-multiple__option"
+            role="option"
+            [id]="optionDomId(itemId(item))"
+            [attr.aria-selected]="isSelected(item) ? 'true' : 'false'"
+            [class.select-multiple__option--selected]="isSelected(item)"
+            [tabIndex]="optionTabIndexFor(item)"
+            (focus)="setActiveByItem(item)"
+            (click)="toggleItem(item)">
+            <span class="select-multiple__option-label">{{ itemLabel(item) }}</span>
+          </button>
+        }
+
+        @if (!visibleItems().length) {
+          <div class="select-multiple__empty" role="status" aria-live="polite">
+            {{ noResultsLabel() }}
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

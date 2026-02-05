@@ -97,6 +97,34 @@
             }
           </div>
         </div>
+
+        <div class="signal-forms-demo__field">
+          <label id="compareRegionsLabel">{{ 'app.homeSavings.form.fields.compareRegions.label' | translate }}</label>
+          @let compareRegionItems = [
+            { id: 'madrid', description: ('app.homeSavings.form.fields.region.options.madrid' | translate) },
+            { id: 'catalonia', description: ('app.homeSavings.form.fields.region.options.catalonia' | translate) },
+            { id: 'valencia', description: ('app.homeSavings.form.fields.region.options.valencia' | translate) },
+            { id: 'andalusia', description: ('app.homeSavings.form.fields.region.options.andalusia' | translate) },
+            { id: 'other', description: ('app.homeSavings.form.fields.region.options.other' | translate) }
+          ];
+          <app-select-multiple
+            class="signal-forms-demo__multi"
+            [formField]="houseForm.compareRegions"
+            [items]="compareRegionItems"
+            [ariaLabel]="('app.homeSavings.form.fields.compareRegions.aria' | translate)"
+            ariaLabelledBy="compareRegionsLabel"
+            ariaDescribedBy="compareRegionsHint"
+            [placeholder]="('app.homeSavings.form.fields.compareRegions.placeholder' | translate)"
+            [searchPlaceholder]="('app.homeSavings.form.fields.compareRegions.searchPlaceholder' | translate)"
+            [noResultsLabel]="('app.homeSavings.form.fields.compareRegions.noResults' | translate)"
+            [selectAllLabel]="('app.homeSavings.form.fields.compareRegions.selectAll' | translate)"
+            [selectNoneLabel]="('app.homeSavings.form.fields.compareRegions.selectNone' | translate)"
+            [searchBar]="true"
+            [showSelectAll]="true"
+            [showSelectNone]="true"
+            columnDisplay="multi" />
+          <div id="compareRegionsHint" class="signal-forms-demo__hint">{{ 'app.homeSavings.form.fields.compareRegions.hint' | translate }}</div>
+        </div>
       </div>
 
       <div class="signal-forms-demo__row">

@@ -20,6 +20,7 @@ export type TaxKind = 'iva' | 'itp';
 export interface HouseSavingsModel {
   purchaseKind: PurchaseKind;
   region: Region;
+  compareRegions: Region[];
   purchaseDate: string;
   homePrice: number;
   isPrimaryResidence: boolean;
@@ -88,6 +89,7 @@ export class SignalFormsDemoService {
     return {
       purchaseKind: 'firstHand',
       region: 'madrid',
+      compareRegions: ['madrid', 'catalonia'],
       purchaseDate: new Date().toISOString().slice(0, 10),
       homePrice: 250_000,
       isPrimaryResidence: true,
