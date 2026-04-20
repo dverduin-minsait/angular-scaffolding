@@ -65,7 +65,7 @@ describe('AuthService', () => {
 
       await service.initializeSession();
 
-      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/refresh`, {});
+      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/refresh`, {}, { withCredentials: true });
       expect(storeSpy).toHaveBeenCalledWith(mockUser, 'new-access-token', 3600);
     });
 
@@ -78,8 +78,8 @@ describe('AuthService', () => {
 
       await service.initializeSession();
 
-      expect(httpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/me`);
-      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/refresh`, {});
+      expect(httpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/me`, { withCredentials: true });
+      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/refresh`, {}, { withCredentials: true });
       expect(storeSpy).toHaveBeenCalledWith(mockUser, 'new-access-token', 3600);
     });
 
@@ -128,7 +128,8 @@ describe('AuthService', () => {
 
       expect(httpClient.post).toHaveBeenCalledWith(
         `${ENVIRONMENT.API_URL}/auth/login`,
-        credentials
+        credentials,
+        { withCredentials: true }
       );
       expect(storeSpy).toHaveBeenCalledWith(mockUser, 'new-access-token', 3600);
     });
@@ -161,7 +162,7 @@ describe('AuthService', () => {
 
       await service.logout();
 
-      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/logout`, {});
+      expect(httpClient.post).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/logout`, {}, { withCredentials: true });
       expect(storeSpy).toHaveBeenCalled();
     });
 
@@ -237,7 +238,7 @@ describe('AuthService', () => {
       const result = await service.refreshAccessToken();
 
       expect(result).toBe(true);
-      expect(httpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/me`);
+      expect(httpClient.get).toHaveBeenCalledWith(`${ENVIRONMENT.API_URL}/auth/me`, { withCredentials: true });
       expect(storeSpy).toHaveBeenCalledWith(mockUser, 'new-token', 3600);
     });
 

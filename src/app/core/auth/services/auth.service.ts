@@ -23,6 +23,7 @@ export class AuthService {
 
   // Endpoint base; adapt paths to your backend conventions.
   private readonly base = ENVIRONMENT.API_URL;
+  private readonly credentialed = { withCredentials: true } as const;
 
   /** Attempt silent init of session (used at app start). */
   async initializeSession(): Promise<void> {
@@ -84,13 +85,23 @@ export class AuthService {
 
   /** Explicit login for non-SSO scenario (fallback). */
   async login(credentials: LoginCredentials): Promise<void> {
-    const resp = await firstValueFrom(this.http.post<RefreshResponse & { user: UserProfile }>(`${this.base}/auth/login`, credentials));
+    const resp = await firstValueFrom(
+      this.http.post<RefreshResponse & { user: UserProfile }>(
+        `${this.base}/auth/login`,
+        credentials,
+        this.credentialed
+      )
+    );
     this.store.setAuthenticated(resp.user, resp.accessToken, resp.expiresIn);
   }
 
   /** Logout clears memory and informs server to clear refresh cookie. */
   async logout(): Promise<void> {
-    try { await lastValueFrom(this.http.post(`${this.base}/auth/logout`, {})); } catch { /* ignore */ }
+    try {
+      await lastValueFrom(this.http.post(`${this.base}/auth/logout`, {}, this.credentialed));
+    } catch {
+      /* ignore */
+    }
     this.store.clear();
   }
 
@@ -135,7 +146,9 @@ export class AuthService {
 
   private async performRefresh(): Promise<RefreshResponse | null> {
     try {
-      return await firstValueFrom(this.http.post<RefreshResponse>(`${this.base}/auth/refresh`, {}));
+      return await firstValueFrom(
+        this.http.post<RefreshResponse>(`${this.base}/auth/refresh`, {}, this.credentialed)
+      );
     } catch (error: unknown) {
       // All HTTP errors (401, 404, 500, etc.) should block auth
       const httpError = error as { status?: number };
@@ -148,7 +161,9 @@ export class AuthService {
 
   private async fetchMeSafe(): Promise<MeResponse | null> {
     try {
-      return await firstValueFrom(this.http.get<MeResponse>(`${this.base}/auth/me`));
+      return await firstValueFrom(
+        this.http.get<MeResponse>(`${this.base}/auth/me`, this.credentialed)
+      );
     } catch (error: unknown) {
       // All HTTP errors (401, 404, 500, etc.) should block auth
       const httpError = error as { status?: number };
