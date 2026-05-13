@@ -56,6 +56,7 @@ src/app/
 - **CSS Custom Properties**: Dynamic theming
 - **WCAG AA**: Mandatory accessibility
 - **Testing Library**: Tests by role/text, maintained coverage
+- **Dashboard grid**: Responsive 4-tier container-width breakpoints via `ResizeObserver`, route-scoped services, per-tier widget snapshots, keyboard a11y (see [ADR-009](docs/adr/ADR-009-responsive-dashboard-grid.md))
 
 ## 👥 Agents and responsibilities
 
@@ -67,7 +68,7 @@ src/app/
 ## 📚 Sources of truth
 
 - **[README.md](README.md)**: Quick start + general information
-- **[docs/adr/](docs/adr/)**: Architectural decisions (ADR-001 to ADR-006)
+- **[docs/adr/](docs/adr/)**: Architectural decisions (ADR-001 to ADR-009)
 - **[package.json](package.json)**: Scripts and dependencies
 - **[vitest.config.ts](vitest.config.ts)**: Testing configuration + coverage
 - **src/environments/**: APIs per environment + mock with db.json

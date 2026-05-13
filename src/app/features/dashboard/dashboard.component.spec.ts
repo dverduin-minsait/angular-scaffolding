@@ -1,15 +1,76 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection, signal } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { vi } from 'vitest';
 import { DashboardComponent } from './dashboard.component';
+import { DashboardLayoutService } from './services/dashboard-layout.service';
+import { DashboardPersistenceService } from './services/dashboard-persistence.service';
+import { LOCAL_STORAGE } from '../../core/tokens/local.storage.token';
+import { DashboardLayout, DashboardWidget, BREAKPOINTS, PersistedDashboardState } from './models/dashboard-grid.model';
+import { DashboardBreakpointService } from './services/dashboard-breakpoint.service';
+import { provideStubTranslationService } from '../../testing/i18n-testing';
+
+// Polyfill ResizeObserver for jsdom
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe(): void { /* noop */ }
+    unobserve(): void { /* noop */ }
+    disconnect(): void { /* noop */ }
+  } as unknown as typeof globalThis.ResizeObserver;
+}
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
+  let layoutService: DashboardLayoutService;
+  let bpService: DashboardBreakpointService;
+  let mockStorage: { getItem: ReturnType<typeof vi.fn>; setItem: ReturnType<typeof vi.fn>; removeItem: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [DashboardComponent]
-    }).compileComponents();
+    mockStorage = {
+      getItem: vi.fn().mockReturnValue(null),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn()
+    };
 
+    await TestBed.configureTestingModule({
+      imports: [DashboardComponent, TranslateModule.forRoot()],
+      providers: [
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        DashboardLayoutService,
+        DashboardBreakpointService,
+        DashboardPersistenceService,
+        { provide: LOCAL_STORAGE, useValue: mockStorage },
+        ...provideStubTranslationService({
+          'dashboard.title': 'Dashboard',
+          'dashboard.saving': 'Saving...',
+          'dashboard.saved': 'Saved',
+          'dashboard.gridLabel': 'Dashboard widget grid'
+        })
+      ]
+    })
+    .overrideComponent(DashboardComponent, { set: { providers: [] } })
+    .compileComponents();
+
+    // Configure ngx-translate so the translate pipe resolves keys
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', {
+      dashboard: {
+        title: 'Dashboard',
+        saving: 'Saving...',
+        saved: 'Saved',
+        gridLabel: 'Dashboard widget grid'
+      }
+    });
+    translate.use('en');
+
+    layoutService = TestBed.inject(DashboardLayoutService);
+    // Set desktop breakpoint width before component init
+    bpService = TestBed.inject(DashboardBreakpointService);
+    bpService.updateWidth(1280);
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
   });
@@ -20,157 +81,227 @@ describe('DashboardComponent', () => {
 
   it('should display the title', () => {
     fixture.detectChanges();
-
     const compiled = fixture.nativeElement as HTMLElement;
-    const titleElement = compiled.querySelector('h1');
-    
-    expect(titleElement).toBeTruthy();
-    expect(titleElement?.textContent?.trim()).toBe('Dashboard');
+    expect(compiled.querySelector('h1')?.textContent).toBe('Dashboard');
   });
 
-  it('should display the description', () => {
+  it('should render the grid container', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const grid = compiled.querySelector('.dashboard-grid');
+    expect(grid).toBeTruthy();
+  });
+
+  it('should render grid cells', () => {
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const cells = compiled.querySelectorAll('.grid-cell');
+    // 12 columns * 8 rows = 96 cells
+    expect(cells.length).toBe(96);
+  });
+
+  it('should render default widgets when no saved layout', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const descriptionElement = compiled.querySelector('p');
-    
-    expect(descriptionElement).toBeTruthy();
-    expect(descriptionElement?.textContent?.trim()).toBe('Welcome to your Angular 20 Architecture Blueprint dashboard!');
+    const widgets = compiled.querySelectorAll('app-dashboard-widget');
+    expect(widgets.length).toBe(11);
   });
 
-  it('should display all dashboard stats', () => {
+  it('should load saved layout from persistence', async () => {
+    const savedState: PersistedDashboardState = {
+      layout: {
+        id: 'saved',
+        name: 'Saved Layout',
+        columns: 12,
+        rows: 8,
+        widgets: [
+          { id: 'saved-w1', title: 'Saved Widget', type: 'stat', position: { col: 0, row: 0 }, size: { cols: 4, rows: 3 } }
+        ]
+      },
+      responsiveLayouts: {
+        id: 'saved',
+        name: 'Saved Layout',
+        breakpointLayouts: [
+          { tier: 'desktop', widgets: [
+            { id: 'saved-w1', title: 'Saved Widget', type: 'stat', position: { col: 0, row: 0 }, size: { cols: 4, rows: 3 } }
+          ]}
+        ]
+      }
+    };
+    mockStorage.getItem.mockReturnValue(JSON.stringify(savedState));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    const statCards = compiled.querySelectorAll('.stat-card');
-    
-    expect(statCards).toHaveLength(4);
+    expect(layoutService.widgets()).toHaveLength(1);
+    expect(layoutService.widgets()[0].title).toBe('Saved Widget');
   });
 
-  it('should display correct stat values and labels', () => {
+  it('should save layout to persistence after widget move', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    const statCards = compiled.querySelectorAll('.stat-card');
-    
-    // First stat: Active Users
-    const firstStatValue = statCards[0].querySelector('h3');
-    const firstStatLabel = statCards[0].querySelector('p');
-    expect(firstStatValue?.textContent?.trim()).toBe('1,234');
-    expect(firstStatLabel?.textContent?.trim()).toBe('Active Users');
-    
-    // Second stat: Total Projects
-    const secondStatValue = statCards[1].querySelector('h3');
-    const secondStatLabel = statCards[1].querySelector('p');
-    expect(secondStatValue?.textContent?.trim()).toBe('42');
-    expect(secondStatLabel?.textContent?.trim()).toBe('Total Projects');
-    
-    // Third stat: Completed Tasks
-    const thirdStatValue = statCards[2].querySelector('h3');
-    const thirdStatLabel = statCards[2].querySelector('p');
-    expect(thirdStatValue?.textContent?.trim()).toBe('87%');
-    expect(thirdStatLabel?.textContent?.trim()).toBe('Completed Tasks');
-    
-    // Fourth stat: Performance
-    const fourthStatValue = statCards[3].querySelector('h3');
-    const fourthStatLabel = statCards[3].querySelector('p');
-    expect(fourthStatValue?.textContent?.trim()).toBe('98%');
-    expect(fourthStatLabel?.textContent?.trim()).toBe('Performance');
+    mockStorage.setItem.mockClear();
+
+    // Simulate a drag operation
+    layoutService.startDrag('widget-1', 'move');
+    layoutService.updateDrag({ col: 4, row: 2 }, { cols: 3, rows: 2 });
+    layoutService.endDrag();
+
+    // Trigger the save from component
+    (component as unknown as { saveLayout: () => void }).saveLayout();
+
+    expect(mockStorage.setItem).toHaveBeenCalled();
   });
 
-  it('should have proper dashboard structure', () => {
+  it('should have accessible grid region', () => {
     fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const dashboardContainer = compiled.querySelector('.dashboard');
-    const statsContainer = compiled.querySelector('.dashboard-stats');
-    
-    expect(dashboardContainer).toBeTruthy();
-    expect(statsContainer).toBeTruthy();
-    
-    // Stats container should be inside dashboard container
-    expect(dashboardContainer?.contains(statsContainer as Node)).toBe(true);
+    const grid = fixture.nativeElement.querySelector('[role="region"]') as HTMLElement;
+    expect(grid).toBeTruthy();
+    expect(grid.getAttribute('aria-label')).toBe('Dashboard widget grid');
   });
 
-  it('should have correct CSS classes applied', () => {
+  it('should apply dragging class to grid during drag', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    const rootElement = compiled.querySelector('.dashboard');
-    const statsContainer = compiled.querySelector('.dashboard-stats');
-    const statCards = compiled.querySelectorAll('.stat-card');
-    
-    expect(rootElement).toHaveClass('dashboard');
-    expect(statsContainer).toHaveClass('dashboard-stats');
-    
-    statCards.forEach(card => {
-      expect(card).toHaveClass('stat-card');
+    layoutService.startDrag('widget-1', 'move');
+    fixture.detectChanges();
+
+    const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
+    expect(grid.classList.contains('dragging')).toBe(true);
+  });
+
+  it('should show save indicator when saving', () => {
+    const persistenceService = TestBed.inject(DashboardPersistenceService);
+    // Access private signal through service
+    (persistenceService as unknown as { _saving: { set: (v: boolean) => void } })._saving.set(true);
+    fixture.detectChanges();
+
+    const indicator = fixture.nativeElement.querySelector('.save-indicator') as HTMLElement;
+    expect(indicator?.textContent?.trim()).toBe('Saving...');
+  });
+
+  it('should set grid template columns based on layout', () => {
+    fixture.detectChanges();
+    const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
+    const cellSize = Math.floor(1280 / 12); // dynamic: floor(containerWidth / columns)
+    expect(grid.style.gridTemplateColumns).toBe(`repeat(12, ${cellSize}px)`);
+  });
+
+  it('should set grid template rows based on layout', () => {
+    fixture.detectChanges();
+    const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
+    const cellSize = Math.floor(1280 / 12);
+    expect(grid.style.gridTemplateRows).toBe(`repeat(8, ${cellSize}px)`);
+  });
+
+  describe('pointer interactions', () => {
+    beforeEach(async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    });
+
+    it('should handle pointer move during drag', () => {
+      const cs = bpService.cellSize();
+      layoutService.startDrag('widget-1', 'move');
+      (component as unknown as { _pointerStart: { set: (v: { x: number; y: number }) => void } })._pointerStart.set({ x: 0, y: 0 });
+
+      const moveEvent = new PointerEvent('pointermove', { clientX: cs * 2, clientY: cs });
+      fixture.nativeElement.querySelector('.dashboard-grid').dispatchEvent(moveEvent);
+
+      const state = layoutService.dragState();
+      expect(state).not.toBeNull();
+      expect(state!.currentPosition.col).toBe(2);
+      expect(state!.currentPosition.row).toBe(1);
+    });
+
+    it('should handle pointer move during resize', () => {
+      const cs = bpService.cellSize();
+      layoutService.startDrag('widget-1', 'resize');
+      (component as unknown as { _pointerStart: { set: (v: { x: number; y: number }) => void } })._pointerStart.set({ x: 0, y: 0 });
+
+      const moveEvent = new PointerEvent('pointermove', { clientX: cs, clientY: cs });
+      fixture.nativeElement.querySelector('.dashboard-grid').dispatchEvent(moveEvent);
+
+      const state = layoutService.dragState();
+      expect(state).not.toBeNull();
+      expect(state!.currentSize.cols).toBe(2); // 1 + 1
+      expect(state!.currentSize.rows).toBe(2); // 1 + 1
+    });
+
+    it('should end drag on pointer up', () => {
+      layoutService.startDrag('widget-1', 'move');
+      layoutService.updateDrag({ col: 2, row: 2 }, { cols: 3, rows: 2 });
+
+      const upEvent = new PointerEvent('pointerup');
+      fixture.nativeElement.querySelector('.dashboard-grid').dispatchEvent(upEvent);
+
+      expect(layoutService.dragState()).toBeNull();
     });
   });
 
-  it('should render stats in the correct order', () => {
-    fixture.detectChanges();
+  describe('keyboard interactions', () => {
+    beforeEach(async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    });
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    const statLabels = compiled.querySelectorAll('.stat-card p');
-    
-    expect(statLabels[0].textContent?.trim()).toBe('Active Users');
-    expect(statLabels[1].textContent?.trim()).toBe('Total Projects');
-    expect(statLabels[2].textContent?.trim()).toBe('Completed Tasks');
-    expect(statLabels[3].textContent?.trim()).toBe('Performance');
+    it('should move widget via keyboard arrow keys', () => {
+      // widget-11 at (2,5) size(1,1) has free space to the right
+      const widget = layoutService.widgets().find(w => w.id === 'widget-11')!;
+      const originalCol = widget.position.col;
+
+      (component as unknown as { onKeyboardMove: (e: { widgetId: string; direction: string }) => void })
+        .onKeyboardMove({ widgetId: 'widget-11', direction: 'ArrowRight' });
+
+      const moved = layoutService.widgets().find(w => w.id === 'widget-11')!;
+      expect(moved.position.col).toBe(originalCol + 1);
+    });
+
+    it('should resize widget via keyboard arrow keys', () => {
+      // widget-11 at (2,5) size(1,1) has free space to the right
+      const widget = layoutService.widgets().find(w => w.id === 'widget-11')!;
+      const originalCols = widget.size.cols;
+
+      (component as unknown as { onKeyboardResize: (e: { widgetId: string; direction: string }) => void })
+        .onKeyboardResize({ widgetId: 'widget-11', direction: 'ArrowRight' });
+
+      const resized = layoutService.widgets().find(w => w.id === 'widget-11')!;
+      expect(resized.size.cols).toBe(originalCols + 1);
+    });
   });
 
-  it('should use signals for reactive data', () => {
-    // Access the component's protected properties through type assertion
-    const componentWithSignals = component as unknown as {
-      title: () => string;
-      description: () => string;
-      stats: () => Array<{ label: string; value: string }>;
-    };
-    
-    expect(componentWithSignals.title).toBeDefined();
-    expect(componentWithSignals.description).toBeDefined();
-    expect(componentWithSignals.stats).toBeDefined();
-    
-    // Verify signals return expected values
-    expect(componentWithSignals.title()).toBe('Dashboard');
-    expect(componentWithSignals.description()).toBe('Welcome to your Angular 20 Architecture Blueprint dashboard!');
-    expect(componentWithSignals.stats()).toHaveLength(4);
-  });
+  describe('breakpoint display', () => {
+    it('should show breakpoint badge', () => {
+      fixture.detectChanges();
+      const badge = fixture.nativeElement.querySelector('.breakpoint-badge') as HTMLElement;
+      expect(badge).toBeTruthy();
+    });
 
-  it('should be a presentation component without user interactions', () => {
-    fixture.detectChanges();
+    it('should reflect current tier in badge data attribute', () => {
+      fixture.detectChanges();
+      const badge = fixture.nativeElement.querySelector('.breakpoint-badge') as HTMLElement;
+      // Default tier is desktop since breakpointService starts at width 0 → mobile,
+      // but after loadLayout, applyBreakpoint sets it
+      expect(badge.getAttribute('data-tier')).toBeTruthy();
+    });
 
-    const compiled = fixture.nativeElement as HTMLElement;
-    
-    // Should not have any interactive elements
-    expect(compiled.querySelectorAll('button')).toHaveLength(0);
-    expect(compiled.querySelectorAll('input')).toHaveLength(0);
-    expect(compiled.querySelectorAll('select')).toHaveLength(0);
-    expect(compiled.querySelectorAll('a')).toHaveLength(0);
-    
-    // Should be purely informational
-    expect(compiled.querySelector('h1')).toBeTruthy();
-    expect(compiled.querySelectorAll('.stat-card')).toHaveLength(4);
-  });
-
-  it('should have semantic HTML structure', () => {
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    
-    // Should have proper heading hierarchy
-    const h1 = compiled.querySelector('h1');
-    const h3Elements = compiled.querySelectorAll('h3');
-    
-    expect(h1).toBeTruthy();
-    expect(h3Elements).toHaveLength(4); // One for each stat card
-    
-    // Each stat card should have h3 and p
-    const statCards = compiled.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-      expect(card.querySelector('h3')).toBeTruthy();
-      expect(card.querySelector('p')).toBeTruthy();
+    it('should use dynamic cell size in grid template', () => {
+      // Simulate a narrow container so the cell size changes
+      bpService.updateWidth(400); // mobile (4 cols) → floor(400/4) = 100
+      layoutService.applyBreakpoint(BREAKPOINTS.find(b => b.tier === 'mobile')!);
+      fixture.detectChanges();
+      const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
+      expect(grid.style.gridTemplateColumns).toContain('100px');
     });
   });
 });

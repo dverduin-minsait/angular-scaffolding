@@ -1,0 +1,59 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <h1>{{ 'dashboard.title' | translate }}</h1>
+    <div class="dashboard-meta">
+      <span class="breakpoint-badge" [attr.data-tier]="breakpointService.activeTier()" aria-live="polite">
+        {{ breakpointLabel() }}
+      </span>
+      <p class="dashboard-status">
+        @if (persistenceService.saving()) {
+          <span class="save-indicator" aria-live="polite">{{ 'dashboard.saving' | translate }}</span>
+        } @else if (persistenceService.lastSaved()) {
+          <span class="save-indicator saved" aria-live="polite">{{ 'dashboard.saved' | translate }}</span>
+        }
+      </p>
+    </div>
+  </header>
+
+  <div class="dashboard-body" #dashboardBody>
+    <section
+      class="dashboard-grid"
+      [class.dragging]="isDragging()"
+      [style.grid-template-columns]="gridTemplateColumns()"
+      [style.grid-template-rows]="gridTemplateRows()"
+      [style.--cell-size]="cellSizePx()"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp()"
+      (pointerleave)="onPointerUp()"
+      role="region"
+      [attr.aria-label]="'dashboard.gridLabel' | translate">
+
+      <!-- Grid background cells for visual reference -->
+      @for (cell of gridCells(); track cell.key) {
+        <div
+          class="grid-cell"
+          [class.occupied]="isCellOccupied(cell.col, cell.row)"
+          [class.preview-valid]="isCellInValidPreview(cell.col, cell.row)"
+          [class.preview-invalid]="isCellInInvalidPreview(cell.col, cell.row)"
+          [style.grid-column]="cell.col + 1"
+          [style.grid-row]="cell.row + 1"
+          aria-hidden="true">
+        </div>
+      }
+
+      <!-- Widgets -->
+      @for (widget of layoutService.widgets(); track widget.id) {
+        <app-dashboard-widget
+          [widget]="widget"
+          [cellSize]="breakpointService.cellSize()"
+          [isDragging]="isWidgetDragging(widget.id)"
+          [previewPosition]="getPreviewPosition(widget.id)"
+          [previewSize]="getPreviewSize(widget.id)"
+          (moveStarted)="onMoveStart($event)"
+          (resizeStarted)="onResizeStart($event)"
+          (keyboardMove)="onKeyboardMove($event)"
+          (keyboardResize)="onKeyboardResize($event)" />
+      }
+    </section>
+  </div>
+</div>

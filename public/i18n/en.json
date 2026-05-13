@@ -624,5 +624,17 @@
         "unknown": "Invalid value."
       }
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "gridLabel": "Dashboard widget grid",
+    "breakpoints": {
+      "mobile": "Mobile",
+      "tablet": "Tablet",
+      "desktop": "Desktop",
+      "controlCenter": "Control Center"
+    }
   }
 }

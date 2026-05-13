@@ -624,5 +624,17 @@
         "unknown": "Valor inválido."
       }
     }
+  },
+  "dashboard": {
+    "title": "Painel",
+    "saving": "A guardar...",
+    "saved": "Guardado",
+    "gridLabel": "Grelha de widgets do painel",
+    "breakpoints": {
+      "mobile": "Móvel",
+      "tablet": "Tablet",
+      "desktop": "Ambiente de trabalho",
+      "controlCenter": "Centro de controlo"
+    }
   }
 }

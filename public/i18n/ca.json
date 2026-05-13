@@ -624,5 +624,17 @@
         "unknown": "Valor invàlid."
       }
     }
+  },
+  "dashboard": {
+    "title": "Tauler",
+    "saving": "Desant...",
+    "saved": "Desat",
+    "gridLabel": "Quadrícula de widgets del tauler",
+    "breakpoints": {
+      "mobile": "Mòbil",
+      "tablet": "Tauleta",
+      "desktop": "Escriptori",
+      "controlCenter": "Centre de control"
+    }
   }
 }
