@@ -60,7 +60,7 @@ describe('DashboardBreakpointService', () => {
     const bp = service.activeBreakpoint();
     expect(bp.tier).toBe('desktop');
     expect(bp.columns).toBe(12);
-    expect(bp.rows).toBe(8);
+    expect(bp.rows).toBe(5);
     expect(bp.fallbackCellSize).toBe(80);
   });
 

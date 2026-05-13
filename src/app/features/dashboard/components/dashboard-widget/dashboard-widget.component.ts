@@ -4,6 +4,7 @@ import {
   output,
   computed
 } from '@angular/core';
+
 import { DashboardWidget, GridPosition, GridSize } from '../../models/dashboard-grid.model';
 
 @Component({
@@ -28,51 +29,19 @@ import { DashboardWidget, GridPosition, GridSize } from '../../models/dashboard-
         [attr.aria-label]="'Move ' + widget().title"
         tabindex="0">
         <h3>{{ widget().title }}</h3>
-        <span class="widget-type">{{ widget().type }}</span>
+        <button
+          type="button"
+          class="widget-remove-btn"
+          [attr.aria-label]="'Remove ' + widget().title"
+          (pointerdown)="$event.stopPropagation()"
+          (click)="onRemove($event)">
+          <svg viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="1" y1="1" x2="13" y2="13"/>
+            <line x1="13" y1="1" x2="1" y2="13"/>
+          </svg>
+        </button>
       </header>
       <div class="widget-content">
-        @switch (widget().type) {
-          @case ('stat') {
-            <div class="widget-stat">
-              <span class="stat-value">{{ widgetValue() }}</span>
-              <span class="stat-label">{{ widget().title }}</span>
-            </div>
-          }
-          @case ('chart') {
-            <div class="widget-chart">
-              <div class="chart-placeholder" aria-hidden="true">
-                <div class="chart-bar" style="height: 40%"></div>
-                <div class="chart-bar" style="height: 70%"></div>
-                <div class="chart-bar" style="height: 55%"></div>
-                <div class="chart-bar" style="height: 85%"></div>
-                <div class="chart-bar" style="height: 60%"></div>
-                <div class="chart-bar" style="height: 90%"></div>
-                <div class="chart-bar" style="height: 45%"></div>
-              </div>
-              @if (widgetValue()) {
-                <span class="chart-label">{{ widgetValue() }}</span>
-              }
-            </div>
-          }
-          @case ('status') {
-            <div class="widget-status">
-              <span class="status-dot" [class.healthy]="widgetValue() === 'Healthy'"></span>
-              <span class="status-text">{{ widgetValue() || 'Unknown' }}</span>
-            </div>
-          }
-          @case ('list') {
-            <ul class="widget-list" role="list">
-              <li>Item 1</li>
-              <li>Item 2</li>
-              <li>Item 3</li>
-            </ul>
-          }
-          @default {
-            @if (widgetValue()) {
-              <span>{{ widgetValue() }}</span>
-            }
-          }
-        }
         <ng-content />
       </div>
       <div
@@ -99,11 +68,7 @@ export class DashboardWidgetComponent {
   readonly resizeStarted = output<{ widgetId: string; event: PointerEvent }>();
   readonly keyboardMove = output<{ widgetId: string; direction: string }>();
   readonly keyboardResize = output<{ widgetId: string; direction: string }>();
-
-  readonly widgetValue = computed(() => {
-    const data = this.widget().data;
-    return (data?.['value'] as string) ?? '';
-  });
+  readonly removed = output<string>();
 
   readonly gridColumn = computed(() => {
     const pos = this.previewPosition() ?? this.widget().position;
@@ -142,5 +107,10 @@ export class DashboardWidgetComponent {
       event.preventDefault();
       this.keyboardResize.emit({ widgetId: this.widget().id, direction: event.key });
     }
+  }
+
+  onRemove(event: MouseEvent): void {
+    event.stopPropagation();
+    this.removed.emit(this.widget().id);
   }
 }

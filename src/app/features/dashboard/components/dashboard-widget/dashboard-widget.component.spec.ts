@@ -36,12 +36,6 @@ describe('DashboardWidgetComponent', () => {
     expect(compiled.querySelector('h3')?.textContent).toBe('Test Widget');
   });
 
-  it('should display widget type', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.widget-type')?.textContent).toBe('stat');
-  });
-
   it('should compute correct grid-column placement', () => {
     fixture.detectChanges();
     const host = fixture.debugElement.nativeElement as HTMLElement;
@@ -140,58 +134,41 @@ describe('DashboardWidgetComponent', () => {
     expect(emitSpy).toHaveBeenCalledWith({ widgetId: 'w1', direction: 'ArrowDown' });
   });
 
-  describe('widget content rendering', () => {
-    it('should render stat widget with value', () => {
-      fixture.componentRef.setInput('widget', {
-        ...testWidget,
-        type: 'stat',
-        data: { value: '73%' }
-      });
+  describe('remove button', () => {
+    it('should render a remove button in the header', () => {
       fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelector('.stat-value')?.textContent).toBe('73%');
-      expect(compiled.querySelector('.stat-label')?.textContent).toBe('Test Widget');
+      const btn = fixture.nativeElement.querySelector('.widget-remove-btn') as HTMLElement;
+      expect(btn).not.toBeNull();
     });
 
-    it('should render chart widget with bars and label', () => {
-      fixture.componentRef.setInput('widget', {
-        ...testWidget,
-        type: 'chart',
-        data: { value: '$12.4k' }
-      });
+    it('should have accessible aria-label on remove button', () => {
       fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      expect(compiled.querySelectorAll('.chart-bar').length).toBeGreaterThan(0);
-      expect(compiled.querySelector('.chart-label')?.textContent).toBe('$12.4k');
+      const btn = fixture.nativeElement.querySelector('.widget-remove-btn') as HTMLButtonElement;
+      expect(btn.getAttribute('aria-label')).toBe('Remove Test Widget');
     });
 
-    it('should render status widget with healthy dot', () => {
-      fixture.componentRef.setInput('widget', {
-        ...testWidget,
-        type: 'status',
-        data: { value: 'Healthy' }
-      });
+    it('should be focusable (tabindex not -1)', () => {
       fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const dot = compiled.querySelector('.status-dot') as HTMLElement;
-      expect(dot.classList.contains('healthy')).toBe(true);
-      expect(compiled.querySelector('.status-text')?.textContent).toBe('Healthy');
+      const btn = fixture.nativeElement.querySelector('.widget-remove-btn') as HTMLButtonElement;
+      const tabindex = btn.getAttribute('tabindex');
+      expect(tabindex === null || tabindex === '0').toBe(true);
     });
 
-    it('should render list widget with items', () => {
-      fixture.componentRef.setInput('widget', {
-        ...testWidget,
-        type: 'list',
-        data: {}
-      });
+    it('should emit removed with widget id on click', () => {
       fixture.detectChanges();
+      const emitSpy = vi.spyOn(component.removed, 'emit');
+      const btn = fixture.nativeElement.querySelector('.widget-remove-btn') as HTMLButtonElement;
+      btn.click();
+      expect(emitSpy).toHaveBeenCalledWith('w1');
+    });
 
-      const compiled = fixture.nativeElement as HTMLElement;
-      const items = compiled.querySelectorAll('.widget-list li');
-      expect(items.length).toBe(3);
+    it('should not emit moveStarted when clicking remove button', () => {
+      fixture.detectChanges();
+      const moveStartedSpy = vi.spyOn(component.moveStarted, 'emit');
+      const btn = fixture.nativeElement.querySelector('.widget-remove-btn') as HTMLButtonElement;
+      const event = new PointerEvent('pointerdown', { bubbles: true, cancelable: true });
+      btn.dispatchEvent(event);
+      expect(moveStartedSpy).not.toHaveBeenCalled();
     });
   });
 });

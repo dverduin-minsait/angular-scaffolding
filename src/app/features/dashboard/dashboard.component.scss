@@ -4,7 +4,6 @@
   padding: 2rem;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
 }
 
 .dashboard-header {
@@ -55,7 +54,8 @@
 
 .dashboard-body {
   width: 100%;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .dashboard-status {

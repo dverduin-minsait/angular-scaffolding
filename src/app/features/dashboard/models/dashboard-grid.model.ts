@@ -2,7 +2,7 @@
 export const DEFAULT_COLUMNS = 12;
 
 /** Default number of rows in the grid */
-export const DEFAULT_ROWS = 8;
+export const DEFAULT_ROWS = 5;
 
 /** Breakpoint tier names */
 export type BreakpointTier = 'mobile' | 'tablet' | 'desktop' | 'controlCenter';
@@ -19,10 +19,10 @@ export interface BreakpointDefinition {
 
 /** Ordered breakpoints (ascending by minWidth) */
 export const BREAKPOINTS: readonly BreakpointDefinition[] = [
-  { tier: 'mobile',        minWidth: 0,    columns: 4,  rows: 6,  fallbackCellSize: 70 },
-  { tier: 'tablet',        minWidth: 600,  columns: 8,  rows: 8,  fallbackCellSize: 80 },
-  { tier: 'desktop',       minWidth: 1024, columns: 12, rows: 8,  fallbackCellSize: 80 },
-  { tier: 'controlCenter', minWidth: 1920, columns: 20, rows: 10, fallbackCellSize: 80 }
+  { tier: 'mobile',        minWidth: 0,    columns: 4,  rows: 6,  fallbackCellSize: 60 },
+  { tier: 'tablet',        minWidth: 600,  columns: 8,  rows: 5,  fallbackCellSize: 70 },
+  { tier: 'desktop',       minWidth: 1024, columns: 12, rows: 5,  fallbackCellSize: 80 },
+  { tier: 'controlCenter', minWidth: 1920, columns: 16, rows: 6, fallbackCellSize: 80 }
 ] as const;
 
 /** Per-breakpoint layout: the widgets for a specific tier */

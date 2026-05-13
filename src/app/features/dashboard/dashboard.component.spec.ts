@@ -10,6 +10,7 @@ import { LOCAL_STORAGE } from '../../core/tokens/local.storage.token';
 import { DashboardLayout, DashboardWidget, BREAKPOINTS, PersistedDashboardState } from './models/dashboard-grid.model';
 import { DashboardBreakpointService } from './services/dashboard-breakpoint.service';
 import { provideStubTranslationService } from '../../testing/i18n-testing';
+import { WIDGET_REGISTRY } from './tokens/widget-registry.token';
 
 // Polyfill ResizeObserver for jsdom
 if (typeof globalThis.ResizeObserver === 'undefined') {
@@ -44,6 +45,7 @@ describe('DashboardComponent', () => {
         DashboardBreakpointService,
         DashboardPersistenceService,
         { provide: LOCAL_STORAGE, useValue: mockStorage },
+        { provide: WIDGET_REGISTRY, useValue: {} },
         ...provideStubTranslationService({
           'dashboard.title': 'Dashboard',
           'dashboard.saving': 'Saving...',
@@ -79,12 +81,6 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the title', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toBe('Dashboard');
-  });
-
   it('should render the grid container', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
@@ -92,12 +88,14 @@ describe('DashboardComponent', () => {
     expect(grid).toBeTruthy();
   });
 
-  it('should render grid cells', () => {
+  it('should render grid cells', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const cells = compiled.querySelectorAll('.grid-cell');
-    // 12 columns * 8 rows = 96 cells
-    expect(cells.length).toBe(96);
+    // 12 columns * 5 rows = 60 cells (DEFAULT_ROWS = 5)
+    expect(cells.length).toBe(60);
   });
 
   it('should render default widgets when no saved layout', async () => {
@@ -107,7 +105,7 @@ describe('DashboardComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const widgets = compiled.querySelectorAll('app-dashboard-widget');
-    expect(widgets.length).toBe(11);
+    expect(widgets.length).toBe(10);
   });
 
   it('should load saved layout from persistence', async () => {
@@ -178,28 +176,20 @@ describe('DashboardComponent', () => {
     expect(grid.classList.contains('dragging')).toBe(true);
   });
 
-  it('should show save indicator when saving', () => {
-    const persistenceService = TestBed.inject(DashboardPersistenceService);
-    // Access private signal through service
-    (persistenceService as unknown as { _saving: { set: (v: boolean) => void } })._saving.set(true);
-    fixture.detectChanges();
-
-    const indicator = fixture.nativeElement.querySelector('.save-indicator') as HTMLElement;
-    expect(indicator?.textContent?.trim()).toBe('Saving...');
-  });
-
   it('should set grid template columns based on layout', () => {
     fixture.detectChanges();
     const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
     const cellSize = Math.floor(1280 / 12); // dynamic: floor(containerWidth / columns)
-    expect(grid.style.gridTemplateColumns).toBe(`repeat(12, ${cellSize}px)`);
+    expect(grid.style.gridTemplateColumns).toBe(`repeat(12, ${cellSize}px)`); // stays 12 cols
   });
 
-  it('should set grid template rows based on layout', () => {
+  it('should set grid template rows based on layout', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const grid = fixture.nativeElement.querySelector('.dashboard-grid') as HTMLElement;
     const cellSize = Math.floor(1280 / 12);
-    expect(grid.style.gridTemplateRows).toBe(`repeat(8, ${cellSize}px)`);
+    expect(grid.style.gridTemplateRows).toBe(`repeat(5, ${cellSize}px)`);
   });
 
   describe('pointer interactions', () => {
@@ -233,7 +223,8 @@ describe('DashboardComponent', () => {
 
       const state = layoutService.dragState();
       expect(state).not.toBeNull();
-      expect(state!.currentSize.cols).toBe(2); // 1 + 1
+      // widget-1 has size {cols:3, rows:1}; moving 1 cell each direction
+      expect(state!.currentSize.cols).toBe(4); // 3 + 1
       expect(state!.currentSize.rows).toBe(2); // 1 + 1
     });
 
@@ -249,52 +240,64 @@ describe('DashboardComponent', () => {
   });
 
   describe('keyboard interactions', () => {
+    // Use a single-widget layout with room to move/resize
+    const movableWidget = { id: 'w-move', title: 'Move Test', type: 'stat', position: { col: 0, row: 0 }, size: { cols: 2, rows: 2 } };
+
     beforeEach(async () => {
+      mockStorage.getItem.mockReturnValue(JSON.stringify({
+        layout: { id: 'test', name: 'Test', columns: 12, rows: 8, widgets: [movableWidget] },
+        responsiveLayouts: {
+          id: 'test', name: 'Test',
+          breakpointLayouts: [{ tier: 'desktop', widgets: [movableWidget] }]
+        }
+      }));
       fixture.detectChanges();
       await fixture.whenStable();
       fixture.detectChanges();
     });
 
     it('should move widget via keyboard arrow keys', () => {
-      // widget-11 at (2,5) size(1,1) has free space to the right
-      const widget = layoutService.widgets().find(w => w.id === 'widget-11')!;
-      const originalCol = widget.position.col;
+      const widget = layoutService.widgets().find(w => w.id === 'w-move')!;
+      expect(widget).toBeTruthy();
 
       (component as unknown as { onKeyboardMove: (e: { widgetId: string; direction: string }) => void })
-        .onKeyboardMove({ widgetId: 'widget-11', direction: 'ArrowRight' });
+        .onKeyboardMove({ widgetId: 'w-move', direction: 'ArrowRight' });
 
-      const moved = layoutService.widgets().find(w => w.id === 'widget-11')!;
-      expect(moved.position.col).toBe(originalCol + 1);
+      const moved = layoutService.widgets().find(w => w.id === 'w-move')!;
+      expect(moved.position.col).toBe(1); // moved from col 0 to col 1
     });
 
     it('should resize widget via keyboard arrow keys', () => {
-      // widget-11 at (2,5) size(1,1) has free space to the right
-      const widget = layoutService.widgets().find(w => w.id === 'widget-11')!;
-      const originalCols = widget.size.cols;
-
       (component as unknown as { onKeyboardResize: (e: { widgetId: string; direction: string }) => void })
-        .onKeyboardResize({ widgetId: 'widget-11', direction: 'ArrowRight' });
+        .onKeyboardResize({ widgetId: 'w-move', direction: 'ArrowRight' });
 
-      const resized = layoutService.widgets().find(w => w.id === 'widget-11')!;
-      expect(resized.size.cols).toBe(originalCols + 1);
+      const resized = layoutService.widgets().find(w => w.id === 'w-move')!;
+      expect(resized.size.cols).toBe(3); // grew from cols:2 to cols:3
+    });
+  });
+
+  describe('widget removal', () => {
+    beforeEach(async () => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    });
+
+    it('should remove widget from layout when onWidgetRemoved is called', () => {
+      const before = layoutService.widgets().length;
+      (component as unknown as { onWidgetRemoved: (id: string) => void }).onWidgetRemoved('widget-1');
+      expect(layoutService.widgets().length).toBe(before - 1);
+      expect(layoutService.widgets().find(w => w.id === 'widget-1')).toBeUndefined();
+    });
+
+    it('should persist layout after removing a widget', () => {
+      mockStorage.setItem.mockClear();
+      (component as unknown as { onWidgetRemoved: (id: string) => void }).onWidgetRemoved('widget-1');
+      expect(mockStorage.setItem).toHaveBeenCalled();
     });
   });
 
   describe('breakpoint display', () => {
-    it('should show breakpoint badge', () => {
-      fixture.detectChanges();
-      const badge = fixture.nativeElement.querySelector('.breakpoint-badge') as HTMLElement;
-      expect(badge).toBeTruthy();
-    });
-
-    it('should reflect current tier in badge data attribute', () => {
-      fixture.detectChanges();
-      const badge = fixture.nativeElement.querySelector('.breakpoint-badge') as HTMLElement;
-      // Default tier is desktop since breakpointService starts at width 0 → mobile,
-      // but after loadLayout, applyBreakpoint sets it
-      expect(badge.getAttribute('data-tier')).toBeTruthy();
-    });
-
     it('should use dynamic cell size in grid template', () => {
       // Simulate a narrow container so the cell size changes
       bpService.updateWidth(400); // mobile (4 cols) → floor(400/4) = 100

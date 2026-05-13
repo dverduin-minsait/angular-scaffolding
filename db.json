@@ -197,5 +197,79 @@
   },
   "auth_logout": {
     "success": true
-  }
+  },
+  "weather-current": [
+    { "id": 1, "location": "madrid",    "city": "Madrid",    "temp": 24, "feelsLike": 22, "humidity": 45, "condition": "Sunny",        "icon": "☀️",  "windKph": 15 },
+    { "id": 2, "location": "barcelona", "city": "Barcelona", "temp": 21, "feelsLike": 19, "humidity": 65, "condition": "Partly Cloudy", "icon": "⛅",  "windKph": 22 },
+    { "id": 3, "location": "london",    "city": "London",    "temp": 14, "feelsLike": 12, "humidity": 78, "condition": "Rainy",         "icon": "🌧️", "windKph": 28 }
+  ],
+  "weather-forecast": [
+    { "id": 1,  "location": "madrid",    "day": "Mon", "high": 26, "low": 14, "condition": "Sunny",        "icon": "☀️"  },
+    { "id": 2,  "location": "madrid",    "day": "Tue", "high": 22, "low": 13, "condition": "Partly Cloudy","icon": "⛅"  },
+    { "id": 3,  "location": "madrid",    "day": "Wed", "high": 19, "low": 12, "condition": "Rainy",        "icon": "🌧️" },
+    { "id": 4,  "location": "madrid",    "day": "Thu", "high": 21, "low": 11, "condition": "Cloudy",       "icon": "☁️" },
+    { "id": 5,  "location": "madrid",    "day": "Fri", "high": 25, "low": 14, "condition": "Sunny",        "icon": "☀️"  },
+    { "id": 6,  "location": "barcelona", "day": "Mon", "high": 22, "low": 15, "condition": "Cloudy",       "icon": "☁️" },
+    { "id": 7,  "location": "barcelona", "day": "Tue", "high": 20, "low": 14, "condition": "Rainy",        "icon": "🌧️" },
+    { "id": 8,  "location": "barcelona", "day": "Wed", "high": 18, "low": 13, "condition": "Rainy",        "icon": "🌧️" },
+    { "id": 9,  "location": "barcelona", "day": "Thu", "high": 21, "low": 14, "condition": "Partly Cloudy","icon": "⛅"  },
+    { "id": 10, "location": "barcelona", "day": "Fri", "high": 23, "low": 15, "condition": "Sunny",        "icon": "☀️"  },
+    { "id": 11, "location": "london",    "day": "Mon", "high": 15, "low": 9,  "condition": "Rainy",        "icon": "🌧️" },
+    { "id": 12, "location": "london",    "day": "Tue", "high": 16, "low": 10, "condition": "Cloudy",       "icon": "☁️" },
+    { "id": 13, "location": "london",    "day": "Wed", "high": 17, "low": 11, "condition": "Partly Cloudy","icon": "⛅"  },
+    { "id": 14, "location": "london",    "day": "Thu", "high": 14, "low": 9,  "condition": "Rainy",        "icon": "🌧️" },
+    { "id": 15, "location": "london",    "day": "Fri", "high": 13, "low": 8,  "condition": "Rainy",        "icon": "🌧️" }
+  ],
+  "electrical-readings": [
+    { "id": 1,  "location": "main", "hour": "00:00", "kwh": 0.8,  "costEur": 0.12 },
+    { "id": 2,  "location": "main", "hour": "01:00", "kwh": 0.6,  "costEur": 0.09 },
+    { "id": 3,  "location": "main", "hour": "02:00", "kwh": 0.5,  "costEur": 0.08 },
+    { "id": 4,  "location": "main", "hour": "03:00", "kwh": 0.4,  "costEur": 0.06 },
+    { "id": 5,  "location": "main", "hour": "04:00", "kwh": 0.5,  "costEur": 0.08 },
+    { "id": 6,  "location": "main", "hour": "05:00", "kwh": 0.7,  "costEur": 0.11 },
+    { "id": 7,  "location": "main", "hour": "06:00", "kwh": 1.2,  "costEur": 0.19 },
+    { "id": 8,  "location": "main", "hour": "07:00", "kwh": 1.8,  "costEur": 0.28 },
+    { "id": 9,  "location": "main", "hour": "08:00", "kwh": 2.1,  "costEur": 0.33 },
+    { "id": 10, "location": "main", "hour": "09:00", "kwh": 1.9,  "costEur": 0.30 },
+    { "id": 11, "location": "main", "hour": "10:00", "kwh": 1.7,  "costEur": 0.27 },
+    { "id": 12, "location": "main", "hour": "11:00", "kwh": 1.5,  "costEur": 0.24 },
+    { "id": 13, "location": "main", "hour": "12:00", "kwh": 1.6,  "costEur": 0.25 },
+    { "id": 14, "location": "main", "hour": "13:00", "kwh": 1.4,  "costEur": 0.22 },
+    { "id": 15, "location": "main", "hour": "14:00", "kwh": 1.3,  "costEur": 0.20 },
+    { "id": 16, "location": "main", "hour": "15:00", "kwh": 1.4,  "costEur": 0.22 },
+    { "id": 17, "location": "main", "hour": "16:00", "kwh": 1.6,  "costEur": 0.25 },
+    { "id": 18, "location": "main", "hour": "17:00", "kwh": 1.9,  "costEur": 0.30 },
+    { "id": 19, "location": "main", "hour": "18:00", "kwh": 2.4,  "costEur": 0.38 },
+    { "id": 20, "location": "main", "hour": "19:00", "kwh": 2.8,  "costEur": 0.44 },
+    { "id": 21, "location": "main", "hour": "20:00", "kwh": 2.5,  "costEur": 0.39 },
+    { "id": 22, "location": "main", "hour": "21:00", "kwh": 2.1,  "costEur": 0.33 },
+    { "id": 23, "location": "main", "hour": "22:00", "kwh": 1.5,  "costEur": 0.24 },
+    { "id": 24, "location": "main", "hour": "23:00", "kwh": 1.0,  "costEur": 0.16 },
+    { "id": 25, "location": "office", "hour": "08:00", "kwh": 3.2,  "costEur": 0.51 },
+    { "id": 26, "location": "office", "hour": "09:00", "kwh": 4.1,  "costEur": 0.65 },
+    { "id": 27, "location": "office", "hour": "10:00", "kwh": 4.5,  "costEur": 0.71 },
+    { "id": 28, "location": "office", "hour": "11:00", "kwh": 4.3,  "costEur": 0.68 },
+    { "id": 29, "location": "office", "hour": "12:00", "kwh": 3.8,  "costEur": 0.60 },
+    { "id": 30, "location": "office", "hour": "13:00", "kwh": 2.9,  "costEur": 0.46 },
+    { "id": 31, "location": "office", "hour": "14:00", "kwh": 3.5,  "costEur": 0.55 },
+    { "id": 32, "location": "office", "hour": "15:00", "kwh": 4.0,  "costEur": 0.63 },
+    { "id": 33, "location": "office", "hour": "16:00", "kwh": 4.2,  "costEur": 0.66 },
+    { "id": 34, "location": "office", "hour": "17:00", "kwh": 3.6,  "costEur": 0.57 },
+    { "id": 35, "location": "office", "hour": "18:00", "kwh": 1.2,  "costEur": 0.19 },
+    { "id": 36, "location": "office", "hour": "19:00", "kwh": 0.4,  "costEur": 0.06 }
+  ],
+  "electrical-summary": [
+    {
+      "id": 1, "location": "main",
+      "todayKwh": 31.7, "todayCostEur": 5.02,
+      "monthKwh": 742, "monthCostEur": 117.4,
+      "peakHour": "19:00", "avgDailyKwh": 24.7
+    },
+    {
+      "id": 2, "location": "office",
+      "todayKwh": 39.7, "todayCostEur": 6.27,
+      "monthKwh": 1120, "monthCostEur": 177.0,
+      "peakHour": "10:00", "avgDailyKwh": 37.3
+    }
+  ]
 }

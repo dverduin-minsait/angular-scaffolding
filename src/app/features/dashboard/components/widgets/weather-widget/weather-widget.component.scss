@@ -1,0 +1,127 @@
+@use '../../../../../themes/mixins' as *;
+
+.weather-widget {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 0.5rem;
+}
+
+.weather-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-primary);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.weather-error {
+  color: var(--color-error, #ef4444);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: auto;
+}
+
+.weather-current {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.weather-icon {
+  font-size: clamp(1.8rem, 5cqi, 3rem);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.weather-main {
+  display: flex;
+  flex-direction: column;
+
+  .weather-temp {
+    font-size: clamp(1.2rem, 4cqi, 2rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+
+  .weather-city {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  gap: 0.1rem;
+  line-height: 1.4;
+}
+
+.weather-forecast {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-secondary);
+  padding-top: 0.4rem;
+}
+
+.forecast-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  flex: 1;
+}
+
+.forecast-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.forecast-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.forecast-temps {
+  display: flex;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  em {
+    color: var(--text-muted);
+    font-style: normal;
+  }
+}

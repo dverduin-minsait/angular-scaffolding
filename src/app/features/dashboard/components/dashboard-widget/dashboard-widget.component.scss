@@ -46,6 +46,11 @@
     cursor: grabbing;
   }
 
+  &:hover .widget-remove-btn,
+  &:focus-within .widget-remove-btn {
+    opacity: 1;
+  }
+
   h3 {
     margin: 0;
     font-size: 0.875rem;
@@ -53,11 +58,37 @@
     color: var(--text-primary);
   }
 
-  .widget-type {
-    font-size: 0.75rem;
+  .widget-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    flex-shrink: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm, 0.25rem);
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    &:hover {
+      color: var(--color-danger, #ef4444);
+      background-color: var(--color-danger-bg, #fee2e2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--primary-500);
+      outline-offset: 1px;
+      opacity: 1;
+    }
   }
 }
 

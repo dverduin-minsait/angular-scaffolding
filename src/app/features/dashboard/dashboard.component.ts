@@ -1,5 +1,5 @@
-import { Component, signal, computed, inject, OnInit, OnDestroy, PLATFORM_ID, afterNextRender, viewChild, ElementRef } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, signal, computed, inject, Injector, OnInit, OnDestroy, PLATFORM_ID, afterNextRender, viewChild, ElementRef, Type } from '@angular/core';
+import { isPlatformBrowser, NgComponentOutlet } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { DashboardWidgetComponent } from './components/dashboard-widget/dashboard-widget.component';
 import { DashboardLayoutService } from './services/dashboard-layout.service';
@@ -8,15 +8,41 @@ import { DashboardBreakpointService } from './services/dashboard-breakpoint.serv
 import {
   GridPosition,
   GridSize,
-  BreakpointTier
+  BreakpointTier,
+  DashboardWidget
 } from './models/dashboard-grid.model';
 import { DEFAULT_LAYOUT, DEFAULT_RESPONSIVE_LAYOUT } from './models/default-widgets';
+import { WIDGET_REGISTRY } from './tokens/widget-registry.token';
+import { WIDGET_CONFIG } from '../../core/tokens/widget-config.token';
+import { StatWidgetComponent } from './components/widgets/stat-widget/stat-widget.component';
+import { ChartWidgetComponent } from './components/widgets/chart-widget/chart-widget.component';
+import { GraphWidgetComponent } from './components/widgets/graph-widget/graph-widget.component';
+import { GridWidgetComponent } from './components/widgets/grid-widget/grid-widget.component';
+import { WeatherWidgetComponent } from './components/widgets/weather-widget/weather-widget.component';
+import { ElectricalWidgetComponent } from './components/widgets/electrical-widget/electrical-widget.component';
+import { FocusWidgetComponent } from './components/widgets/focus-widget/focus-widget.component';
+
+const DASHBOARD_WIDGET_REGISTRY: Record<string, Type<unknown>> = {
+  stat:        StatWidgetComponent,
+  status:      StatWidgetComponent,
+  chart:       ChartWidgetComponent,
+  graph:       GraphWidgetComponent,
+  grid:        GridWidgetComponent,
+  weather:     WeatherWidgetComponent,
+  electrical:  ElectricalWidgetComponent,
+  focus:       FocusWidgetComponent
+};
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DashboardWidgetComponent, TranslateModule],
-  providers: [DashboardLayoutService, DashboardBreakpointService, DashboardPersistenceService],
+  imports: [DashboardWidgetComponent, NgComponentOutlet, TranslateModule],
+  providers: [
+    DashboardLayoutService,
+    DashboardBreakpointService,
+    DashboardPersistenceService,
+    { provide: WIDGET_REGISTRY, useValue: DASHBOARD_WIDGET_REGISTRY }
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -24,7 +50,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
   protected readonly layoutService = inject(DashboardLayoutService);
   protected readonly persistenceService = inject(DashboardPersistenceService);
   protected readonly breakpointService = inject(DashboardBreakpointService);
+  private readonly injector = inject(Injector);
+  private readonly widgetRegistry = inject(WIDGET_REGISTRY);
   private readonly platformId = inject(PLATFORM_ID);
+
+  /** Resolve component class from registry; falls back to StatWidgetComponent. */
+  protected getWidgetComponent(type: string): Type<unknown> {
+    return this.widgetRegistry[type] ?? StatWidgetComponent;
+  }
+
+  /**
+   * Injector cache keyed by widget ID.
+   * Returning the same instance on every change-detection cycle prevents
+   * NgComponentOutlet from destroying and recreating the widget component.
+   */
+  private readonly _widgetInjectors = new Map<string, Injector>();
+
+  protected getWidgetInjector(widget: DashboardWidget): Injector {
+    let inj = this._widgetInjectors.get(widget.id);
+    if (!inj) {
+      inj = Injector.create({
+        providers: [{
+          provide: WIDGET_CONFIG,
+          useValue: { widgetId: widget.id, title: widget.title, data: widget.data ?? {} }
+        }],
+        parent: this.injector
+      });
+      this._widgetInjectors.set(widget.id, inj);
+    }
+    return inj;
+  }
+
+  /** Remove a stale cached injector when a widget is removed from the layout. */
+  private evictWidgetInjector(widgetId: string): void {
+    this._widgetInjectors.delete(widgetId);
+  }
 
   protected readonly dashboardBody = viewChild<ElementRef<HTMLElement>>('dashboardBody');
 
@@ -82,6 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.resizeDebounceTimer !== null) {
       clearTimeout(this.resizeDebounceTimer);
     }
+    this._widgetInjectors.clear();
   }
 
   private setupResizeObserver(): void {
@@ -253,6 +314,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       case 'ArrowDown':  return { col: 0, row: 1 };
       default:           return { col: 0, row: 0 };
     }
+  }
+
+  protected onWidgetRemoved(widgetId: string): void {
+    this.layoutService.removeWidget(widgetId);
+    this._widgetInjectors.delete(widgetId);
+    this.saveLayout();
   }
 
   private async loadLayout(): Promise<void> {

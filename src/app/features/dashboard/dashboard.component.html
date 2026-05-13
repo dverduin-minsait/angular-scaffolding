@@ -1,19 +1,4 @@
 <div class="dashboard">
-  <header class="dashboard-header">
-    <h1>{{ 'dashboard.title' | translate }}</h1>
-    <div class="dashboard-meta">
-      <span class="breakpoint-badge" [attr.data-tier]="breakpointService.activeTier()" aria-live="polite">
-        {{ breakpointLabel() }}
-      </span>
-      <p class="dashboard-status">
-        @if (persistenceService.saving()) {
-          <span class="save-indicator" aria-live="polite">{{ 'dashboard.saving' | translate }}</span>
-        } @else if (persistenceService.lastSaved()) {
-          <span class="save-indicator saved" aria-live="polite">{{ 'dashboard.saved' | translate }}</span>
-        }
-      </p>
-    </div>
-  </header>
 
   <div class="dashboard-body" #dashboardBody>
     <section
@@ -52,7 +37,12 @@
           (moveStarted)="onMoveStart($event)"
           (resizeStarted)="onResizeStart($event)"
           (keyboardMove)="onKeyboardMove($event)"
-          (keyboardResize)="onKeyboardResize($event)" />
+          (keyboardResize)="onKeyboardResize($event)"
+          (removed)="onWidgetRemoved($event)">
+          <ng-container
+            [ngComponentOutlet]="getWidgetComponent(widget.type)"
+            [ngComponentOutletInjector]="getWidgetInjector(widget)" />
+        </app-dashboard-widget>
       }
     </section>
   </div>
