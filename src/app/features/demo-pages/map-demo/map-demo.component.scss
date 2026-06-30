@@ -1,0 +1,207 @@
+.map-demo {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+
+  &__header {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  &__title {
+    color: var(--text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--spacing-xs);
+  }
+
+  &__subtitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-md);
+    margin: 0;
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--spacing-lg);
+    align-items: start;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+
+    @media (max-width: 768px) {
+      order: 2;
+    }
+  }
+
+  &__map-wrapper {
+    height: 600px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 1px 3px color-mix(in srgb, var(--text-primary) 10%, transparent);
+
+    @media (max-width: 768px) {
+      order: 1;
+      height: 400px;
+    }
+  }
+
+  // Card
+  &__card {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+
+    &--legend {
+      padding-bottom: var(--spacing-sm);
+    }
+  }
+
+  &__card-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-sm);
+  }
+
+  // Layer toggles
+  &__layer-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  &__layer-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  &__checkbox {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+  }
+
+  &__layer-swatch {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    flex-shrink: 0;
+
+    &--territory {
+      background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+      border-color: var(--color-primary);
+    }
+
+    &--poi {
+      background-color: #3b82f6;
+      border-radius: 50%;
+      border-color: #1e40af;
+    }
+  }
+
+  &__layer-label {
+    font-size: var(--font-size-sm);
+  }
+
+  // Stats
+  &__stats-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px var(--spacing-xs);
+    margin: 0;
+
+    dt {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    dd {
+      font-size: var(--font-size-sm);
+      color: var(--text-primary);
+      font-weight: var(--font-weight-bold);
+      margin: 0;
+      text-align: right;
+    }
+  }
+
+  &__stats-loading {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  &__stats-error {
+    color: var(--error);
+    font-size: var(--font-size-sm);
+    margin: 0;
+  }
+
+  // Legend
+  &__legend-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+
+  &__legend-icon {
+    display: inline-block;
+    flex-shrink: 0;
+
+    &--capital {
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      border: 2px solid #1e40af;
+    }
+
+    &--city {
+      width: 0.875rem;
+      height: 0.875rem;
+      border-radius: 50%;
+      background-color: #6b7280;
+      border: 2px solid #374151;
+    }
+
+    &--territory {
+      width: 1rem;
+      height: 0.625rem;
+      border-radius: var(--radius-sm);
+      background-color: color-mix(in srgb, var(--color-primary) 25%, transparent);
+      border: 2px solid var(--color-primary);
+    }
+  }
+}

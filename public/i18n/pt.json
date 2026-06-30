@@ -11,10 +11,8 @@
         "themeDemo": "Demo Tema",
         "crudDemo": "Demo CRUD",
         "ssrDemo": "Demo SSR",
-        "signalFormsDemo": "Demo Signal Forms"
-      },
-      "auth": {
-        "_": "Autenticação",
+        "signalFormsDemo": "Demo Signal Forms",
+        "mapDemo": "Demo Mapa",
         "login": "Iniciar sessão",
         "register": "Registrar"
       },
@@ -635,6 +633,45 @@
       "tablet": "Tablet",
       "desktop": "Ambiente de trabalho",
       "controlCenter": "Centro de controlo"
+    }
+  },
+  "map": {
+    "title": "Demo Mapa",
+    "subtitle": "Camadas de dados territoriais com Leaflet — carregadas sob demanda",
+    "loading": "A carregar mapa...",
+    "ariaLabel": "Mapa interativo de territórios",
+    "layers": {
+      "title": "Camadas de dados",
+      "territories": {
+        "label": "Territórios",
+        "ariaLabel": "Ativar camada de territórios"
+      },
+      "pois": {
+        "label": "Cidades e capitais",
+        "ariaLabel": "Ativar camada de cidades e capitais"
+      }
+    },
+    "stats": {
+      "title": "Estatísticas",
+      "regions": "Regiões",
+      "totalPopulation": "População total",
+      "capitals": "Capitais",
+      "pois": "Pontos de interesse"
+    },
+    "legend": {
+      "title": "Legenda",
+      "ariaLabel": "Legenda do mapa",
+      "capital": "Capital regional",
+      "city": "Cidade",
+      "territory": "Polígono territorial"
+    },
+    "sidebar": {
+      "ariaLabel": "Controlos e estatísticas do mapa"
+    },
+    "errors": {
+      "leafletLoad": "Falha ao carregar a biblioteca do mapa. Atualize a página.",
+      "territoriesLoad": "Falha ao carregar os dados territoriais.",
+      "poisLoad": "Falha ao carregar os pontos de interesse."
     }
   }
 }

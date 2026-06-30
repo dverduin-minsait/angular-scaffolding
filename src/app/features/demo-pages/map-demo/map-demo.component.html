@@ -1,0 +1,94 @@
+<main class="map-demo" aria-labelledby="map-demo-title">
+  <header class="map-demo__header">
+    <h1 id="map-demo-title" class="map-demo__title">{{ 'map.title' | translate }}</h1>
+    <p class="map-demo__subtitle">{{ 'map.subtitle' | translate }}</p>
+  </header>
+
+  <div class="map-demo__layout">
+    <!-- Sidebar: layer controls + stats -->
+    <aside class="map-demo__sidebar" aria-label="{{ 'map.sidebar.ariaLabel' | translate }}">
+      <section class="map-demo__card" aria-labelledby="layers-heading">
+        <h2 id="layers-heading" class="map-demo__card-title">{{ 'map.layers.title' | translate }}</h2>
+
+        <div class="map-demo__layer-list">
+          <label class="map-demo__layer-item">
+            <input
+              type="checkbox"
+              class="map-demo__checkbox"
+              [checked]="showTerritories()"
+              (change)="toggleTerritories()"
+              aria-label="{{ 'map.layers.territories.ariaLabel' | translate }}"
+            />
+            <span class="map-demo__layer-swatch map-demo__layer-swatch--territory" aria-hidden="true"></span>
+            <span class="map-demo__layer-label">{{ 'map.layers.territories.label' | translate }}</span>
+          </label>
+
+          <label class="map-demo__layer-item">
+            <input
+              type="checkbox"
+              class="map-demo__checkbox"
+              [checked]="showPois()"
+              (change)="togglePois()"
+              aria-label="{{ 'map.layers.pois.ariaLabel' | translate }}"
+            />
+            <span class="map-demo__layer-swatch map-demo__layer-swatch--poi" aria-hidden="true"></span>
+            <span class="map-demo__layer-label">{{ 'map.layers.pois.label' | translate }}</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="map-demo__card" aria-labelledby="stats-heading">
+        <h2 id="stats-heading" class="map-demo__card-title">{{ 'map.stats.title' | translate }}</h2>
+
+        @if (loading()) {
+          <p class="map-demo__stats-loading" aria-busy="true">{{ 'map.loading' | translate }}</p>
+        } @else if (error()) {
+          <p class="map-demo__stats-error" role="alert">{{ error() | translate }}</p>
+        } @else {
+          <dl class="map-demo__stats-list">
+            <dt>{{ 'map.stats.regions' | translate }}</dt>
+            <dd>{{ territories().length }}</dd>
+
+            <dt>{{ 'map.stats.totalPopulation' | translate }}</dt>
+            <dd>{{ totalPopulation() | number }}</dd>
+
+            <dt>{{ 'map.stats.capitals' | translate }}</dt>
+            <dd>{{ capitalCount() }}</dd>
+
+            <dt>{{ 'map.stats.pois' | translate }}</dt>
+            <dd>{{ pois().length }}</dd>
+          </dl>
+        }
+      </section>
+
+      <section class="map-demo__card map-demo__card--legend" aria-labelledby="legend-heading">
+        <h2 id="legend-heading" class="map-demo__card-title">{{ 'map.legend.title' | translate }}</h2>
+        <ul class="map-demo__legend-list" aria-label="{{ 'map.legend.ariaLabel' | translate }}">
+          <li class="map-demo__legend-item">
+            <span class="map-demo__legend-icon map-demo__legend-icon--capital" aria-hidden="true"></span>
+            {{ 'map.legend.capital' | translate }}
+          </li>
+          <li class="map-demo__legend-item">
+            <span class="map-demo__legend-icon map-demo__legend-icon--city" aria-hidden="true"></span>
+            {{ 'map.legend.city' | translate }}
+          </li>
+          <li class="map-demo__legend-item">
+            <span class="map-demo__legend-icon map-demo__legend-icon--territory" aria-hidden="true"></span>
+            {{ 'map.legend.territory' | translate }}
+          </li>
+        </ul>
+      </section>
+    </aside>
+
+    <!-- Map container -->
+    <div class="map-demo__map-wrapper">
+      <app-leaflet-map
+        [territories]="territories()"
+        [pois]="pois()"
+        [showTerritories]="showTerritories()"
+        [showPois]="showPois()"
+        aria-label="{{ 'map.ariaLabel' | translate }}"
+      />
+    </div>
+  </div>
+</main>

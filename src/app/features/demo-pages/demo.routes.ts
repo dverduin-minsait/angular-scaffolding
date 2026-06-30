@@ -23,6 +23,11 @@ export const DEMO_ROUTES: Routes = [
     loadChildren: () => import('./ssr-demo/ssr-demo.routes').then(m => m.SSR_DEMO_ROUTES)
   },
   {
+    path: 'map-demo',
+    data: { breadcrumb: 'Map' },
+    loadChildren: () => import('./map-demo/map-demo.routes').then(m => m.MAP_DEMO_ROUTES)
+  },
+  {
     path: '',
     redirectTo: 'theme-demo',
     pathMatch: 'full'

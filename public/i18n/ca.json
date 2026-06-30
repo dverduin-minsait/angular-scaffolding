@@ -11,7 +11,8 @@
         "themeDemo": "Demo Tema",
         "crudDemo": "Demo CRUD",
         "ssrDemo": "Demo SSR",
-        "signalFormsDemo": "Demo Signal Forms"
+        "signalFormsDemo": "Demo Signal Forms",
+        "mapDemo": "Demo Mapa"
       },
       "auth": {
         "_": "Autenticació",
@@ -635,6 +636,45 @@
       "tablet": "Tauleta",
       "desktop": "Escriptori",
       "controlCenter": "Centre de control"
+    }
+  },
+  "map": {
+    "title": "Demo Mapa",
+    "subtitle": "Capes de dades territorials amb Leaflet — carregades a demanda",
+    "loading": "Carregant mapa...",
+    "ariaLabel": "Mapa interactiu de territoris",
+    "layers": {
+      "title": "Capes de dades",
+      "territories": {
+        "label": "Territoris",
+        "ariaLabel": "Activar capa de territoris"
+      },
+      "pois": {
+        "label": "Ciutats i capitals",
+        "ariaLabel": "Activar capa de ciutats i capitals"
+      }
+    },
+    "stats": {
+      "title": "Estadístiques",
+      "regions": "Regions",
+      "totalPopulation": "Població total",
+      "capitals": "Capitals",
+      "pois": "Punts d'interès"
+    },
+    "legend": {
+      "title": "Llegenda",
+      "ariaLabel": "Llegenda del mapa",
+      "capital": "Capital regional",
+      "city": "Ciutat",
+      "territory": "Polígon territorial"
+    },
+    "sidebar": {
+      "ariaLabel": "Controls i estadístiques del mapa"
+    },
+    "errors": {
+      "leafletLoad": "Error en carregar la biblioteca del mapa. Recarregueu la pàgina.",
+      "territoriesLoad": "Error en carregar les dades territorials.",
+      "poisLoad": "Error en carregar els punts d'interès."
     }
   }
 }

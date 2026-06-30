@@ -1,0 +1,19 @@
+<div
+  #mapContainer
+  class="leaflet-map__container"
+  role="application"
+  aria-label="{{ 'map.ariaLabel' | translate }}"
+></div>
+
+@if (isLoading()) {
+  <div class="leaflet-map__overlay leaflet-map__overlay--loading" aria-live="polite" aria-busy="true">
+    <span class="leaflet-map__spinner" aria-hidden="true"></span>
+    <span>{{ 'map.loading' | translate }}</span>
+  </div>
+}
+
+@if (loadError()) {
+  <div class="leaflet-map__overlay leaflet-map__overlay--error" role="alert">
+    {{ loadError() | translate }}
+  </div>
+}

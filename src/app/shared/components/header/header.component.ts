@@ -31,7 +31,8 @@ export class HeaderComponent {
       { id: 'theme-demo', label: 'app.navigation.demos.themeDemo', path: '/demo/theme-demo' },
       { id: 'signal-forms-demo', label: 'app.navigation.demos.signalFormsDemo', path: '/demo/signal-forms-demo' },
       { id: 'demo-books', label: 'app.navigation.demos.crudDemo', path: '/demo-books' },
-      { id: 'ssr-demo', label: 'app.navigation.demos.ssrDemo', path: '/demo/ssr-demo' }
+      { id: 'ssr-demo', label: 'app.navigation.demos.ssrDemo', path: '/demo/ssr-demo' },
+      { id: 'map-demo', label: 'app.navigation.demos.mapDemo', path: '/demo/map-demo' }
     ] },
     { id: 'auth', label: 'app.navigation.auth._', icon: '🔐', children: [
       { id: 'login', label: 'app.navigation.auth.login', path: '/auth/login' },
