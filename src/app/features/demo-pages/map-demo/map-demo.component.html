@@ -5,7 +5,18 @@
   </header>
 
   <div class="map-demo__layout">
-    <!-- Sidebar: layer controls + stats -->
+    <!-- Map container (full width background) -->
+    <div class="map-demo__map-wrapper">
+      <app-leaflet-map
+        [territories]="territories()"
+        [pois]="pois()"
+        [showTerritories]="showTerritories()"
+        [showPois]="showPois()"
+        aria-label="{{ 'map.ariaLabel' | translate }}"
+      />
+    </div>
+
+    <!-- Sidebar: layer controls + stats (overlay) -->
     <aside class="map-demo__sidebar" aria-label="{{ 'map.sidebar.ariaLabel' | translate }}">
       <section class="map-demo__card" aria-labelledby="layers-heading">
         <h2 id="layers-heading" class="map-demo__card-title">{{ 'map.layers.title' | translate }}</h2>
@@ -79,16 +90,5 @@
         </ul>
       </section>
     </aside>
-
-    <!-- Map container -->
-    <div class="map-demo__map-wrapper">
-      <app-leaflet-map
-        [territories]="territories()"
-        [pois]="pois()"
-        [showTerritories]="showTerritories()"
-        [showPois]="showPois()"
-        aria-label="{{ 'map.ariaLabel' | translate }}"
-      />
-    </div>
   </div>
 </main>

@@ -1,103 +1,15 @@
 # Fixes Instructions
 
-## Common Issues and Solutions
+## Common Issues
 
-This document provides solutions to common issues and anti-patterns in the Angular 20 project.
-
-## Zoneless Change Detection Issues
-
-### Problem: UI Not Updating After State Change
-
-```typescript
-// ❌ WRONG - Mutating state directly
-this.items.push(newItem);  // Signal doesn't detect mutation
-
-// ✅ CORRECT - Use signal update methods
-this._items.update(items => [...items, newItem]);
-// or
-this._items.set([...this._items(), newItem]);
-```
-
-### Problem: Using setTimeout Without Signals
-
-```typescript
-// ❌ WRONG - setTimeout doesn't trigger change detection
-setTimeout(() => {
-  this.loading = true;  // Won't update UI in zoneless
-}, 1000);
-
-// ✅ CORRECT - Use signals
-private readonly _loading = signal(false);
-readonly loading = this._loading.asReadonly();
-
-setTimeout(() => {
-  this._loading.set(true);  // Signal triggers update
-}, 1000);
-```
-
-### Problem: Manual Change Detection
-
-```typescript
-// ❌ WRONG - Using ChangeDetectorRef in zoneless
-constructor(private cdr: ChangeDetectorRef) {}
-this.cdr.markForCheck();
-
-// ✅ CORRECT - Use signals
-private readonly _value = signal<string>('');
-readonly value = this._value.asReadonly();
-```
-
-## Signal Patterns
-
-### Problem: Directly Exposing Writable Signals
-
-```typescript
-// ❌ WRONG - Exposing writable signal publicly
-public readonly items = signal<Item[]>([]);
-
-// ✅ CORRECT - Private writable, public readonly
-private readonly _items = signal<Item[]>([]);
-readonly items = this._items.asReadonly();
-
-updateItems(newItems: Item[]): void {
-  this._items.set(newItems);
-}
-```
-
-### Problem: Not Using Computed Signals
-
-```typescript
-// ❌ WRONG - Duplicating derived state
-getFilteredItems(): Item[] {
-  return this.items().filter(item => item.active);
-}
-
-// ✅ CORRECT - Use computed signal
-readonly filteredItems = computed(() => 
-  this.items().filter(item => item.active)
-);
-```
-
-### Problem: Signal Naming Convention
-
-```typescript
-// ❌ WRONG - Unclear naming
-readonly userSignal = signal<User | null>(null);
-readonly computedFullName = computed(() => ...);
-
-// ✅ CORRECT - Clear, concise names
-readonly user = signal<User | null>(null);
-readonly fullName = computed(() => ...);  // Don't suffix with 'Computed'
-```
-
-## RxJS and Subscriptions
-
-### Problem: Memory Leaks from Unmanaged Subscriptions
-
-```typescript
-// ❌ WRONG - Subscription leak
-ngOnInit(): void {
-  this.dataService.getData().subscribe(data => {
+**UI Not Updating**: Use `this._signal.update()` or `.set()`, not mutation
+**setTimeout**: Wrap state change in signal: `this._state.set(true)` 
+**Manual ChangeDetectorRef**: Use signals instead
+**Exposed signals**: Keep writable private (`_state`), expose readonly
+**Derived state**: Use `computed()`, not methods
+**Memory leaks**: Use `takeUntilDestroyed()` or `toSignal()`
+**Direct local storage**: Use `LOCAL_STORAGE` injection token (SSR-safe)
+**RxJS > signals**: Only use RxJS for HTTP/external events
     this.data = data;
   });
 }

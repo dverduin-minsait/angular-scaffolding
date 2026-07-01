@@ -21,27 +21,8 @@
   }
 
   &__layout {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: var(--spacing-lg);
-    align-items: start;
-
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  &__sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-
-    @media (max-width: 768px) {
-      order: 2;
-    }
-  }
-
-  &__map-wrapper {
+    position: relative;
+    width: 100%;
     height: 600px;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -49,15 +30,42 @@
     box-shadow: 0 1px 3px color-mix(in srgb, var(--text-primary) 10%, transparent);
 
     @media (max-width: 768px) {
-      order: 1;
       height: 400px;
     }
   }
 
+  &__sidebar {
+    position: absolute;
+    top: calc(var(--spacing-md) + 4rem);
+    left: var(--spacing-md);
+    width: 280px;
+    max-height: calc(100% - var(--spacing-md) * 2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    z-index: 1000;
+    pointer-events: auto;
+
+    @media (max-width: 768px) {
+      width: calc(100% - var(--spacing-md) * 2);
+      max-height: 45%;
+      overflow-y: auto;
+    }
+  }
+
+  &__map-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
   // Card
   &__card {
-    background-color: var(--bg-primary);
-    border: 1px solid var(--border-primary);
+    background-color: color-mix(in srgb, var(--bg-primary) 95%, transparent);
+    backdrop-filter: blur(8px);
+    border: 1px solid color-mix(in srgb, var(--border-primary) 60%, transparent);
     border-radius: var(--radius-lg);
     padding: var(--spacing-md);
 

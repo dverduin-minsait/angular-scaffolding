@@ -42,6 +42,7 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges, On
 
   protected readonly isLoading = signal(true);
   protected readonly loadError = signal<string | null>(null);
+  protected readonly isFullscreen = signal(false);
 
   // Typed as unknown to avoid any static Leaflet import leaking into the bundle
   private mapInstance: unknown = null;
@@ -72,6 +73,19 @@ export class LeafletMapComponent implements OnInit, AfterViewInit, OnChanges, On
     if (changes['pois'] || changes['showPois']) {
       this.renderPois();
     }
+  }
+
+  protected toggleFullscreen(): void {
+    const container = this.mapContainerRef.nativeElement;
+    if (!document.fullscreenElement) {
+      container.requestFullscreen().catch(() => {
+        // Fallback: just toggle the CSS class
+        this.isFullscreen.update(v => !v);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+    this.isFullscreen.update(v => !v);
   }
 
   ngOnDestroy(): void {

@@ -1,202 +1,29 @@
 # Testing Agent
 
-## Role
-Expert in writing and maintaining Vitest tests for Angular 21 applications with Testing Library patterns.
+Vitest (not Jasmine). Testing Library. Co-located .spec.ts. Test by role/text, then data-testid. Use `vi.fn()`, `vi.spyOn()`. No async pipe in tests (zoneless). Maintain coverage.
 
-## Responsibilities
-
-- Write comprehensive unit and integration tests
-- Ensure Vitest (not Jasmine) patterns are used
-- Maintain test coverage standards
-- Test accessibility with vitest-axe
-- Create tests for components, services, directives, pipes, and stores
-- Mock dependencies appropriately
-- Test both success and error scenarios
-- Ensure zoneless-compatible test setups
-
-## Key Testing Files
-
-### Configuration
-- `vitest.config.ts` - Vitest configuration
-- `src/test-setup.ts` - Vitest setup file
-- `src/vitest-axe.d.ts` - TypeScript definitions for vitest-axe
-
-### Test Utilities
-- `src/app/testing/i18n-testing.ts` - Translation test utilities
-  - `provideStubTranslationService()` - Mock translation service
-  - `TranslateStubPipe` - Stub translate pipe
-  - `DEFAULT_TEST_TRANSLATIONS` - Common translations
-
-### Coverage Reports
-- `coverage/` - HTML coverage reports
-- `coverage/lcov.info` - LCOV format for CI/CD
-
-## Standard Test Patterns
-
-### Component Test Template
+## Setup
 
 ```typescript
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { provideStubTranslationService } from '../../testing/i18n-testing';
-import { MyComponent } from './my.component';
-
-describe('MyComponent', () => {
-  let component: MyComponent;
-  let fixture: ComponentFixture<MyComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [MyComponent, TranslateModule.forRoot()],
-      providers: [
-        provideZonelessChangeDetection(),
-        provideRouter([]),
-        ...provideStubTranslationService({
-          'app.title': 'Test Title',
-          'app.button.save': 'Save'
-        })
-      ]
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(MyComponent);
-    component = fixture.componentInstance;
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should display translated title', () => {
-    fixture.detectChanges();
-    
-    const compiled = fixture.nativeElement as HTMLElement;
-    const titleElement = compiled.querySelector('h1');
-    
-    expect(titleElement?.textContent?.trim()).toBe('Test Title');
-  });
-
-  it('should handle button click', () => {
-    fixture.detectChanges();
-    
-    const button = fixture.nativeElement.querySelector('button[aria-label="Save"]') as HTMLButtonElement;
-    button?.click();
-    fixture.detectChanges();
-    
-    expect(component.saved()).toBe(true);
-  });
+beforeEach(async () => {
+  await TestBed.configureTestingModule({
+    imports: [ComponentUnderTest, TranslateModule.forRoot()],
+    providers: [
+      provideZonelessChangeDetection(),
+      provideRouter([]),
+      ...provideStubTranslationService({ 'app.title': 'Title' })
+    ]
+  }).compileComponents();
 });
 ```
 
-### Service Test Template
+## Patterns
 
-```typescript
-import { TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
-import { vi } from 'vitest';
-import { MyService } from './my.service';
-
-describe('MyService', () => {
-  let service: MyService;
-  let mockHttp: HttpClient;
-
-  beforeEach(() => {
-    mockHttp = {
-      get: vi.fn(),
-      post: vi.fn(),
-      put: vi.fn(),
-      delete: vi.fn()
-    } as unknown as HttpClient;
-
-    TestBed.configureTestingModule({
-      providers: [
-        provideZonelessChangeDetection(),
-        MyService,
-        { provide: HttpClient, useValue: mockHttp }
-      ]
-    });
-
-    service = TestBed.inject(MyService);
-  });
-
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
-  it('should load data successfully', (done) => {
-    const mockData = [{ id: 1, name: 'Test' }];
-    mockHttp.get.mockReturnValue(of(mockData));
-
-    service.loadData().subscribe(data => {
-      expect(data).toEqual(mockData);
-      expect(mockHttp.get).toHaveBeenCalledWith('/api/data');
-      expect(mockHttp.get).toHaveBeenCalledTimes(1);
-      done();
-    });
-  });
-
-  it('should handle errors', (done) => {
-    const error = new Error('Failed to load');
-    mockHttp.get.mockReturnValue(throwError(() => error));
-
-    service.loadData().subscribe({
-      error: (err) => {
-        expect(err).toBe(error);
-        done();
-      }
-    });
-  });
-});
-```
-
-### EntityStore Test Template
-
-```typescript
-import { TestBed } from '@angular/core/testing';
-import { firstValueFrom, of, throwError } from 'rxjs';
-import { vi } from 'vitest';
-import { EntityStore } from '../../../core/store/entity-store';
-import { CrudDataSource } from '../../../core/api/abstract-api.service';
-
-interface TestEntity {
-  id: number;
-  name: string;
-}
-
-describe('EntityStore', () => {
-  let store: EntityStore<TestEntity, number>;
-  let mockDataSource: CrudDataSource<TestEntity, number>;
-
-  beforeEach(() => {
-    mockDataSource = {
-      getAll: vi.fn(),
-      getById: vi.fn(),
-      create: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn()
-    } as unknown as CrudDataSource<TestEntity, number>;
-
-    store = new EntityStore(mockDataSource);
-  });
-
-  describe('loadAll', () => {
-    it('should load items and update state', async () => {
-      const mockData = [
-        { id: 1, name: 'Item 1' },
-        { id: 2, name: 'Item 2' }
-      ];
-      mockDataSource.getAll.mockReturnValue(of(mockData));
-
-      await firstValueFrom(store.loadAll());
-      expect(store.items()).toEqual(mockData);
-      expect(store.hasData()).toBe(true);
-      expect(store.isEmpty()).toBe(false);
-      expect(store.isReady()).toBe(true);
-      expect(store.loading().isLoading).toBe(false);
-    });
+**Query**: By role (getByRole, queryByRole) > by text > by data-testid
+**Mocks**: `vi.fn()` for functions, `vi.spyOn(obj, method)` for methods, `mockReturnValue()` for returns
+**Stores/Services**: Mock the data source, test integration with component
+**Accessibility**: Use vitest-axe for contrast/a11y assertions
+**Error cases**: Test both success and error scenarios
 
     it('should handle errors', async () => {
       const error = { message: 'Failed', code: '500', timestamp: Date.now() };
