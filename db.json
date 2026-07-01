@@ -271,5 +271,99 @@
       "monthKwh": 1120, "monthCostEur": 177.0,
       "peakHour": "10:00", "avgDailyKwh": 37.3
     }
+  ],
+  "territories": [
+    {
+      "id": 1,
+      "name": "Northern Region",
+      "code": "NR",
+      "population": 3200000,
+      "area_km2": 85000,
+      "capital": "Northbridge",
+      "density": 37.6,
+      "gdp_per_capita": 32000,
+      "color": "#3b82f6",
+      "bounds": [[42.0, -8.5], [44.5, -4.0]],
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-8.5, 42.0], [-4.0, 42.0], [-4.0, 44.5], [-8.5, 44.5], [-8.5, 42.0]]]
+      }
+    },
+    {
+      "id": 2,
+      "name": "Eastern Region",
+      "code": "ER",
+      "population": 5800000,
+      "area_km2": 62000,
+      "capital": "Eastport",
+      "density": 93.5,
+      "gdp_per_capita": 41000,
+      "color": "#10b981",
+      "bounds": [[40.0, -1.0], [43.5, 3.5]],
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-1.0, 40.0], [3.5, 40.0], [3.5, 43.5], [-1.0, 43.5], [-1.0, 40.0]]]
+      }
+    },
+    {
+      "id": 3,
+      "name": "Central Region",
+      "code": "CR",
+      "population": 7200000,
+      "area_km2": 78000,
+      "capital": "Centropolis",
+      "density": 92.3,
+      "gdp_per_capita": 38500,
+      "color": "#f59e0b",
+      "bounds": [[39.5, -5.0], [42.0, -1.0]],
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-5.0, 39.5], [-1.0, 39.5], [-1.0, 42.0], [-5.0, 42.0], [-5.0, 39.5]]]
+      }
+    },
+    {
+      "id": 4,
+      "name": "Southern Region",
+      "code": "SR",
+      "population": 4100000,
+      "area_km2": 95000,
+      "capital": "Southhaven",
+      "density": 43.2,
+      "gdp_per_capita": 28000,
+      "color": "#ef4444",
+      "bounds": [[36.0, -7.0], [39.5, -1.5]],
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-7.0, 36.0], [-1.5, 36.0], [-1.5, 39.5], [-7.0, 39.5], [-7.0, 36.0]]]
+      }
+    },
+    {
+      "id": 5,
+      "name": "Western Region",
+      "code": "WR",
+      "population": 2600000,
+      "area_km2": 58000,
+      "capital": "Westfield",
+      "density": 44.8,
+      "gdp_per_capita": 29500,
+      "color": "#8b5cf6",
+      "bounds": [[38.0, -9.5], [42.0, -7.0]],
+      "geojson": {
+        "type": "Polygon",
+        "coordinates": [[[-9.5, 38.0], [-7.0, 38.0], [-7.0, 42.0], [-9.5, 42.0], [-9.5, 38.0]]]
+      }
+    }
+  ],
+  "map-pois": [
+    { "id": 1, "name": "Northbridge", "type": "capital", "territoryId": 1, "lat": 43.2, "lng": -6.3, "population": 850000, "founded": 1203, "description": "Cultural and administrative capital of the Northern Region" },
+    { "id": 2, "name": "Northport", "type": "city", "territoryId": 1, "lat": 43.5, "lng": -5.1, "population": 320000, "founded": 1489, "description": "Major industrial port city" },
+    { "id": 3, "name": "Eastport", "type": "capital", "territoryId": 2, "lat": 41.4, "lng": 2.2, "population": 1600000, "founded": 801, "description": "Vibrant coastal capital of the Eastern Region" },
+    { "id": 4, "name": "Eastern Hills", "type": "city", "territoryId": 2, "lat": 41.7, "lng": 0.5, "population": 430000, "founded": 1156, "description": "University and research hub" },
+    { "id": 5, "name": "Centropolis", "type": "capital", "territoryId": 3, "lat": 40.4, "lng": -3.7, "population": 3200000, "founded": 933, "description": "Largest city and national capital of the Central Region" },
+    { "id": 6, "name": "Central Lakes", "type": "city", "territoryId": 3, "lat": 39.9, "lng": -4.5, "population": 380000, "founded": 1308, "description": "Tourism and wine production center" },
+    { "id": 7, "name": "Southhaven", "type": "capital", "territoryId": 4, "lat": 37.4, "lng": -5.9, "population": 690000, "founded": 712, "description": "Historic southern capital with rich heritage" },
+    { "id": 8, "name": "Coastal South", "type": "city", "territoryId": 4, "lat": 36.7, "lng": -4.4, "population": 560000, "founded": 1063, "description": "Popular Mediterranean resort and port" },
+    { "id": 9, "name": "Westfield", "type": "capital", "territoryId": 5, "lat": 39.7, "lng": -8.8, "population": 510000, "founded": 1147, "description": "Atlantic-facing capital with historic old town" },
+    { "id": 10, "name": "Westcoast", "type": "city", "territoryId": 5, "lat": 38.5, "lng": -8.9, "population": 280000, "founded": 1255, "description": "Industrial and logistics coastal city" }
   ]
 }

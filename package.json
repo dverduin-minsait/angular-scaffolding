@@ -61,9 +61,11 @@
     "@angular/ssr": "^21.0.3",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
+    "@types/leaflet": "^1.9.21",
     "ag-grid-angular": "^34.2.0",
     "ag-grid-community": "^34.2.0",
     "express": "^5.1.0",
+    "leaflet": "^1.9.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -85,15 +87,15 @@
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "@vitest/coverage-v8": "^4.0.18",
+    "axe-core": "^4.10.2",
     "baseline-browser-mapping": "^2.9.18",
     "concurrently": "^9.1.0",
     "eslint": "^9.38.0",
     "jsdom": "^27.4.0",
     "json-server": "^0.17.4",
-    "axe-core": "^4.10.2",
     "typescript": "~5.9.2",
-    "vitest-axe": "^0.1.0",
     "vitest": "^4.0.18",
+    "vitest-axe": "^0.1.0",
     "webpack-bundle-analyzer": "^4.10.2"
   }
 }

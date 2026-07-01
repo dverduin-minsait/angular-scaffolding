@@ -1,103 +1,27 @@
 # Styles Instructions
 
-## Styling System
+**SCSS** + **CSS custom properties**. 4 themes: light/dark + warm variants. **BEM naming**. Mobile-first. **WCAG AA contrast ≥4.5:1**.
 
-This project uses **SCSS** with **CSS Custom Properties** (CSS variables) for theming.
+## CSS Variables
 
-## Theme Architecture
+`src/app/themes/_variables.scss`: colors (--primary-50 to 950, --bg-primary/secondary, --text-primary, --border-*, --color-success/warning/error, --shadow-*), spacing (--spacing-xs to 2xl), radius (--radius-sm to full)
 
-### Available Themes
-
-The project supports 4 themes with automatic switching:
-- `light` - Default light theme (blue accent)
-- `dark` - Dark theme (blue accent)
-- `light2` - Warm light theme (orange/warm accent)
-- `dark2` - Warm dark theme (orange/warm accent)
-- `system` - Follows OS preference
-
-### Theme Files Location
-
-```
-src/app/themes/
-├── _variables.scss      # CSS custom properties definitions
-├── _light-theme.scss    # Light theme (blue)
-├── _dark-theme.scss     # Dark theme (blue)
-├── _light-theme2.scss   # Light theme 2 (warm/orange)
-├── _dark-theme2.scss    # Dark theme 2 (warm/orange)
-├── _mixins.scss         # Theme mixins and utilities
-├── _modal.scss          # Modal theming
-├── _utilities.scss      # Utility classes
-└── _index.scss          # Main theme index
-```
-
-## CSS Custom Properties (Design Tokens)
-
-### Using CSS Variables in Components
-
-Always use CSS custom properties for colors, spacing, and theme-dependent values:
+## Usage
 
 ```scss
-// ✅ CORRECT - Use CSS custom properties
-.my-component {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
+// ✅ Use CSS custom properties
+background: var(--bg-primary);
+color: var(--text-primary);
+padding: var(--spacing-md);
+border-radius: var(--radius-md);
 
-.my-button {
-  background: var(--primary-600);
-  color: var(--text-inverse);
-  
-  &:hover {
-    background: var(--primary-700);
-  }
-}
-
-// ❌ WRONG - Hardcoded colors
-.my-component {
-  background-color: #ffffff;
-  color: #111827;
-  border: 1px solid #d1d5db;
-}
+// ❌ Don't hardcode colors
+background: #ffffff;
 ```
 
-### Available CSS Variables
+## Themes
 
-#### Color Palette
-
-```scss
-// Primary colors (blue or warm depending on theme)
---primary-50 through --primary-950
-
-// Secondary/neutral colors
---secondary-50 through --secondary-950
-
-// Background colors
---bg-primary      // Main background
---bg-secondary    // Secondary background
---bg-tertiary     // Tertiary background
---bg-accent       // Accent background
---bg-muted        // Muted background
-
-// Text colors
---text-primary    // Primary text
---text-secondary  // Secondary text
---text-tertiary   // Tertiary text
---text-accent     // Accent text
---text-muted      // Muted/disabled text
---text-inverse    // Inverse text (for dark backgrounds)
-
-// Border colors
---border-primary
---border-secondary
---border-accent
-
-// State colors
---color-success
---color-warning
+4 themes in `src/app/themes/`: light (blue), dark (blue), light2 (warm), dark2 (warm). ThemeService swaps CSS custom properties at runtime.
 --color-error
 --color-info
 

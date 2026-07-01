@@ -1,103 +1,25 @@
 # GitHub Copilot Instructions
 
-**Angular 21**: standalone, signals, zoneless, SSR, WCAG AA, Vitest, ngx-translate, AG Grid, 4 themes.
+Angular 21: standalone, signals, zoneless, SSR, WCAG AA, Vitest, ngx-translate, AG Grid, 4 themes.
 
 ## Rules
-- ✅ Signals, `provideZonelessChangeDetection()`, Vitest, WCAG AA, i18n keys
-- ❌ NgModules, Zone.js, async pipe with signals, RxJS for local state, Jasmine, hardcoded text
 
-## Component Pattern
-```typescript
-import { Component, signal, computed } from '@angular/core';
+✅ Signals, `provideZonelessChangeDetection()`, Vitest, WCAG AA, i18n keys, import tokens for SSR
+❌ NgModules, Zone.js, async pipe with signals, RxJS for local state, Jasmine, hardcoded text
 
-@Component({
-  selector: 'app-name',
-  standalone: true,
-  template: `<button type="button" aria-label="Action" (click)="action()">{{text()}}</button>`
-})
-export class NameComponent {
-  private readonly _state = signal<T>(initial);
-  readonly state = this._state.asReadonly();
-  protected readonly text = computed(() => this.state().loading ? 'Loading' : 'Submit');
-}
-```
+## Patterns
 
-## Service Pattern
-```typescript
-import { Injectable, signal } from '@angular/core';
-import { AbstractApiClient } from '../core/api/abstract-api.service';
+See AGENTS.md for full examples. Quick reference:
 
-@Injectable({ providedIn: 'root' })
-export class DataService extends AbstractApiClient {
-  private readonly _data = signal<T[]>([]);
-  readonly data = this._data.asReadonly();
-  
-  load(): void {
-    this.getList<T>('/api/endpoint')
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(data => this._data.set(data));
-  }
-}
-```
+## Patterns
 
-## Test Pattern
-```typescript
-import { TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
-import { vi } from 'vitest';
-import { provideStubTranslationService } from '../testing/i18n-testing';
+See AGENTS.md for full examples. Quick reference:
 
-describe('Component', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Component, TranslateModule.forRoot()],
-      providers: [
-        provideZonelessChangeDetection(),
-        provideRouter([]),
-        ...provideStubTranslationService({ 'key': 'Value' })
-      ]
-    }).compileComponents();
-  });
-
-  it('works', () => {
-    const fixture = TestBed.createComponent(Component);
-    const spy = vi.fn();
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Value');
-  });
-});
-```
-
-## Structure
-```
-src/app/
-├── core/          # API, auth, global services (DON'T modify AbstractApiClient)
-├── features/      # Lazy routes: <name>.component.ts/spec.ts/scss + <name>.routes.ts
-├── shared/        # Stateless UI only (NO business logic)
-└── themes/        # CSS custom properties: var(--color-primary)
-```
-
-## Accessibility (Mandatory)
-```typescript
-template: `
-  <nav role="navigation" aria-label="Main">
-    <button type="button" aria-label="Menu" [attr.aria-expanded]="open()">
-      {{label()}}
-    </button>
-  </nav>
-`
-```
-- Semantic HTML, ARIA labels, roles, keyboard nav, contrast ≥4.5:1
-
-## SSR Guard
-```typescript
-// For browser APIs, use LOCAL_STORAGE injection token (SSR-safe)
-import { LOCAL_STORAGE } from '../core/tokens/local.storage.token';
-
-const storage = inject(LOCAL_STORAGE);
-storage.getItem('key'); // Works in both browser and SSR
-
-```
+**Component**: `standalone: true`, private `_state` signal, public `state` readonly, `computed()` for derived
+**Service**: extend `AbstractApiClient`, use `EntityStore` for CRUD
+**Template**: `{{signal()}}` (no async pipe), `@if/@for` control flow
+**Route**: lazy `loadComponent` / `loadChildren`
+**Test**: Vitest, Testing Library, `provideZonelessChangeDetection()` + stub translations
 
 ## Commands
 ```bash

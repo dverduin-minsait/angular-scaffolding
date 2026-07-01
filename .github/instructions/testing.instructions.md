@@ -1,103 +1,36 @@
 # Testing Instructions
 
-## Testing Framework
+**Vitest** (not Jasmine). Co-located `*.spec.ts`. Test by role/text > data-testid. Use `vi.fn()`, `vi.spyOn()`.
 
-This project uses **Vitest** (not Jasmine) with Angular Testing Library patterns.
-
-## Test File Structure
-
-All test files should be co-located with their source files and follow the naming convention:
-- Components: `component-name.component.spec.ts`
-- Services: `service-name.service.spec.ts`
-- Directives: `directive-name.directive.spec.ts`
-- Pipes: `pipe-name.pipe.spec.ts`
-- Accessibility tests: `component-name.accessibility.spec.ts`
-
-## Standard Test Setup Pattern
+## Setup
 
 ```typescript
-import { TestBed } from '@angular/core/testing';
-import { provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { provideStubTranslationService } from '../testing/i18n-testing';
-
-describe('ComponentName', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ComponentName, TranslateModule.forRoot()],
-      providers: [
-        provideZonelessChangeDetection(),
-        provideRouter([]),
-        ...provideStubTranslationService({
-          'app.title': 'Test Title',
-          'app.button.save': 'Save'
-        })
-      ]
-    }).compileComponents();
-  });
-
-  it('should create', () => {
-    const fixture = TestBed.createComponent(ComponentName);
-    expect(fixture.componentInstance).toBeTruthy();
-  });
+beforeEach(async () => {
+  await TestBed.configureTestingModule({
+    imports: [ComponentUnderTest, TranslateModule.forRoot()],
+    providers: [
+      provideZonelessChangeDetection(),
+      provideRouter([]),
+      ...provideStubTranslationService({ 'app.key': 'Value' })
+    ]
+  }).compileComponents();
 });
 ```
 
-## Vitest Matchers (NOT Jasmine)
-
-Use Vitest syntax, not Jasmine:
+## Vitest (NOT Jasmine)
 
 ```typescript
-import { vi } from 'vitest';
-
-// ✅ CORRECT - Vitest
-expect(value).toBe(expected);
-expect(array).toHaveLength(3);
-expect(fn).toHaveBeenCalledWith(arg);
-expect(fn).toHaveBeenCalledTimes(2);
 const mockFn = vi.fn();
-const spy = vi.spyOn(service, 'method');
+vi.spyOn(service, 'method');
+expect(mockFn).toHaveBeenCalledWith(arg);
+expect(mockFn).toHaveBeenCalledTimes(1);
 vi.useFakeTimers();
 vi.advanceTimersByTime(1000);
-
-// ❌ WRONG - Jasmine (do NOT use)
-expect(value).toEqual(jasmine.any(Type));
-jasmine.createSpy();
-jasmine.clock();
 ```
 
-## Mock Services with Vitest
+## Query Order
 
-```typescript
-import { vi, type Mocked } from 'vitest';
-
-describe('ServiceTest', () => {
-  let service: MyService;
-  let mockHttp: Mocked<{ get: (url: string) => unknown; post: (url: string, body: unknown) => unknown }>;
-
-  beforeEach(() => {
-    mockHttp = {
-      get: vi.fn(),
-      post: vi.fn()
-    } as unknown as typeof mockHttp;
-
-    TestBed.configureTestingModule({
-      providers: [
-        MyService,
-        { provide: HttpClient, useValue: mockHttp }
-      ]
-    });
-
-    service = TestBed.inject(MyService);
-  });
-
-  it('should call API with correct params', () => {
-    mockHttp.get.mockReturnValue(of([{ id: 1 }]));
-    
-    service.loadData();
-    
-    expect(mockHttp.get).toHaveBeenCalledWith('/api/data');
+`getByRole()` > `queryByRole()` > text content > `data-testid`
     expect(mockHttp.get).toHaveBeenCalledTimes(1);
   });
 });

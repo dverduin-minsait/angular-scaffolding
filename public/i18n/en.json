@@ -11,7 +11,8 @@
         "themeDemo": "Theme Demo",
         "crudDemo": "CRUD Demo",
         "ssrDemo": "SSR Demo",
-        "signalFormsDemo": "Signal Forms Demo"
+        "signalFormsDemo": "Signal Forms Demo",
+        "mapDemo": "Map Demo"
       },
       "auth": {
         "_": "Authentication",
@@ -636,5 +637,42 @@
       "desktop": "Desktop",
       "controlCenter": "Control Center"
     }
-  }
-}
+  },
+  "map": {
+    "title": "Map Demo",
+    "subtitle": "Territory data layers powered by Leaflet — loaded on demand",
+    "loading": "Loading map...",
+    "ariaLabel": "Interactive territory map",
+    "layers": {
+      "title": "Data Layers",
+      "territories": {
+        "label": "Territories",
+        "ariaLabel": "Toggle territory layer"
+      },
+      "pois": {
+        "label": "Cities & Capitals",
+        "ariaLabel": "Toggle cities and capitals layer"
+      }
+    },
+    "stats": {
+      "title": "Statistics",
+      "regions": "Regions",
+      "totalPopulation": "Total Population",
+      "capitals": "Capitals",
+      "pois": "Points of Interest"
+    },
+    "legend": {
+      "title": "Legend",
+      "ariaLabel": "Map legend",
+      "capital": "Regional Capital",
+      "city": "City",
+      "territory": "Territory Polygon"
+    },
+    "sidebar": {
+      "ariaLabel": "Map controls and statistics"
+    },
+    "errors": {
+      "leafletLoad": "Failed to load the map library. Please refresh the page.",
+      "territoriesLoad": "Failed to load territory data.",
+      "poisLoad": "Failed to load points of interest."
+    }
