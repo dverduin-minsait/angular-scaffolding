@@ -12,7 +12,8 @@
         "crudDemo": "CRUD Demo",
         "ssrDemo": "SSR Demo",
         "signalFormsDemo": "Signal Forms Demo",
-        "mapDemo": "Map Demo"
+        "mapDemo": "Map Demo",
+        "wizardDemo": "Wizard Demo"
       },
       "auth": {
         "_": "Authentication",
@@ -676,3 +677,78 @@
       "territoriesLoad": "Failed to load territory data.",
       "poisLoad": "Failed to load points of interest."
     }
+  },
+  "wizard": {
+    "steps": {
+      "nav": "Form steps"
+    },
+    "progress": {
+      "label": "Form completion progress"
+    },
+    "navigation": {
+      "label": "Wizard navigation"
+    },
+    "actions": {
+      "next": "Next",
+      "back": "Back",
+      "startOver": "Start over"
+    },
+    "validation": {
+      "required": "This field is required",
+      "min": "Value must be at least {{min}}",
+      "max": "Value must be at most {{max}}"
+    },
+    "success": {
+      "title": "Order submitted!",
+      "message": "Thank you for your order. You will receive a confirmation email shortly."
+    },
+    "payment": {
+      "title": "Payment",
+      "subtitle": "Enter your card details to complete the purchase",
+      "totalAmount": "Total amount",
+      "cardholderName": "Cardholder name",
+      "cardholderHint": "Name as it appears on your card",
+      "cardNumber": "Card number",
+      "cardNumberError": "Please enter a valid card number (minimum 13 digits)",
+      "expiry": "Expiry date",
+      "expiryError": "Please enter a valid expiry date (MM/YY)",
+      "cvv": "CVV",
+      "cvvAriaLabel": "Card security code (3 or 4 digits on the back of your card)",
+      "cvvError": "Please enter a valid CVV (3–4 digits)",
+      "processing": "Processing payment…",
+      "payNow": "Pay {{amount}}",
+      "successMessage": "Payment confirmed! Transaction ID: {{id}}"
+    },
+    "demo": {
+      "steps": {
+        "personalData": "Personal Data",
+        "hobbies": "Hobbies",
+        "product": "Product",
+        "payment": "Payment"
+      },
+      "personalData": {
+        "subtitle": "Tell us a bit about yourself",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email address",
+        "birthYear": "Year of birth",
+        "firstNameError": "First name is required (minimum 2 characters)",
+        "lastNameError": "Last name is required (minimum 2 characters)",
+        "emailError": "A valid email address is required",
+        "birthYearError": "Please enter a valid year of birth"
+      },
+      "hobbies": {
+        "hobby": "What is your main hobby?",
+        "hobbyPlaceholder": "Select a hobby",
+        "experienceLevel": "What is your experience level?",
+        "experienceLevelPlaceholder": "Select experience level"
+      },
+      "product": {
+        "product": "Which product are you interested in?",
+        "productPlaceholder": "Select a product",
+        "price": "Your budget (€)",
+        "pricePlaceholder": "e.g. 150"
+      }
+    }
+  }
+}

@@ -12,7 +12,8 @@
         "crudDemo": "Demo CRUD",
         "ssrDemo": "Demo SSR",
         "signalFormsDemo": "Demo Signal Forms",
-        "mapDemo": "Demo Mapa"
+        "mapDemo": "Demo Mapa",
+        "wizardDemo": "Demo Formulari Pasos"
       },
       "auth": {
         "_": "Autenticació",
@@ -675,6 +676,73 @@
       "leafletLoad": "Error en carregar la biblioteca del mapa. Recarregueu la pàgina.",
       "territoriesLoad": "Error en carregar les dades territorials.",
       "poisLoad": "Error en carregar els punts d'interès."
+    }
+  },
+  "wizard": {
+    "steps": { "nav": "Passos del formulari" },
+    "progress": { "label": "Progrés de completat" },
+    "navigation": { "label": "Navegació de l'assistent" },
+    "actions": {
+      "next": "Següent",
+      "back": "Enrere",
+      "startOver": "Tornar a començar"
+    },
+    "validation": {
+      "required": "Aquest camp és obligatori",
+      "min": "El valor ha de ser almenys {{min}}",
+      "max": "El valor ha de ser com a màxim {{max}}"
+    },
+    "success": {
+      "title": "Comanda enviada!",
+      "message": "Gràcies per la teva comanda. Rebràs un correu de confirmació aviat."
+    },
+    "payment": {
+      "title": "Pagament",
+      "subtitle": "Introdueix les dades de la teva targeta per completar la compra",
+      "totalAmount": "Import total",
+      "cardholderName": "Titular de la targeta",
+      "cardholderHint": "Nom tal com apareix a la teva targeta",
+      "cardNumber": "Número de targeta",
+      "cardNumberError": "Introdueix un número de targeta vàlid (mínim 13 dígits)",
+      "expiry": "Data de caducitat",
+      "expiryError": "Introdueix una data de caducitat vàlida (MM/AA)",
+      "cvv": "CVV",
+      "cvvAriaLabel": "Codi de seguretat (3 o 4 dígits al revers de la teva targeta)",
+      "cvvError": "Introdueix un CVV vàlid (3–4 dígits)",
+      "processing": "Processant el pagament…",
+      "payNow": "Pagar {{amount}}",
+      "successMessage": "Pagament confirmat! ID de transacció: {{id}}"
+    },
+    "demo": {
+      "steps": {
+        "personalData": "Dades personals",
+        "hobbies": "Aficions",
+        "product": "Producte",
+        "payment": "Pagament"
+      },
+      "personalData": {
+        "subtitle": "Explica'ns una mica sobre tu",
+        "firstName": "Nom",
+        "lastName": "Cognoms",
+        "email": "Adreça de correu",
+        "birthYear": "Any de naixement",
+        "firstNameError": "El nom és obligatori (mínim 2 caràcters)",
+        "lastNameError": "Els cognoms són obligatoris (mínim 2 caràcters)",
+        "emailError": "Cal una adreça de correu vàlida",
+        "birthYearError": "Introdueix un any de naixement vàlid"
+      },
+      "hobbies": {
+        "hobby": "Quina és la teva afició principal?",
+        "hobbyPlaceholder": "Selecciona una afició",
+        "experienceLevel": "Quin és el teu nivell d'experiència?",
+        "experienceLevelPlaceholder": "Selecciona el nivell"
+      },
+      "product": {
+        "product": "Quin producte t'interessa?",
+        "productPlaceholder": "Selecciona un producte",
+        "price": "El teu pressupost (€)",
+        "pricePlaceholder": "p.ex. 150"
+      }
     }
   }
 }

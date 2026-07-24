@@ -1,13 +1,16 @@
 import { signal, computed } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { CrudDataSource } from '../api/abstract-api.service';
+import { BaseSignalStore } from './base-signal.store';
 
+// Re-exported for backwards compatibility
 export interface LoadingState {
   isLoading: boolean;
   operation?: 'create' | 'read' | 'update' | 'delete';
 }
 
+// Re-exported for backwards compatibility
 export interface StoreError {
   message: string;
   code?: string;
@@ -30,24 +33,21 @@ export interface StoreError {
  * @template T - Entity type with `id` property
  * @template ID - ID type (string | number)
  */
-export class EntityStore<T extends { id: ID }, ID = string | number> {
+export class EntityStore<T extends { id: ID }, ID = string | number> extends BaseSignalStore {
   private readonly _items = signal<T[]>([]);
   private readonly _selected = signal<T | null>(null);
-  private readonly _loading = signal<LoadingState>({ isLoading: false });
-  private readonly _error = signal<StoreError | null>(null);
   private readonly _lastUpdated = signal<number | null>(null);
 
   readonly items = this._items.asReadonly();
   readonly selected = this._selected.asReadonly();
-  readonly loading = this._loading.asReadonly();
-  readonly error = this._error.asReadonly();
   readonly lastUpdated = this._lastUpdated.asReadonly();
 
   readonly hasData = computed(() => this._items().length > 0);
   readonly isEmpty = computed(() => this._items().length === 0 && !this._loading().isLoading);
-  readonly isReady = computed(() => !this._loading().isLoading && this._error() === null);
 
-  constructor(private readonly dataSource: CrudDataSource<T, ID>) {}
+  constructor(private readonly dataSource: CrudDataSource<T, ID>) {
+    super();
+  }
 
   loadAll(): Observable<T[]> {
     this.setLoading(true, 'read');
@@ -125,37 +125,11 @@ export class EntityStore<T extends { id: ID }, ID = string | number> {
   }
   setSelected(entity: T | null): void { this._selected.set(entity); }
 
-  /**
-   * Updates an existing entity or inserts a new one into the store.
-   * 
-   * If the entity is null or undefined, the operation is skipped.
-   * If an entity with the same id exists, it will be replaced with the new entity.
-   * If no entity with the same id exists, the new entity will be added to the end of the list.
-   * 
-   * @param entity - The entity to upsert. Can be null, in which case no action is taken.
-   * @returns void
-   * 
-   * @private
-   */
   private upsert(entity: T | null): void {
     if (!entity) return;
     this._items.update(list => {
       const idx = list.findIndex(i => i.id === entity.id);
       return idx === -1 ? [...list, entity] : list.map(i => i.id === entity.id ? entity : i);
     });
-  }
-  private setLoading(isLoading: boolean, operation?: LoadingState['operation']): void {
-    this._loading.set({ isLoading, operation });
-  }
-  private clearError(): void { this._error.set(null); }
-  private captureError(err: unknown): Observable<never> {
-    const error = err as { message?: string; code?: string };
-    this._error.set({
-      message: error?.message || 'Unknown error',
-      code: error?.code,
-      details: err,
-      timestamp: Date.now()
-    });
-    return throwError(() => err);
   }
 }

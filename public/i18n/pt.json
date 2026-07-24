@@ -14,7 +14,8 @@
         "signalFormsDemo": "Demo Signal Forms",
         "mapDemo": "Demo Mapa",
         "login": "Iniciar sessão",
-        "register": "Registrar"
+        "register": "Registrar",
+        "wizardDemo": "Demo Formulário Passos"
       },
       "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
@@ -672,6 +673,73 @@
       "leafletLoad": "Falha ao carregar a biblioteca do mapa. Atualize a página.",
       "territoriesLoad": "Falha ao carregar os dados territoriais.",
       "poisLoad": "Falha ao carregar os pontos de interesse."
+    }
+  },
+  "wizard": {
+    "steps": { "nav": "Passos do formulário" },
+    "progress": { "label": "Progresso de preenchimento" },
+    "navigation": { "label": "Navegação do assistente" },
+    "actions": {
+      "next": "Próximo",
+      "back": "Voltar",
+      "startOver": "Começar novamente"
+    },
+    "validation": {
+      "required": "Este campo é obrigatório",
+      "min": "O valor deve ser pelo menos {{min}}",
+      "max": "O valor deve ser no máximo {{max}}"
+    },
+    "success": {
+      "title": "Pedido enviado!",
+      "message": "Obrigado pelo seu pedido. Receberá um email de confirmação em breve."
+    },
+    "payment": {
+      "title": "Pagamento",
+      "subtitle": "Insira os dados do seu cartão para concluir a compra",
+      "totalAmount": "Valor total",
+      "cardholderName": "Titular do cartão",
+      "cardholderHint": "Nome como aparece no seu cartão",
+      "cardNumber": "Número do cartão",
+      "cardNumberError": "Insira um número de cartão válido (mínimo 13 dígitos)",
+      "expiry": "Data de validade",
+      "expiryError": "Insira uma data de validade válida (MM/AA)",
+      "cvv": "CVV",
+      "cvvAriaLabel": "Código de segurança (3 ou 4 dígitos no verso do seu cartão)",
+      "cvvError": "Insira um CVV válido (3–4 dígitos)",
+      "processing": "Processando pagamento…",
+      "payNow": "Pagar {{amount}}",
+      "successMessage": "Pagamento confirmado! ID da transação: {{id}}"
+    },
+    "demo": {
+      "steps": {
+        "personalData": "Dados pessoais",
+        "hobbies": "Hobbies",
+        "product": "Produto",
+        "payment": "Pagamento"
+      },
+      "personalData": {
+        "subtitle": "Conte-nos um pouco sobre você",
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "email": "Endereço de email",
+        "birthYear": "Ano de nascimento",
+        "firstNameError": "O nome é obrigatório (mínimo 2 caracteres)",
+        "lastNameError": "O sobrenome é obrigatório (mínimo 2 caracteres)",
+        "emailError": "Um endereço de email válido é obrigatório",
+        "birthYearError": "Insira um ano de nascimento válido"
+      },
+      "hobbies": {
+        "hobby": "Qual é o seu hobby principal?",
+        "hobbyPlaceholder": "Selecione um hobby",
+        "experienceLevel": "Qual é o seu nível de experiência?",
+        "experienceLevelPlaceholder": "Selecione o nível"
+      },
+      "product": {
+        "product": "Qual produto lhe interessa?",
+        "productPlaceholder": "Selecione um produto",
+        "price": "O seu orçamento (€)",
+        "pricePlaceholder": "ex. 150"
+      }
     }
   }
 }

@@ -14,7 +14,8 @@
         "signalFormsDemo": "Demo Signal Forms",
         "mapDemo": "Demo Mapa",
         "login": "Iniciar sesión",
-        "register": "Rexistrarse"
+        "register": "Rexistrarse",
+        "wizardDemo": "Demo Formulario Pasos"
       },
       "demo-books": "Demo CRUD",
       "themeDemo": "Demo Tema",
@@ -672,6 +673,73 @@
       "leafletLoad": "Erro ao cargar a biblioteca do mapa. Recargue a páxina.",
       "territoriesLoad": "Erro ao cargar os datos territoriais.",
       "poisLoad": "Erro ao cargar os puntos de interese."
+    }
+  },
+  "wizard": {
+    "steps": { "nav": "Pasos do formulario" },
+    "progress": { "label": "Progreso de completado" },
+    "navigation": { "label": "Navegación do asistente" },
+    "actions": {
+      "next": "Seguinte",
+      "back": "Atrás",
+      "startOver": "Comezar de novo"
+    },
+    "validation": {
+      "required": "Este campo é obrigatorio",
+      "min": "O valor debe ser polo menos {{min}}",
+      "max": "O valor debe ser como máximo {{max}}"
+    },
+    "success": {
+      "title": "Pedido enviado!",
+      "message": "Grazas polo teu pedido. Recibirás un correo de confirmación en breve."
+    },
+    "payment": {
+      "title": "Pago",
+      "subtitle": "Introduce os datos da túa tarxeta para completar a compra",
+      "totalAmount": "Importe total",
+      "cardholderName": "Titular da tarxeta",
+      "cardholderHint": "Nome tal como aparece na túa tarxeta",
+      "cardNumber": "Número de tarxeta",
+      "cardNumberError": "Introduce un número de tarxeta válido (mínimo 13 díxitos)",
+      "expiry": "Data de caducidade",
+      "expiryError": "Introduce unha data de caducidade válida (MM/AA)",
+      "cvv": "CVV",
+      "cvvAriaLabel": "Código de seguridade (3 ou 4 díxitos no reverso da túa tarxeta)",
+      "cvvError": "Introduce un CVV válido (3–4 díxitos)",
+      "processing": "Procesando pago…",
+      "payNow": "Pagar {{amount}}",
+      "successMessage": "Pago confirmado! ID de transacción: {{id}}"
+    },
+    "demo": {
+      "steps": {
+        "personalData": "Datos persoais",
+        "hobbies": "Afeccións",
+        "product": "Produto",
+        "payment": "Pago"
+      },
+      "personalData": {
+        "subtitle": "Cóntanos un pouco sobre ti",
+        "firstName": "Nome",
+        "lastName": "Apelidos",
+        "email": "Correo electrónico",
+        "birthYear": "Ano de nacemento",
+        "firstNameError": "O nome é obrigatorio (mínimo 2 caracteres)",
+        "lastNameError": "Os apelidos son obrigatorios (mínimo 2 caracteres)",
+        "emailError": "Requírese un enderezo de correo válido",
+        "birthYearError": "Introduce un ano de nacemento válido"
+      },
+      "hobbies": {
+        "hobby": "Cal é a túa afección principal?",
+        "hobbyPlaceholder": "Selecciona unha afección",
+        "experienceLevel": "Cal é o teu nivel de experiencia?",
+        "experienceLevelPlaceholder": "Selecciona o nivel"
+      },
+      "product": {
+        "product": "Que produto che interesa?",
+        "productPlaceholder": "Selecciona un produto",
+        "price": "O teu orzamento (€)",
+        "pricePlaceholder": "ex. 150"
+      }
     }
   }
 }
