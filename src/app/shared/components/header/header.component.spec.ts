@@ -101,7 +101,7 @@ describe('HeaderComponent', () => {
     expect(navItems[1].label).toBe('app.navigation.demos._');
     expect(navItems[1].icon).toBe('🎨');
     expect(navItems[1].children).toBeDefined();
-    expect(navItems[1].children).toHaveLength(5);
+    expect(navItems[1].children).toHaveLength(6);
     expect(navItems[1].children![0]).toEqual({
       id: 'theme-demo',
       label: 'app.navigation.demos.themeDemo',

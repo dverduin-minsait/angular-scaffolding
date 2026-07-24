@@ -1,0 +1,76 @@
+.msf-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  max-width: var(--layout-max-width, 800px);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.msf-shell__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.msf-shell__progress {
+  height: 6px;
+  background: var(--bg-muted);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.msf-shell__progress-bar {
+  height: 100%;
+  background: var(--primary-500);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.msf-shell__content {
+  flex: 1;
+  min-height: 0;
+}
+
+.msf-shell__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+.msf-shell__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  text-align: center;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  p {
+    color: var(--text-secondary);
+    max-width: 400px;
+  }
+}
+
+.msf-shell__success-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: var(--success, #22c55e);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+}

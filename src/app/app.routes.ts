@@ -37,6 +37,12 @@ export const routes: Routes = [
     loadChildren: () => import('./features/demo-pages/demo-books/demo-books.routes').then(m => m.DEMO_BOOKS_ROUTES)
   },
   {
+    path: 'wizard-demo',
+    data: { breadcrumb: 'Wizard Demo' },
+    canMatch: [authGuard],
+    loadChildren: () => import('./features/wizard-demo/wizard-demo.routes').then(m => m.WIZARD_DEMO_ROUTES)
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }
